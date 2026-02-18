@@ -305,110 +305,237 @@ export default function ResultsPage({ results }: ResultsPageProps) {
               ...headline,
               fontSize: "26px",
               color: "#fff",
-              marginBottom: "28px",
+              marginBottom: "10px",
             }}
           >
             How to install Skills
           </h2>
+          <p
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: "15px",
+              lineHeight: 1.7,
+              color: "rgba(255,255,255,0.5)",
+              marginBottom: "32px",
+              maxWidth: "560px",
+            }}
+          >
+            Skills are custom instructions that give Claude specialized
+            abilities. Here's how to add them in three simple steps.
+          </p>
+
+          {/* Steps */}
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "24px",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: "20px",
+              marginBottom: "32px",
             }}
           >
+            {/* Step 1 */}
             <div
               style={{
-                padding: "24px",
+                padding: "28px 24px",
                 background: "rgba(255,255,255,0.07)",
                 border: "1px solid rgba(255,255,255,0.12)",
-                borderRadius: "12px",
+                borderRadius: "14px",
               }}
             >
               <div
                 style={{
-                  fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: "12px",
-                  fontWeight: 500,
-                  color: "#fff",
-                  marginBottom: "14px",
-                }}
-              >
-                In Claude.ai
-              </div>
-              <ol
-                style={{
-                  paddingLeft: "18px",
-                  margin: 0,
-                  fontSize: "14px",
-                  lineHeight: 2.2,
-                  color: "rgba(255,255,255,0.6)",
-                  fontFamily: "'DM Sans', sans-serif",
-                }}
-              >
-                <li>Go to Settings → Skills</li>
-                <li>Enable Skills</li>
-                <li>Browse or upload SKILL.md files</li>
-                <li>Claude loads them automatically when relevant</li>
-              </ol>
-            </div>
-            <div
-              style={{
-                padding: "24px",
-                background: "rgba(255,255,255,0.07)",
-                border: "1px solid rgba(255,255,255,0.12)",
-                borderRadius: "12px",
-              }}
-            >
-              <div
-                style={{
-                  fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: "12px",
-                  fontWeight: 500,
-                  color: "#fff",
-                  marginBottom: "14px",
-                }}
-              >
-                In Claude Code
-              </div>
-              <div
-                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "32px",
+                  height: "32px",
+                  borderRadius: "50%",
+                  background: "rgba(61,122,86,0.35)",
                   fontFamily: "'JetBrains Mono', monospace",
                   fontSize: "13px",
-                  color: "rgba(255,255,255,0.6)",
-                  lineHeight: 2,
+                  fontWeight: 600,
+                  color: "#52b788",
+                  marginBottom: "16px",
                 }}
               >
-                <code
-                  style={{
-                    background: "rgba(255,255,255,0.1)",
-                    padding: "6px 12px",
-                    borderRadius: "6px",
-                  }}
-                >
-                  /plugin marketplace add anthropics/skills
-                </code>
+                1
               </div>
               <div
                 style={{
-                  marginTop: "14px",
-                  fontSize: "14px",
-                  color: "rgba(255,255,255,0.5)",
-                  lineHeight: 1.7,
                   fontFamily: "'DM Sans', sans-serif",
+                  fontSize: "15px",
+                  fontWeight: 600,
+                  color: "#fff",
+                  marginBottom: "8px",
                 }}
               >
-                Or add custom skills to{" "}
-                <code
+                Open Skills settings
+              </div>
+              <p
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: "13px",
+                  lineHeight: 1.7,
+                  color: "rgba(255,255,255,0.5)",
+                  margin: 0,
+                }}
+              >
+                In Claude.ai, go to your <strong style={{ color: "rgba(255,255,255,0.75)" }}>Profile → Settings</strong> and
+                find the <strong style={{ color: "rgba(255,255,255,0.75)" }}>Skills</strong> section. Make sure skills
+                are enabled.
+              </p>
+            </div>
+
+            {/* Step 2 */}
+            <div
+              style={{
+                padding: "28px 24px",
+                background: "rgba(255,255,255,0.07)",
+                border: "1px solid rgba(255,255,255,0.12)",
+                borderRadius: "14px",
+              }}
+            >
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "32px",
+                  height: "32px",
+                  borderRadius: "50%",
+                  background: "rgba(61,122,86,0.35)",
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  color: "#52b788",
+                  marginBottom: "16px",
+                }}
+              >
+                2
+              </div>
+              <div
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: "15px",
+                  fontWeight: 600,
+                  color: "#fff",
+                  marginBottom: "8px",
+                }}
+              >
+                Add a skill
+              </div>
+              <p
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: "13px",
+                  lineHeight: 1.7,
+                  color: "rgba(255,255,255,0.5)",
+                  margin: 0,
+                }}
+              >
+                Click <strong style={{ color: "rgba(255,255,255,0.75)" }}>Add skill</strong> and
+                paste the URL to any skill — like a GitHub link to
+                a <code
                   style={{
                     fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: "12px",
+                    fontSize: "11px",
+                    background: "rgba(255,255,255,0.1)",
+                    padding: "2px 6px",
+                    borderRadius: "4px",
                   }}
-                >
-                  ~/.claude/skills/
-                </code>
-              </div>
+                >SKILL.md</code> file.
+              </p>
             </div>
+
+            {/* Step 3 */}
+            <div
+              style={{
+                padding: "28px 24px",
+                background: "rgba(255,255,255,0.07)",
+                border: "1px solid rgba(255,255,255,0.12)",
+                borderRadius: "14px",
+              }}
+            >
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "32px",
+                  height: "32px",
+                  borderRadius: "50%",
+                  background: "rgba(61,122,86,0.35)",
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  color: "#52b788",
+                  marginBottom: "16px",
+                }}
+              >
+                3
+              </div>
+              <div
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: "15px",
+                  fontWeight: 600,
+                  color: "#fff",
+                  marginBottom: "8px",
+                }}
+              >
+                Use it in chat
+              </div>
+              <p
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: "13px",
+                  lineHeight: 1.7,
+                  color: "rgba(255,255,255,0.5)",
+                  margin: 0,
+                }}
+              >
+                Type <code
+                  style={{
+                    fontFamily: "'JetBrains Mono', monospace",
+                    fontSize: "11px",
+                    background: "rgba(255,255,255,0.1)",
+                    padding: "2px 6px",
+                    borderRadius: "4px",
+                  }}
+                >/</code> in any conversation to see your installed skills, or
+                Claude will load them{" "}
+                <strong style={{ color: "rgba(255,255,255,0.75)" }}>automatically</strong> when
+                they're relevant.
+              </p>
+            </div>
+          </div>
+
+          {/* Tip banner */}
+          <div
+            style={{
+              padding: "16px 24px",
+              background: "rgba(82,183,136,0.1)",
+              border: "1px solid rgba(82,183,136,0.2)",
+              borderRadius: "10px",
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+            }}
+          >
+            <span style={{ fontSize: "16px" }}>💡</span>
+            <p
+              style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: "13px",
+                lineHeight: 1.6,
+                color: "rgba(255,255,255,0.6)",
+                margin: 0,
+              }}
+            >
+              <strong style={{ color: "rgba(255,255,255,0.8)" }}>Tip:</strong>{" "}
+              Click any skill card above to go straight to its page — then copy the URL
+              and paste it into the "Add skill" dialog in Claude.ai.
+            </p>
           </div>
         </div>
       </section>
