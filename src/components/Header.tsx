@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { AppView } from "../lib/types";
 import logoLight from "../assets/logo-light.svg";
 import logoDark from "../assets/logo-dark.svg";
@@ -19,6 +19,25 @@ const NAV_SECTIONS = [
 export default function Header({ view, onLogoClick }: HeaderProps) {
   const isDark = view === "results";
   const [activeSection, setActiveSection] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    if (!menuOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [menuOpen]);
+
+  // Close menu on view change
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [view]);
 
   useEffect(() => {
     if (view !== "results") {
@@ -54,42 +73,50 @@ export default function Header({ view, onLogoClick }: HeaderProps) {
     }
   };
 
+  const hamburgerColor = isDark ? "#fff" : "#1a3a2a";
+
   return (
     <header
       style={{
         position: "sticky",
         top: 0,
         zIndex: 50,
-        padding: "0 24px",
-        height: "72px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
         background: isDark ? "#1a3a2a" : "#fff",
         borderBottom: isDark ? "1px solid rgba(255,255,255,0.1)" : "1px solid #e0e0e0",
       }}
     >
-      <button
-        onClick={onLogoClick}
+      {/* ── Main bar ── */}
+      <div
         style={{
-          background: "none",
-          border: "none",
-          cursor: "pointer",
+          padding: "0 24px",
+          height: "72px",
           display: "flex",
           alignItems: "center",
-          padding: 0,
+          justifyContent: "space-between",
         }}
       >
-        <img
-          src={isDark ? logoDark : logoLight}
-          alt="claude.pdt — personal data transformer"
-          style={{ height: "60px", width: "auto" }}
-        />
-      </button>
+        <button
+          onClick={onLogoClick}
+          style={{
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            padding: 0,
+            flexShrink: 0,
+          }}
+        >
+          <img
+            src={isDark ? logoDark : logoLight}
+            alt="claude.pdt — personal data transformer"
+            className="header-logo"
+          />
+        </button>
 
-      <nav style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+        {/* ── Desktop nav (landing) ── */}
         {view === "landing" && (
-          <>
+          <nav className="nav-desktop" style={{ display: "flex", alignItems: "center", gap: "4px" }}>
             <a
               href="#how-it-works"
               style={{
@@ -139,48 +166,162 @@ export default function Header({ view, onLogoClick }: HeaderProps) {
             >
               Get started
             </a>
-          </>
+          </nav>
         )}
 
-        {view === "results" &&
-          NAV_SECTIONS.map(({ id, label }) => {
-            const isActive = activeSection === id;
-            return (
-              <button
-                key={id}
-                onClick={() => scrollTo(id)}
-                style={{
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  fontFamily: "'DM Sans', sans-serif",
-                  fontSize: "13px",
-                  fontWeight: isActive ? 600 : 500,
-                  color: isActive ? "#fff" : "rgba(255,255,255,0.5)",
-                  padding: "8px 14px",
-                  borderRadius: "6px",
-                  position: "relative",
-                  transition: "color 0.2s ease",
-                }}
-              >
-                {label}
-                <span
+        {/* ── Results nav (horizontal scroll on mobile) ── */}
+        {view === "results" && (
+          <nav
+            className="nav-results-scroll"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "4px",
+              overflowX: "auto",
+              WebkitOverflowScrolling: "touch",
+              msOverflowStyle: "none",
+              scrollbarWidth: "none",
+              flexShrink: 1,
+              minWidth: 0,
+            }}
+          >
+            {NAV_SECTIONS.map(({ id, label }) => {
+              const isActive = activeSection === id;
+              return (
+                <button
+                  key={id}
+                  onClick={() => scrollTo(id)}
                   style={{
-                    position: "absolute",
-                    bottom: "2px",
-                    left: "14px",
-                    right: "14px",
-                    height: "2px",
-                    borderRadius: "1px",
-                    background: "#52b788",
-                    opacity: isActive ? 1 : 0,
-                    transition: "opacity 0.2s ease",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: "13px",
+                    fontWeight: isActive ? 600 : 500,
+                    color: isActive ? "#fff" : "rgba(255,255,255,0.5)",
+                    padding: "8px 14px",
+                    borderRadius: "6px",
+                    position: "relative",
+                    transition: "color 0.2s ease",
+                    whiteSpace: "nowrap",
+                    flexShrink: 0,
                   }}
-                />
-              </button>
-            );
-          })}
-      </nav>
+                >
+                  {label}
+                  <span
+                    style={{
+                      position: "absolute",
+                      bottom: "2px",
+                      left: "14px",
+                      right: "14px",
+                      height: "2px",
+                      borderRadius: "1px",
+                      background: "#52b788",
+                      opacity: isActive ? 1 : 0,
+                      transition: "opacity 0.2s ease",
+                    }}
+                  />
+                </button>
+              );
+            })}
+          </nav>
+        )}
+
+        {/* ── Hamburger button (landing mobile only) ── */}
+        {view === "landing" && (
+          <button
+            className="nav-hamburger"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle menu"
+            style={{
+              display: "none", // shown via CSS on mobile
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: "8px",
+              flexShrink: 0,
+            }}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              {menuOpen ? (
+                <path d="M6 6L18 18M6 18L18 6" stroke={hamburgerColor} strokeWidth="2" strokeLinecap="round" />
+              ) : (
+                <>
+                  <path d="M4 7h16" stroke={hamburgerColor} strokeWidth="2" strokeLinecap="round" />
+                  <path d="M4 12h16" stroke={hamburgerColor} strokeWidth="2" strokeLinecap="round" />
+                  <path d="M4 17h16" stroke={hamburgerColor} strokeWidth="2" strokeLinecap="round" />
+                </>
+              )}
+            </svg>
+          </button>
+        )}
+      </div>
+
+      {/* ── Mobile dropdown (landing) ── */}
+      {view === "landing" && menuOpen && (
+        <div
+          ref={menuRef}
+          className="nav-mobile-dropdown"
+          style={{
+            padding: "8px 24px 16px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "4px",
+            borderTop: `1px solid ${isDark ? "rgba(255,255,255,0.1)" : "#e0e0e0"}`,
+            background: isDark ? "#1a3a2a" : "#fff",
+          }}
+        >
+          <a
+            href="#how-it-works"
+            onClick={() => setMenuOpen(false)}
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: "15px",
+              fontWeight: 500,
+              color: isDark ? "rgba(255,255,255,0.8)" : "#555",
+              textDecoration: "none",
+              padding: "10px 0",
+            }}
+          >
+            How it works
+          </a>
+          <a
+            href="#privacy"
+            onClick={() => setMenuOpen(false)}
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: "15px",
+              fontWeight: 500,
+              color: isDark ? "rgba(255,255,255,0.8)" : "#555",
+              textDecoration: "none",
+              padding: "10px 0",
+            }}
+          >
+            Privacy
+          </a>
+          <a
+            href="#upload"
+            onClick={() => setMenuOpen(false)}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "12px 20px",
+              marginTop: "4px",
+              background: isDark ? "#fff" : "#1a3a2a",
+              color: isDark ? "#1a3a2a" : "#fff",
+              border: "none",
+              borderRadius: "8px",
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: "15px",
+              fontWeight: 600,
+              textDecoration: "none",
+            }}
+          >
+            Get started
+          </a>
+        </div>
+      )}
     </header>
   );
 }

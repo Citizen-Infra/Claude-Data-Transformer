@@ -139,6 +139,43 @@ a {
   animation: analyze-pulse 2s ease-in-out 3;
 }
 
+/* ── Header / nav responsive ── */
+.header-logo {
+  height: 60px;
+  width: auto;
+}
+
+.nav-hamburger {
+  display: none !important;
+}
+
+.nav-results-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .header-logo {
+    height: 44px;
+  }
+
+  .nav-desktop {
+    display: none !important;
+  }
+
+  .nav-hamburger {
+    display: flex !important;
+  }
+
+  .nav-results-scroll {
+    gap: 0px !important;
+  }
+
+  .nav-results-scroll button {
+    font-size: 12px !important;
+    padding: 8px 10px !important;
+  }
+}
+
 /* Smooth transitions */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
