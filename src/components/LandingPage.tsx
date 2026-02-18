@@ -553,11 +553,36 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
                 fontWeight: 600,
                 color: C.ink,
                 display: "block",
-                marginBottom: "8px",
+                marginBottom: "4px",
               }}
             >
               Claude Export File
             </label>
+            <div
+              style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: "13px",
+                color: C.body,
+                marginBottom: "10px",
+                lineHeight: 1.5,
+              }}
+            >
+              Upload the{" "}
+              <code
+                style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: "12px",
+                  background: C.cardBg,
+                  padding: "2px 6px",
+                  borderRadius: "4px",
+                  color: C.mid,
+                  fontWeight: 500,
+                }}
+              >
+                conversations.json
+              </code>{" "}
+              file from your Claude data export.
+            </div>
             <div
               onDragOver={(e) => {
                 e.preventDefault();
@@ -665,19 +690,10 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
                     style={{
                       fontSize: "15px",
                       color: C.body,
-                      marginBottom: "16px",
+                      marginBottom: "6px",
                     }}
                   >
-                    Drop{" "}
-                    <strong
-                      style={{
-                        fontFamily: "'JetBrains Mono', monospace",
-                        fontSize: "13px",
-                      }}
-                    >
-                      conversations.json
-                    </strong>{" "}
-                    here, or
+                    Drop your file here, or
                   </div>
                   <div
                     style={{
@@ -689,9 +705,20 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
                       fontFamily: "'DM Sans', sans-serif",
                       fontSize: "14px",
                       fontWeight: 600,
+                      marginBottom: "12px",
                     }}
                   >
                     Choose file
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "'JetBrains Mono', monospace",
+                      fontSize: "11px",
+                      color: C.subtle,
+                      letterSpacing: "0.3px",
+                    }}
+                  >
+                    Accepts conversations.json
                   </div>
                 </div>
               )}
