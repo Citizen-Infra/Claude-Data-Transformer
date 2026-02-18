@@ -17,8 +17,8 @@ const C = {
   cardBg: "#e8f0eb",
   border: "#e0e0e0",
   ink: "#1a1a1a",
-  body: "#555",
-  subtle: "#888",
+  body: "#444",
+  subtle: "#777",
 };
 
 const sectionLabel: React.CSSProperties = {
@@ -35,7 +35,7 @@ const headline: React.CSSProperties = {
   fontFamily: "'DM Serif Display', Georgia, serif",
   fontWeight: 400,
   color: C.ink,
-  lineHeight: 1.15,
+  lineHeight: 1.2,
   margin: "0 0 16px 0",
 };
 
@@ -44,7 +44,6 @@ const bodyText: React.CSSProperties = {
   fontSize: "16px",
   lineHeight: 1.7,
   color: C.body,
-  maxWidth: "560px",
 };
 
 export default function ResultsPage({ results }: ResultsPageProps) {
@@ -66,36 +65,60 @@ export default function ResultsPage({ results }: ResultsPageProps) {
 
   return (
     <div>
-      {/* Hero stats */}
-      <section style={{ padding: "56px 24px 48px", textAlign: "center" }}>
+      {/* ─── Hero banner ─── */}
+      <section
+        style={{
+          background: `linear-gradient(135deg, ${C.dark} 0%, ${C.mid} 100%)`,
+          padding: "64px 24px 80px",
+          textAlign: "center",
+        }}
+      >
+        <div style={{ ...sectionLabel, color: C.accent, marginBottom: "16px" }}>
+          Your results
+        </div>
         <h1
           style={{
             ...headline,
-            fontSize: "clamp(28px, 4vw, 42px)",
-            marginBottom: "12px",
+            fontSize: "clamp(30px, 5vw, 46px)",
+            color: "#fff",
+            maxWidth: "600px",
+            margin: "0 auto 16px",
           }}
         >
           Here's what we found.
         </h1>
         <p
           style={{
-            ...bodyText,
-            margin: "0 auto 40px",
-            textAlign: "center",
+            fontSize: "16px",
+            lineHeight: 1.7,
+            color: "rgba(255,255,255,0.6)",
             maxWidth: "480px",
+            margin: "0 auto",
+            fontFamily: "'DM Sans', sans-serif",
           }}
         >
-          We analyzed your Claude history. Here's what your conversations say
-          about how you think, what you build, and where your mind keeps
-          returning.
+          Your Claude history reveals how you think, what you build, and where
+          your mind keeps returning.
         </p>
+      </section>
 
+      {/* ─── Stats banner (overlapping hero) ─── */}
+      <section
+        style={{
+          maxWidth: "800px",
+          margin: "-40px auto 0",
+          padding: "0 24px",
+        }}
+      >
         <div
           style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "16px",
-            flexWrap: "wrap",
+            background: "#fff",
+            borderRadius: "16px",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)",
+            padding: "32px",
+            display: "grid",
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: "24px",
           }}
         >
           {[
@@ -113,7 +136,7 @@ export default function ResultsPage({ results }: ResultsPageProps) {
                 dateRange.years === 1 ? "Year of history" : "Years of history",
             },
             {
-              value: `${dateRange.earliest} – ${dateRange.latest}`,
+              value: `${dateRange.earliest}`,
               label: "Active since",
             },
           ].map((s, i) => (
@@ -122,19 +145,25 @@ export default function ResultsPage({ results }: ResultsPageProps) {
         </div>
       </section>
 
-      {/* Usage signature */}
+      {/* ─── Usage signature ─── */}
       <section
         style={{
-          padding: "16px 24px 56px",
+          padding: "56px 24px 64px",
           maxWidth: "800px",
           margin: "0 auto",
         }}
       >
         <div style={sectionLabel}>Usage signature</div>
-        <h2 style={{ ...headline, fontSize: "28px", marginBottom: "8px" }}>
+        <h2 style={{ ...headline, fontSize: "30px", marginBottom: "10px" }}>
           How you use AI
         </h2>
-        <p style={{ ...bodyText, marginBottom: "28px" }}>
+        <p
+          style={{
+            ...bodyText,
+            marginBottom: "36px",
+            maxWidth: "640px",
+          }}
+        >
           {userProfile.persona_summary}
         </p>
 
@@ -142,18 +171,32 @@ export default function ResultsPage({ results }: ResultsPageProps) {
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            gap: "40px",
+            gap: "48px",
           }}
         >
-          <div>
-            <div style={{ ...sectionLabel, marginBottom: "16px" }}>
+          <div
+            style={{
+              background: "#fff",
+              border: `1px solid ${C.border}`,
+              borderRadius: "16px",
+              padding: "28px",
+            }}
+          >
+            <div style={{ ...sectionLabel, marginBottom: "20px" }}>
               Breakdown by domain
             </div>
             <BarChart data={breakdown} />
           </div>
 
-          <div>
-            <div style={{ ...sectionLabel, marginBottom: "16px" }}>
+          <div
+            style={{
+              background: "#fff",
+              border: `1px solid ${C.border}`,
+              borderRadius: "16px",
+              padding: "28px",
+            }}
+          >
+            <div style={{ ...sectionLabel, marginBottom: "20px" }}>
               Work patterns
             </div>
             <TagCloud tags={userProfile.work_patterns || []} />
@@ -163,8 +206,8 @@ export default function ResultsPage({ results }: ResultsPageProps) {
                 <div
                   style={{
                     ...sectionLabel,
-                    marginBottom: "10px",
-                    marginTop: "24px",
+                    marginBottom: "12px",
+                    marginTop: "28px",
                   }}
                 >
                   Artifact types
@@ -179,7 +222,7 @@ export default function ResultsPage({ results }: ResultsPageProps) {
         </div>
       </section>
 
-      {/* Skill gaps */}
+      {/* ─── Skill gaps ─── */}
       {(userProfile.skill_gaps?.length ?? 0) > 0 && (
         <section
           style={{
@@ -192,9 +235,9 @@ export default function ResultsPage({ results }: ResultsPageProps) {
           <div style={{ maxWidth: "800px", margin: "0 auto" }}>
             <div style={sectionLabel}>Where skills can help</div>
             <h2
-              style={{ ...headline, fontSize: "24px", marginBottom: "20px" }}
+              style={{ ...headline, fontSize: "26px", marginBottom: "20px" }}
             >
-              Gaps we identified.
+              Gaps we identified
             </h2>
             <div
               style={{
@@ -212,7 +255,7 @@ export default function ResultsPage({ results }: ResultsPageProps) {
                     border: `1px solid ${C.border}`,
                     borderRadius: "12px",
                     fontSize: "14px",
-                    lineHeight: 1.6,
+                    lineHeight: 1.7,
                     color: C.body,
                   }}
                 >
@@ -224,7 +267,7 @@ export default function ResultsPage({ results }: ResultsPageProps) {
         </section>
       )}
 
-      {/* Recommendations */}
+      {/* ─── Recommendations ─── */}
       <section
         style={{
           padding: "56px 24px",
@@ -233,25 +276,25 @@ export default function ResultsPage({ results }: ResultsPageProps) {
         }}
       >
         <div style={sectionLabel}>Your recommended skills</div>
-        <h2 style={{ ...headline, fontSize: "28px", marginBottom: "8px" }}>
-          Skills matched to your patterns.
+        <h2 style={{ ...headline, fontSize: "30px", marginBottom: "10px" }}>
+          Skills matched to your patterns
         </h2>
-        <p style={{ ...bodyText, marginBottom: "32px" }}>
-          These aren't generic suggestions. They're ranked by how well they fit
-          the work you actually do with Claude.
+        <p style={{ ...bodyText, marginBottom: "32px", maxWidth: "640px" }}>
+          These are ranked by how well they fit the work you actually do with
+          Claude. Click any card to learn more.
         </p>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
           {recommendations.map((rec) => (
             <SkillCard key={rec.skill_id} recommendation={rec} />
           ))}
         </div>
       </section>
 
-      {/* Install guide */}
+      {/* ─── Install guide ─── */}
       <section
         style={{
-          padding: "48px 24px",
+          padding: "56px 24px",
           background: `linear-gradient(135deg, ${C.dark} 0%, ${C.mid} 100%)`,
         }}
       >
@@ -260,9 +303,9 @@ export default function ResultsPage({ results }: ResultsPageProps) {
           <h2
             style={{
               ...headline,
-              fontSize: "24px",
+              fontSize: "26px",
               color: "#fff",
-              marginBottom: "24px",
+              marginBottom: "28px",
             }}
           >
             How to install Skills
@@ -276,9 +319,9 @@ export default function ResultsPage({ results }: ResultsPageProps) {
           >
             <div
               style={{
-                padding: "20px",
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.1)",
+                padding: "24px",
+                background: "rgba(255,255,255,0.07)",
+                border: "1px solid rgba(255,255,255,0.12)",
                 borderRadius: "12px",
               }}
             >
@@ -288,7 +331,7 @@ export default function ResultsPage({ results }: ResultsPageProps) {
                   fontSize: "12px",
                   fontWeight: 500,
                   color: "#fff",
-                  marginBottom: "10px",
+                  marginBottom: "14px",
                 }}
               >
                 In Claude.ai
@@ -298,8 +341,8 @@ export default function ResultsPage({ results }: ResultsPageProps) {
                   paddingLeft: "18px",
                   margin: 0,
                   fontSize: "14px",
-                  lineHeight: 2,
-                  color: "rgba(255,255,255,0.55)",
+                  lineHeight: 2.2,
+                  color: "rgba(255,255,255,0.6)",
                   fontFamily: "'DM Sans', sans-serif",
                 }}
               >
@@ -311,9 +354,9 @@ export default function ResultsPage({ results }: ResultsPageProps) {
             </div>
             <div
               style={{
-                padding: "20px",
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.1)",
+                padding: "24px",
+                background: "rgba(255,255,255,0.07)",
+                border: "1px solid rgba(255,255,255,0.12)",
                 borderRadius: "12px",
               }}
             >
@@ -323,7 +366,7 @@ export default function ResultsPage({ results }: ResultsPageProps) {
                   fontSize: "12px",
                   fontWeight: 500,
                   color: "#fff",
-                  marginBottom: "10px",
+                  marginBottom: "14px",
                 }}
               >
                 In Claude Code
@@ -331,15 +374,15 @@ export default function ResultsPage({ results }: ResultsPageProps) {
               <div
                 style={{
                   fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: "12px",
-                  color: "rgba(255,255,255,0.55)",
+                  fontSize: "13px",
+                  color: "rgba(255,255,255,0.6)",
                   lineHeight: 2,
                 }}
               >
                 <code
                   style={{
-                    background: "rgba(255,255,255,0.08)",
-                    padding: "4px 8px",
+                    background: "rgba(255,255,255,0.1)",
+                    padding: "6px 12px",
                     borderRadius: "6px",
                   }}
                 >
@@ -348,10 +391,10 @@ export default function ResultsPage({ results }: ResultsPageProps) {
               </div>
               <div
                 style={{
-                  marginTop: "12px",
+                  marginTop: "14px",
                   fontSize: "14px",
-                  color: "rgba(255,255,255,0.45)",
-                  lineHeight: 1.6,
+                  color: "rgba(255,255,255,0.5)",
+                  lineHeight: 1.7,
                   fontFamily: "'DM Sans', sans-serif",
                 }}
               >
@@ -359,7 +402,7 @@ export default function ResultsPage({ results }: ResultsPageProps) {
                 <code
                   style={{
                     fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: "11px",
+                    fontSize: "12px",
                   }}
                 >
                   ~/.claude/skills/
@@ -370,19 +413,20 @@ export default function ResultsPage({ results }: ResultsPageProps) {
         </div>
       </section>
 
-      {/* Skills commons CTA */}
+      {/* ─── Skills commons CTA ─── */}
       <section style={{ padding: "64px 24px", textAlign: "center" }}>
         <div style={sectionLabel}>The skills commons</div>
         <h2
-          style={{ ...headline, fontSize: "26px", marginBottom: "12px" }}
+          style={{ ...headline, fontSize: "28px", marginBottom: "12px" }}
         >
           Want to build citizen infrastructure?
         </h2>
         <p
           style={{
             ...bodyText,
-            margin: "0 auto 24px",
+            margin: "0 auto 28px",
             textAlign: "center",
+            maxWidth: "520px",
           }}
         >
           The skills commons is an open, community-curated collection of Skills

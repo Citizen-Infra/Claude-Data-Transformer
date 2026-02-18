@@ -5,22 +5,15 @@ interface StatCardProps {
 
 export default function StatCard({ value, label }: StatCardProps) {
   return (
-    <div
-      style={{
-        padding: "20px 28px",
-        background: "#fff",
-        border: "1px solid #e0e0e0",
-        borderRadius: "12px",
-        minWidth: "130px",
-      }}
-    >
+    <div style={{ textAlign: "center" }}>
       <div
         style={{
           fontFamily: "'DM Serif Display', Georgia, serif",
-          fontSize: "26px",
+          fontSize: "28px",
           fontWeight: 400,
-          color: "#1a1a1a",
+          color: "#1a3a2a",
           marginBottom: "4px",
+          lineHeight: 1.1,
         }}
       >
         {value}
