@@ -166,7 +166,7 @@ export function buildHeuristicProfile(
   // --- Persona summary ---
   const topDomain = primary_domains[0] || "general tasks";
   const topPattern = work_patterns[0] || "various tasks";
-  const persona_summary = `Based on ${conversations.length} conversations and ${totalMessages.toLocaleString()} messages, this user primarily works in ${topDomain.toLowerCase()} with a focus on ${topPattern.toLowerCase()}. Their conversations show a pattern of ${primary_domains.slice(0, 3).join(", ").toLowerCase()}, suggesting a ${conversations.length > 100 ? "power" : "regular"} user who leverages Claude for both creative and analytical work.`;
+  const persona_summary = `Based on ${conversations.length} conversations and ${totalMessages.toLocaleString()} messages, you primarily work in ${topDomain.toLowerCase()} with a focus on ${topPattern.toLowerCase()}. Your conversations show a pattern of ${primary_domains.slice(0, 3).join(", ").toLowerCase()}, suggesting you're a ${conversations.length > 100 ? "power" : "regular"} user who leverages Claude for both creative and analytical work.`;
 
   return {
     primary_domains,

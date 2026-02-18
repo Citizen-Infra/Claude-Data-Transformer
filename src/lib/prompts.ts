@@ -24,7 +24,7 @@ Produce a JSON object (no markdown fencing, no other text) with this structure:
   "repeated_requests": ["3-5 things they ask for repeatedly"],
   "skill_gaps": ["3-5 areas where a skill could save them time"],
   "usage_breakdown": [{"category": "name", "percentage": number}],
-  "persona_summary": "2-3 sentence description of this user's relationship with Claude"
+  "persona_summary": "2-3 sentence description addressing the user directly (use 'you/your', not 'this user/their') about their relationship with Claude"
 }`;
 }
 
