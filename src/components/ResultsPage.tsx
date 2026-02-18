@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { AnalysisResults } from "../lib/types";
 import StatCard from "./StatCard";
 import BarChart from "./BarChart";
@@ -45,6 +46,276 @@ const bodyText: React.CSSProperties = {
   lineHeight: 1.7,
   color: C.body,
 };
+
+const SKILL_PROMPT =
+  "Use the skill-creator skill to help me build a skill for [describe your use case]. Walk me through defining use cases, writing the SKILL.md with proper YAML frontmatter, and structuring the folder. Output the final skill as a downloadable folder I can install.";
+
+function MakeSkillSection() {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(SKILL_PROMPT).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2200);
+    });
+  };
+
+  return (
+    <section
+      style={{
+        padding: "0 24px 56px",
+        maxWidth: "800px",
+        margin: "0 auto",
+      }}
+    >
+      <div
+        style={{
+          ...sectionLabel,
+          color: C.accent,
+          paddingBottom: "12px",
+          borderBottom: `1px solid ${C.border}`,
+          marginBottom: "32px",
+        }}
+      >
+        Build Your Own
+      </div>
+
+      <div
+        style={{
+          background: C.surface,
+          border: `1px solid ${C.border}`,
+          borderRadius: "16px",
+          boxShadow:
+            "0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(45,106,79,0.08)",
+          overflow: "hidden",
+        }}
+      >
+        {/* Thin gradient accent */}
+        <div
+          style={{
+            height: "3px",
+            background: `linear-gradient(90deg, ${C.dark} 0%, ${C.mid} 40%, #C2DFD0 100%)`,
+          }}
+        />
+
+        <div style={{ padding: "40px" }}>
+          <h2
+            style={{
+              ...headline,
+              fontSize: "32px",
+              marginBottom: "12px",
+            }}
+          >
+            Not seeing a skill you need?{" "}
+            <em
+              style={{
+                fontFamily: "'DM Serif Display', Georgia, serif",
+                fontStyle: "italic",
+                color: C.mid,
+              }}
+            >
+              Make one.
+            </em>
+          </h2>
+
+          <p
+            style={{
+              ...bodyText,
+              maxWidth: "540px",
+              marginBottom: "28px",
+            }}
+          >
+            Skills are simple instruction folders that teach Claude repeatable
+            workflows — your processes, your standards, your domain expertise.
+            Describe what you need and Claude will build a ready-to-install
+            skill for you.
+          </p>
+
+          {/* Feature chips */}
+          <div
+            style={{
+              display: "flex",
+              gap: "8px",
+              flexWrap: "wrap",
+              marginBottom: "28px",
+            }}
+          >
+            {[
+              {
+                label: "Under 5 minutes to build",
+                icon: (
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                ),
+              },
+              {
+                label: "No code required",
+                icon: (
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+                  </svg>
+                ),
+              },
+              {
+                label: "Works across Claude.ai & Code",
+                icon: (
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+                    <line x1="4" y1="22" x2="4" y2="15" />
+                  </svg>
+                ),
+              },
+            ].map((chip) => (
+              <span
+                key={chip.label}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  padding: "5px 12px",
+                  background: "#F2FAF5",
+                  border: "1px solid #C2DFD0",
+                  borderRadius: "99px",
+                  fontSize: "12px",
+                  color: C.mid,
+                  fontWeight: 500,
+                  fontFamily: "'DM Sans', sans-serif",
+                }}
+              >
+                {chip.icon}
+                {chip.label}
+              </span>
+            ))}
+          </div>
+
+          {/* Prompt preview */}
+          <div
+            style={{
+              background: C.dark,
+              borderRadius: "12px",
+              padding: "20px 24px",
+              marginBottom: "28px",
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: "11px",
+                fontWeight: 600,
+                letterSpacing: "0.5px",
+                textTransform: "uppercase",
+                color: "#C2DFD0",
+                marginBottom: "10px",
+                opacity: 0.7,
+              }}
+            >
+              Prompt copied to clipboard
+            </div>
+            <div
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: "13px",
+                lineHeight: 1.7,
+                color: "#E4F2EB",
+              }}
+            >
+              <span style={{ color: "#fff", fontWeight: 500 }}>
+                Use the skill-creator skill
+              </span>{" "}
+              to help me build a skill for{" "}
+              <span
+                style={{
+                  color: "#C2DFD0",
+                  fontStyle: "italic",
+                  borderBottom: "1px dashed #C2DFD0",
+                  paddingBottom: "1px",
+                }}
+              >
+                [describe your use case]
+              </span>
+              . Walk me through defining use cases, writing the SKILL.md with
+              proper YAML frontmatter, and structuring the folder. Output the
+              final skill as a downloadable folder I can install.
+            </div>
+          </div>
+
+          {/* Buttons */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              flexWrap: "wrap",
+            }}
+          >
+            <button
+              onClick={handleCopy}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                background: copied ? C.accent : C.mid,
+                color: "#fff",
+                border: "none",
+                borderRadius: "8px",
+                padding: "13px 28px",
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: "15px",
+                fontWeight: 600,
+                cursor: "pointer",
+                transition: "background 0.15s ease",
+                lineHeight: 1,
+              }}
+            >
+              {copied ? (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              ) : (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+              )}
+              {copied ? "Copied!" : "Copy skill-builder prompt"}
+            </button>
+
+            <a
+              href="https://resources.anthropic.com/hubfs/The-Complete-Guide-to-Building-Skill-for-Claude.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                background: "transparent",
+                color: C.mid,
+                border: `1px solid #C2DFD0`,
+                borderRadius: "8px",
+                padding: "12px 28px",
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: "15px",
+                fontWeight: 600,
+                cursor: "pointer",
+                transition: "background 0.15s ease, border-color 0.15s ease",
+                textDecoration: "none",
+                lineHeight: 1,
+              }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+              </svg>
+              Read the full guide →
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export default function ResultsPage({ results }: ResultsPageProps) {
   const {
@@ -290,6 +561,9 @@ export default function ResultsPage({ results }: ResultsPageProps) {
           ))}
         </div>
       </section>
+
+      {/* ─── Make a Skill CTA ─── */}
+      <MakeSkillSection />
 
       {/* ─── Install guide ─── */}
       <section
