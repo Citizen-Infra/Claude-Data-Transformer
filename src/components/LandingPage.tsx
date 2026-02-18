@@ -268,7 +268,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
           textAlign: "center",
         }}
       >
-        <div style={{ ...sectionLabel, color: C.accent, marginBottom: "20px" }}>
+        <div style={{ ...sectionLabel, color: "#88E7BB", marginBottom: "20px" }}>
           Skills discovery
         </div>
         <h1
@@ -286,7 +286,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
           style={{
             fontSize: "17px",
             lineHeight: 1.7,
-            color: "rgba(255,255,255,0.65)",
+            color: "rgba(255,255,255,0.8)",
             maxWidth: "520px",
             margin: "0 auto 36px",
             fontFamily: "'DM Sans', sans-serif",
@@ -1073,7 +1073,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
         <p
           style={{
             fontSize: "16px",
-            color: "rgba(255,255,255,0.6)",
+            color: "rgba(255,255,255,0.8)",
             marginBottom: "28px",
             fontFamily: "'DM Sans', sans-serif",
           }}

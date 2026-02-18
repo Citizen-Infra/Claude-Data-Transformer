@@ -83,7 +83,7 @@ export default function Header({ view, onLogoClick }: HeaderProps) {
         <img
           src={isDark ? logoDark : logoLight}
           alt="claude.pdt — personal data transformer"
-          style={{ height: "32px", width: "auto" }}
+          style={{ height: "44px", width: "auto" }}
         />
       </button>
 
