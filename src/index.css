@@ -8,6 +8,7 @@
   --color-pdt-200: #d8d8d8;
   --color-pdt-100: #e8f0eb;
   --color-pdt-50: #f7f5f0;
+  --color-pdt-mint: #88E7BB; /* Mint green — dark logo accent, reverse/dark UI */
 
   /* ── Neutrals ── */
   --color-surface: #ffffff;
@@ -40,6 +41,10 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
