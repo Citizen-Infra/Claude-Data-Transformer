@@ -239,11 +239,11 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
         conversations: conversations.length,
         messages: totalMessages,
       });
-      // Scroll the analyze button into view after render
+      // Nudge the analyze button into view after render
       setTimeout(() => {
         analyzeBtnRef.current?.scrollIntoView({
           behavior: "smooth",
-          block: "center",
+          block: "nearest",
         });
       }, 150);
     } catch {
@@ -717,7 +717,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
           {/* ── Enhanced mode toggle ── */}
           <div
             style={{
-              marginTop: "24px",
+              marginTop: "12px",
               padding: "16px 20px",
               background: C.surface,
               border: `1px solid ${enhancedMode ? C.mid : C.border}`,
@@ -955,7 +955,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
             className={canAnalyze ? "analyze-btn-pulse" : ""}
             style={{
               width: "100%",
-              marginTop: "20px",
+              marginTop: "12px",
               padding: "16px",
               border: "none",
               borderRadius: "12px",
