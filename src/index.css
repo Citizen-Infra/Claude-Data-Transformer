@@ -79,6 +79,47 @@ a {
   text-decoration-color: var(--color-subtle);
 }
 
+/* ── Skill card hover accent bar ── */
+.skill-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.skill-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #2d6a4f, #52b788);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.skill-card:hover::before {
+  opacity: 1;
+}
+
+.skill-card:hover .match-tag {
+  background: #d8f3dc;
+}
+
+/* ── Match ring animation ── */
+.match-ring-fill {
+  fill: none;
+  stroke: #2d6a4f;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-dasharray: 150.8;
+  stroke-dashoffset: 150.8;
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.skill-card-visible .match-ring-fill {
+  /* offset set via inline style */
+}
+
 /* Smooth transitions */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
