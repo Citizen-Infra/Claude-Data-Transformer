@@ -334,12 +334,13 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
       >
         <div style={sectionLabel}>What you'll walk away with</div>
         <h2 style={{ ...headline, fontSize: "32px", marginBottom: "12px" }}>
-          Data sovereignty starts with self-knowledge.
+          Your Claude history is a toolkit you haven't opened yet.
         </h2>
         <p style={{ ...bodyText, marginBottom: "40px" }}>
-          Your Claude history isn't just chat logs. It's a record of how you
+          Your conversations aren't just chat logs — they're a record of how you
           think, what you build, and where your mind keeps returning. We surface
-          those patterns and match them to tools that amplify your work.
+          those patterns and match them to Skills that make Claude work the way
+          you already do.
         </p>
 
         <div
@@ -353,17 +354,17 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
             {
               icon: "📊",
               title: "Usage signature",
-              desc: "A breakdown of how you use AI — research, writing, code, strategy — with percentages and timelines.",
+              desc: "A breakdown of how you use AI — research, writing, code, strategy — with percentages and timelines. See where you spend your attention and what that says about how you work.",
             },
             {
               icon: "🧩",
               title: "Skill recommendations",
-              desc: "Matched against the skills commons. Not generic — tuned to your actual conversation patterns.",
+              desc: "Matched against the Skills commons based on your actual conversation patterns. Not generic — tuned to the workflows you already repeat.",
             },
             {
-              icon: "🔒",
-              title: "Nothing leaves your browser",
-              desc: "Your data goes directly from your browser to the Anthropic API. We never see it. No server, no database.",
+              icon: "🔍",
+              title: "Gaps you didn't know you had",
+              desc: "We flag patterns where a Skill could help but doesn't exist yet — so you can build exactly what's missing.",
             },
           ].map((item, i) => (
             <div
