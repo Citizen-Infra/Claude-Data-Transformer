@@ -1171,60 +1171,91 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
           margin: "0 auto",
         }}
       >
-        <div style={sectionLabel}>Citizen Infrastructure</div>
-        <h2 style={{ ...headline, fontSize: "32px", marginBottom: "12px" }}>
-          We build tools that put people first.
+        <div style={sectionLabel}>Who We Are</div>
+        <h2 style={{ ...headline, fontSize: "32px", marginBottom: "20px" }}>
+          Citizen Infrastructure Builders
         </h2>
-        <p
+        <div
           style={{
-            ...bodyText,
-            fontStyle: "italic",
-            marginBottom: "16px",
             borderLeft: `3px solid ${C.mid}`,
-            paddingLeft: "16px",
+            paddingLeft: "20px",
+            marginBottom: "28px",
           }}
         >
-          "Citizen infrastructure is the idea that tools, systems, and
-          platforms should be designed to serve people — not extract from them."
-        </p>
+          <p
+            style={{
+              ...bodyText,
+              fontStyle: "italic",
+              marginBottom: "6px",
+              lineHeight: 1.7,
+            }}
+          >
+            "If you want to teach people a new way of thinking, don't bother
+            trying to teach them. Instead, give them a tool, the use of which
+            will lead to new ways of thinking."
+          </p>
+          <span
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: "13px",
+              fontWeight: 600,
+              color: C.subtle,
+            }}
+          >
+            — Buckminster Fuller
+          </span>
+        </div>
         <p style={{ ...bodyText, marginBottom: "16px" }}>
-          These tools are part of an open effort to help people understand and
-          own their AI usage data. No accounts. No servers. No surveillance.
-          Just your browser.
+          We build digital pitchforks — citizen infrastructure that teaches
+          collective action, solidarity, and shared stewardship through use. Not
+          apps or platforms in the traditional sense, but tools crafted to
+          reshape how people relate to each other and to their communities.
         </p>
-        <p style={{ ...bodyText, marginBottom: "24px" }}>
-          Everything we build follows three principles:
+        <p style={{ ...bodyText, marginBottom: "40px" }}>
+          In an age of techno-feudalism, where digital platforms have replaced
+          markets with fiefdoms and users have become digital serfs, the
+          antidote is not better regulation of feudal tools — it's building
+          tools that nurture citizen empowerment and the people's capacity to
+          act together.
         </p>
+
+        <div style={{ ...sectionLabel, marginBottom: "16px" }}>Principles</div>
         <div
           style={{
             display: "flex",
             flexWrap: "wrap",
             gap: "10px",
-            marginBottom: "40px",
+            marginBottom: "48px",
           }}
         >
-          {["Privacy by default", "Open source", "Community-driven"].map(
-            (label) => (
-              <span
-                key={label}
-                style={{
-                  fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: "12px",
-                  fontWeight: 500,
-                  letterSpacing: "0.5px",
-                  padding: "6px 14px",
-                  borderRadius: "6px",
-                  background: C.cardBg,
-                  color: C.mid,
-                  border: `1px solid ${C.border}`,
-                }}
-              >
-                {label}
-              </span>
-            )
-          )}
+          {[
+            "Pedagogical by design",
+            "Ownership-enabling",
+            "Solidarity-building",
+            "Sovereignty-preserving",
+            "Interoperable",
+            "Antifragile",
+          ].map((label) => (
+            <span
+              key={label}
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: "12px",
+                fontWeight: 500,
+                letterSpacing: "0.5px",
+                padding: "6px 14px",
+                borderRadius: "6px",
+                background: C.cardBg,
+                color: C.mid,
+                border: `1px solid ${C.border}`,
+              }}
+            >
+              {label}
+            </span>
+          ))}
         </div>
 
+        <div style={{ ...sectionLabel, marginBottom: "20px" }}>Projects</div>
         <div
           style={{
             display: "grid",
