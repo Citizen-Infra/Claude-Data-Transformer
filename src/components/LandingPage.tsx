@@ -1162,6 +1162,186 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
           Get started
         </a>
       </section>
+
+      {/* ─── More tools from Bloom ─── */}
+      <section
+        style={{
+          padding: "72px 24px",
+          maxWidth: "800px",
+          margin: "0 auto",
+        }}
+      >
+        <div style={sectionLabel}>More tools from Bloom</div>
+        <h2 style={{ ...headline, fontSize: "32px", marginBottom: "12px" }}>
+          Your data. Your tools. Your terms.
+        </h2>
+        <p style={{ ...bodyText, marginBottom: "40px" }}>
+          We build open tools that help you understand your AI usage and take
+          ownership of how you work. No accounts, no servers — just your browser.
+        </p>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: "20px",
+          }}
+        >
+          {/* ChatGPT Data Transformer */}
+          <a
+            href="https://chatgpt-data-transformer.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              padding: "28px 24px",
+              background: C.surface,
+              border: `1px solid ${C.border}`,
+              borderRadius: "12px",
+              textDecoration: "none",
+              transition: "box-shadow 0.2s, transform 0.2s",
+              display: "flex",
+              flexDirection: "column",
+              gap: "12px",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.06)";
+              e.currentTarget.style.transform = "translateY(-2px)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = "none";
+              e.currentTarget.style.transform = "none";
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: "11px",
+                fontWeight: 500,
+                letterSpacing: "1px",
+                textTransform: "uppercase",
+                color: C.subtle,
+              }}
+            >
+              ChatGPT
+            </div>
+            <div
+              style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: "17px",
+                fontWeight: 600,
+                color: C.ink,
+              }}
+            >
+              ChatGPT Data Transformer
+            </div>
+            <div
+              style={{
+                fontSize: "14px",
+                lineHeight: 1.65,
+                color: C.body,
+              }}
+            >
+              Analyze your ChatGPT export — see your usage signature, topics,
+              and conversation patterns. Same privacy-first approach, built for
+              OpenAI's format.
+            </div>
+            <div
+              style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: "13px",
+                fontWeight: 600,
+                color: C.mid,
+                marginTop: "auto",
+              }}
+            >
+              Visit tool →
+            </div>
+          </a>
+
+          {/* Claude PDT */}
+          <div
+            style={{
+              padding: "28px 24px",
+              background: C.cardBg,
+              border: `1px solid ${C.mid}`,
+              borderRadius: "12px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "12px",
+              position: "relative",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: "11px",
+                  fontWeight: 500,
+                  letterSpacing: "1px",
+                  textTransform: "uppercase",
+                  color: C.subtle,
+                }}
+              >
+                Claude
+              </div>
+              <div
+                style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: "10px",
+                  fontWeight: 500,
+                  letterSpacing: "0.5px",
+                  textTransform: "uppercase",
+                  padding: "2px 8px",
+                  borderRadius: "4px",
+                  background: C.mid,
+                  color: "#fff",
+                }}
+              >
+                You are here
+              </div>
+            </div>
+            <div
+              style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: "17px",
+                fontWeight: 600,
+                color: C.ink,
+              }}
+            >
+              Claude Personal Data Transformer
+            </div>
+            <div
+              style={{
+                fontSize: "14px",
+                lineHeight: 1.65,
+                color: C.body,
+              }}
+            >
+              Analyze your Claude export — discover your usage patterns and get
+              matched with Skills that make your workflows more efficient.
+            </div>
+            <a
+              href="#upload"
+              style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: "13px",
+                fontWeight: 600,
+                color: C.mid,
+                textDecoration: "none",
+                marginTop: "auto",
+              }}
+            >
+              Get started →
+            </a>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
