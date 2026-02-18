@@ -13,7 +13,9 @@ export default function SkillCard({ recommendation: rec }: SkillCardProps) {
       ? "#2d5a3f"
       : "#888";
 
-  return (
+  const url = rec.skill?.url;
+
+  const card = (
     <div
       style={{
         border: "1px solid #e0e0e0",
@@ -21,6 +23,7 @@ export default function SkillCard({ recommendation: rec }: SkillCardProps) {
         padding: "24px",
         background: "#fff",
         transition: "box-shadow 0.2s, transform 0.2s",
+        cursor: url ? "pointer" : "default",
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.06)";
@@ -74,16 +77,29 @@ export default function SkillCard({ recommendation: rec }: SkillCardProps) {
             {rec.skill?.source === "anthropic" ? "Official" : "Community"}
           </span>
         </div>
-        <div
-          style={{
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: "22px",
-            fontWeight: 600,
-            color: scoreColor,
-            lineHeight: 1,
-          }}
-        >
-          {score}
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: "22px",
+              fontWeight: 600,
+              color: scoreColor,
+              lineHeight: 1,
+            }}
+          >
+            {score}
+          </div>
+          {url && (
+            <span
+              style={{
+                fontSize: "14px",
+                color: "#888",
+                transition: "color 0.2s",
+              }}
+            >
+              ↗
+            </span>
+          )}
         </div>
       </div>
       <div
@@ -101,4 +117,19 @@ export default function SkillCard({ recommendation: rec }: SkillCardProps) {
       </div>
     </div>
   );
+
+  if (url) {
+    return (
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{ textDecoration: "none", color: "inherit", display: "block" }}
+      >
+        {card}
+      </a>
+    );
+  }
+
+  return card;
 }

@@ -58,6 +58,7 @@ export interface SkillCatalogEntry {
   domains: string[];
   work_patterns: string[];
   description: string;
+  url?: string;
 }
 
 // AI-generated recommendation
