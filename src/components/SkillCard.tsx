@@ -77,24 +77,43 @@ export default function SkillCard({ recommendation: rec }: SkillCardProps) {
             {rec.skill?.source === "anthropic" ? "Official" : "Community"}
           </span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <div
             style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: "22px",
-              fontWeight: 600,
-              color: scoreColor,
-              lineHeight: 1,
+              display: "flex",
+              alignItems: "baseline",
+              gap: "3px",
             }}
           >
-            {score}
+            <span
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: "18px",
+                fontWeight: 600,
+                color: scoreColor,
+                lineHeight: 1,
+              }}
+            >
+              {score}%
+            </span>
+            <span
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: "9px",
+                fontWeight: 500,
+                letterSpacing: "0.5px",
+                textTransform: "uppercase",
+                color: "#aaa",
+              }}
+            >
+              match
+            </span>
           </div>
           {url && (
             <span
               style={{
                 fontSize: "14px",
                 color: "#888",
-                transition: "color 0.2s",
               }}
             >
               ↗
