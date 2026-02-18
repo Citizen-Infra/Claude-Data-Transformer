@@ -351,19 +351,19 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
         >
           {[
             {
-              icon: "📊",
-              title: "Usage signature",
-              desc: "A breakdown of how you use AI — research, writing, code, strategy — with percentages and timelines. See where you spend your attention and what that says about how you work.",
-            },
-            {
               icon: "🧩",
               title: "Skill recommendations",
-              desc: "Matched against the Skills commons based on your actual conversation patterns. Not generic — tuned to the workflows you already repeat.",
+              desc: "Ranked by how well each Skill fits the work you actually do with Claude. Every recommendation links to the file for you to upload to Claude.",
+            },
+            {
+              icon: "📊",
+              title: "Usage signature",
+              desc: "A breakdown of how you use Claude — across code, writing, strategy, research — with percentages and trends. See where your attention goes and what that means for how you work.",
             },
             {
               icon: "🔍",
-              title: "Gaps you didn't know you had",
-              desc: "We flag patterns where a Skill could help but doesn't exist yet — so you can build exactly what's missing.",
+              title: "Gaps worth building",
+              desc: "We flag repeated workflows where a Skill could help but doesn't exist yet. So you know exactly what to build.",
             },
           ].map((item, i) => (
             <div
