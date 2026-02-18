@@ -36,6 +36,7 @@ export default function App() {
           setView("landing");
           setResults(null);
           setConversations(null);
+          window.scrollTo(0, 0);
         }}
       />
 
