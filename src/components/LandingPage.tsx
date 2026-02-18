@@ -334,13 +334,12 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
       >
         <div style={sectionLabel}>What you'll walk away with</div>
         <h2 style={{ ...headline, fontSize: "32px", marginBottom: "12px" }}>
-          Your Claude history is a toolkit you haven't opened yet.
+          Your Claude history knows what Skills you need.
         </h2>
         <p style={{ ...bodyText, marginBottom: "40px" }}>
-          Your conversations aren't just chat logs — they're a record of how you
-          think, what you build, and where your mind keeps returning. We surface
-          those patterns and match them to Skills that make Claude work the way
-          you already do.
+          We analyze your conversation patterns — the topics you revisit, the
+          tasks you repeat, the tools you reach for — and match them to Skills
+          that make those workflows more efficient.
         </p>
 
         <div
