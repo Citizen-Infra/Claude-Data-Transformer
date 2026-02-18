@@ -359,20 +359,20 @@ export default function ResultsPage({ results }: ResultsPageProps) {
             margin: "0 auto 16px",
           }}
         >
-          Here's what we found.
+          Your Claude, decoded.
         </h1>
         <p
           style={{
             fontSize: "16px",
             lineHeight: 1.7,
             color: "rgba(255,255,255,0.75)",
-            maxWidth: "480px",
+            maxWidth: "520px",
             margin: "0 auto",
             fontFamily: "'DM Sans', sans-serif",
           }}
         >
-          Your Claude history reveals how you think, what you build, and where
-          your mind keeps returning.
+          Based on your conversation history, here's your usage breakdown,
+          skill recommendations ranked by fit, and gaps worth building.
         </p>
       </section>
 
