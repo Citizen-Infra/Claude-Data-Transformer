@@ -125,6 +125,20 @@ a {
   /* offset set via inline style */
 }
 
+/* ── Analyze button pulse ── */
+@keyframes analyze-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(45, 90, 63, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(45, 90, 63, 0);
+  }
+}
+
+.analyze-btn-pulse {
+  animation: analyze-pulse 2s ease-in-out 3;
+}
+
 /* Smooth transitions */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

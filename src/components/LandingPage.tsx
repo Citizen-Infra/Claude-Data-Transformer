@@ -197,6 +197,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
   } | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const analyzeBtnRef = useRef<HTMLButtonElement>(null);
 
   // Test API key
   const handleTestKey = async () => {
@@ -238,6 +239,13 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
         conversations: conversations.length,
         messages: totalMessages,
       });
+      // Scroll the analyze button into view after render
+      setTimeout(() => {
+        analyzeBtnRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }, 150);
     } catch {
       setUploadError(
         "Couldn't parse that file. Make sure it's the conversations.json from your Claude export."
@@ -941,8 +949,10 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
 
           {/* ── Analyze button ── */}
           <button
+            ref={analyzeBtnRef}
             onClick={handleAnalyze}
             disabled={!canAnalyze}
+            className={canAnalyze ? "analyze-btn-pulse" : ""}
             style={{
               width: "100%",
               marginTop: "20px",
@@ -962,8 +972,8 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
             }}
           >
             {enhancedMode && keyValid
-              ? "Analyze with AI"
-              : "Analyze my conversations"}
+              ? "Analyze with AI →"
+              : "Analyze my conversations →"}
           </button>
 
           {/* ── Privacy note ── */}
