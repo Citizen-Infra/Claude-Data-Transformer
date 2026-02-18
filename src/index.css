@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@theme {
+  /* ── Green palette (from ChatGPT PDT) ── */
+  --color-pdt-900: #1a3a2a;
+  --color-pdt-700: #2d5a3f;
+  --color-pdt-500: #3d7a56;
+  --color-pdt-200: #d8d8d8;
+  --color-pdt-100: #e8f0eb;
+  --color-pdt-50: #f7f5f0;
+
+  /* ── Neutrals ── */
+  --color-surface: #ffffff;
+  --color-bg: #ffffff;
+  --color-cream: #f7f5f0;
+  --color-border: #e0e0e0;
+  --color-card-border: #d8d8d8;
+  --color-card-bg: #e8f0eb;
+
+  /* ── Text ── */
+  --color-ink: #1a1a1a;
+  --color-body: #555555;
+  --color-subtle: #888888;
+
+  /* ── Semantic ── */
+  --color-error-bg: #fef2f2;
+  --color-error-text: #991b1b;
+  --color-error-border: #fecaca;
+  --color-success-bg: #f0fdf4;
+  --color-success-text: #166534;
+  --color-success-border: #bbf7d0;
+
+  /* ── Type ── */
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-serif: 'DM Serif Display', Georgia, serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--color-pdt-100);
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.blink {
+  animation: blink 1s infinite;
+}
+
+details summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+details summary::marker,
+details summary::-webkit-details-marker {
+  display: none;
+}
+
+a {
+  text-decoration-color: var(--color-subtle);
+}
+
+/* Smooth transitions */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
