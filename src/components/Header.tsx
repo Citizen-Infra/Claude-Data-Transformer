@@ -49,7 +49,7 @@ export default function Header({ view, onLogoClick }: HeaderProps) {
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
-      const y = el.getBoundingClientRect().top + window.scrollY - 80;
+      const y = el.getBoundingClientRect().top + window.scrollY - 88;
       window.scrollTo({ top: y, behavior: "smooth" });
     }
   };
@@ -61,7 +61,7 @@ export default function Header({ view, onLogoClick }: HeaderProps) {
         top: 0,
         zIndex: 50,
         padding: "0 24px",
-        height: "64px",
+        height: "72px",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
@@ -83,7 +83,7 @@ export default function Header({ view, onLogoClick }: HeaderProps) {
         <img
           src={isDark ? logoDark : logoLight}
           alt="claude.pdt — personal data transformer"
-          style={{ height: "44px", width: "auto" }}
+          style={{ height: "60px", width: "auto" }}
         />
       </button>
 
