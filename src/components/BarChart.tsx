@@ -16,18 +16,19 @@ export default function BarChart({ data }: BarChartProps) {
             display: "flex",
             alignItems: "center",
             gap: "12px",
-            marginBottom: "10px",
+            marginBottom: "14px",
           }}
         >
           <div
             style={{
-              width: "100px",
+              width: "110px",
               fontSize: "13px",
-              color: "#555",
+              color: "#333",
               whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",
               fontFamily: "'DM Sans', sans-serif",
+              fontWeight: 500,
             }}
           >
             {b.category}
@@ -35,8 +36,8 @@ export default function BarChart({ data }: BarChartProps) {
           <div
             style={{
               flex: 1,
-              height: "8px",
-              background: "#e8f0eb",
+              height: "14px",
+              background: "#e8e5df",
               borderRadius: "100px",
               overflow: "hidden",
             }}
@@ -58,9 +59,10 @@ export default function BarChart({ data }: BarChartProps) {
           <div
             style={{
               fontFamily: "'JetBrains Mono', monospace",
-              fontSize: "12px",
-              color: "#888",
-              width: "36px",
+              fontSize: "13px",
+              fontWeight: 500,
+              color: "#444",
+              width: "40px",
               textAlign: "right",
             }}
           >
