@@ -1171,14 +1171,59 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
           margin: "0 auto",
         }}
       >
-        <div style={sectionLabel}>More tools from Bloom</div>
+        <div style={sectionLabel}>Citizen Infrastructure</div>
         <h2 style={{ ...headline, fontSize: "32px", marginBottom: "12px" }}>
-          Your data. Your tools. Your terms.
+          We build tools that put people first.
         </h2>
-        <p style={{ ...bodyText, marginBottom: "40px" }}>
-          We build open tools that help you understand your AI usage and take
-          ownership of how you work. No accounts, no servers — just your browser.
+        <p
+          style={{
+            ...bodyText,
+            fontStyle: "italic",
+            marginBottom: "16px",
+            borderLeft: `3px solid ${C.mid}`,
+            paddingLeft: "16px",
+          }}
+        >
+          "Citizen infrastructure is the idea that tools, systems, and
+          platforms should be designed to serve people — not extract from them."
         </p>
+        <p style={{ ...bodyText, marginBottom: "16px" }}>
+          These tools are part of an open effort to help people understand and
+          own their AI usage data. No accounts. No servers. No surveillance.
+          Just your browser.
+        </p>
+        <p style={{ ...bodyText, marginBottom: "24px" }}>
+          Everything we build follows three principles:
+        </p>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "10px",
+            marginBottom: "40px",
+          }}
+        >
+          {["Privacy by default", "Open source", "Community-driven"].map(
+            (label) => (
+              <span
+                key={label}
+                style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: "12px",
+                  fontWeight: 500,
+                  letterSpacing: "0.5px",
+                  padding: "6px 14px",
+                  borderRadius: "6px",
+                  background: C.cardBg,
+                  color: C.mid,
+                  border: `1px solid ${C.border}`,
+                }}
+              >
+                {label}
+              </span>
+            )
+          )}
+        </div>
 
         <div
           style={{
