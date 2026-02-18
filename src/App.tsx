@@ -51,6 +51,7 @@ export default function App() {
           onComplete={(res) => {
             setResults(res);
             setView("results");
+            window.scrollTo(0, 0);
           }}
         />
       )}
