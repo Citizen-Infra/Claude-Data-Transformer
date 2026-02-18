@@ -1009,41 +1009,68 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
         <h2 style={{ ...headline, fontSize: "32px", marginBottom: "12px" }}>
           Built for you to own your data, not for us to see it.
         </h2>
+        <p style={{ ...bodyText, marginBottom: "40px" }}>
+          We designed this tool so your data never touches our hands. Everything
+          runs client-side, directly in your browser.
+        </p>
 
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "16px 40px",
-            marginTop: "32px",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gap: "20px",
           }}
         >
           {[
             {
+              icon: "🔒",
               title: "Nothing leaves your browser",
               desc: "Your file is parsed and analyzed using client-side JavaScript and direct API calls. There is no server, no upload, no account.",
             },
             {
+              icon: "🔑",
               title: "API key stays in memory",
               desc: "Your key is held in browser memory for this session only. Close the tab and it's gone. We never store, transmit, or log it.",
             },
             {
+              icon: "🛡️",
               title: "We have no database",
               desc: "There is nothing to breach. Claude processes your data through Anthropic's API — we're just the interface.",
             },
             {
+              icon: "📊",
               title: "Privacy-preserving analytics only",
               desc: "We use fence analytics for simple page-view counts. No cookies, no fingerprinting, no behavioral tracking.",
             },
           ].map((item, i) => (
-            <div key={i} style={{ marginBottom: "8px" }}>
+            <div
+              key={i}
+              style={{
+                padding: "24px",
+                background: C.surface,
+                border: `1px solid ${C.border}`,
+                borderRadius: "12px",
+                transition: "box-shadow 0.2s, transform 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.06)";
+                e.currentTarget.style.transform = "translateY(-2px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.boxShadow = "none";
+                e.currentTarget.style.transform = "none";
+              }}
+            >
+              <div style={{ fontSize: "24px", marginBottom: "12px" }}>
+                {item.icon}
+              </div>
               <div
                 style={{
                   fontFamily: "'DM Sans', sans-serif",
                   fontSize: "15px",
                   fontWeight: 600,
                   color: C.ink,
-                  marginBottom: "6px",
+                  marginBottom: "8px",
                 }}
               >
                 {item.title}
