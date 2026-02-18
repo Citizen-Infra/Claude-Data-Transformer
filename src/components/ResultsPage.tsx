@@ -13,6 +13,7 @@ const C = {
   dark: "#1a3a2a",
   mid: "#2d5a3f",
   accent: "#3d7a56",
+  mint: "#88E7BB",      // light mint for dark backgrounds
   cream: "#f7f5f0",
   surface: "#fff",
   cardBg: "#e8f0eb",
@@ -62,6 +63,7 @@ function MakeSkillSection() {
 
   return (
     <section
+      id="results-build"
       style={{
         padding: "0 24px 56px",
         maxWidth: "800px",
@@ -338,13 +340,14 @@ export default function ResultsPage({ results }: ResultsPageProps) {
     <div>
       {/* ─── Hero banner ─── */}
       <section
+        id="results-overview"
         style={{
           background: `linear-gradient(135deg, ${C.dark} 0%, ${C.mid} 100%)`,
           padding: "64px 24px 80px",
           textAlign: "center",
         }}
       >
-        <div style={{ ...sectionLabel, color: C.accent, marginBottom: "16px" }}>
+        <div style={{ ...sectionLabel, color: C.mint, marginBottom: "16px" }}>
           Your results
         </div>
         <h1
@@ -362,7 +365,7 @@ export default function ResultsPage({ results }: ResultsPageProps) {
           style={{
             fontSize: "16px",
             lineHeight: 1.7,
-            color: "rgba(255,255,255,0.6)",
+            color: "rgba(255,255,255,0.75)",
             maxWidth: "480px",
             margin: "0 auto",
             fontFamily: "'DM Sans', sans-serif",
@@ -418,6 +421,7 @@ export default function ResultsPage({ results }: ResultsPageProps) {
 
       {/* ─── Usage signature ─── */}
       <section
+        id="results-usage"
         style={{
           padding: "56px 24px 64px",
           maxWidth: "800px",
@@ -540,6 +544,7 @@ export default function ResultsPage({ results }: ResultsPageProps) {
 
       {/* ─── Recommendations ─── */}
       <section
+        id="results-skills"
         style={{
           padding: "56px 24px",
           maxWidth: "800px",
@@ -567,13 +572,14 @@ export default function ResultsPage({ results }: ResultsPageProps) {
 
       {/* ─── Install guide ─── */}
       <section
+        id="results-install"
         style={{
           padding: "56px 24px",
           background: `linear-gradient(135deg, ${C.dark} 0%, ${C.mid} 100%)`,
         }}
       >
         <div style={{ maxWidth: "800px", margin: "0 auto" }}>
-          <div style={{ ...sectionLabel, color: C.accent }}>Get set up</div>
+          <div style={{ ...sectionLabel, color: C.mint }}>Get set up</div>
           <h2
             style={{
               ...headline,
@@ -589,7 +595,7 @@ export default function ResultsPage({ results }: ResultsPageProps) {
               fontFamily: "'DM Sans', sans-serif",
               fontSize: "15px",
               lineHeight: 1.7,
-              color: "rgba(255,255,255,0.5)",
+              color: "rgba(255,255,255,0.75)",
               marginBottom: "32px",
               maxWidth: "560px",
             }}
@@ -650,12 +656,12 @@ export default function ResultsPage({ results }: ResultsPageProps) {
                   fontFamily: "'DM Sans', sans-serif",
                   fontSize: "13px",
                   lineHeight: 1.7,
-                  color: "rgba(255,255,255,0.5)",
+                  color: "rgba(255,255,255,0.75)",
                   margin: 0,
                 }}
               >
-                In Claude.ai, go to your <strong style={{ color: "rgba(255,255,255,0.75)" }}>Profile → Settings</strong> and
-                find the <strong style={{ color: "rgba(255,255,255,0.75)" }}>Skills</strong> section. Make sure skills
+                In Claude.ai, go to your <strong style={{ color: "#fff" }}>Profile → Settings</strong> and
+                find the <strong style={{ color: "#fff" }}>Skills</strong> section. Make sure skills
                 are enabled.
               </p>
             </div>
@@ -703,11 +709,11 @@ export default function ResultsPage({ results }: ResultsPageProps) {
                   fontFamily: "'DM Sans', sans-serif",
                   fontSize: "13px",
                   lineHeight: 1.7,
-                  color: "rgba(255,255,255,0.5)",
+                  color: "rgba(255,255,255,0.75)",
                   margin: 0,
                 }}
               >
-                Click <strong style={{ color: "rgba(255,255,255,0.75)" }}>Add skill</strong> and
+                Click <strong style={{ color: "#fff" }}>Add skill</strong> and
                 upload the <code
                   style={{
                     fontFamily: "'JetBrains Mono', monospace",
@@ -763,7 +769,7 @@ export default function ResultsPage({ results }: ResultsPageProps) {
                   fontFamily: "'DM Sans', sans-serif",
                   fontSize: "13px",
                   lineHeight: 1.7,
-                  color: "rgba(255,255,255,0.5)",
+                  color: "rgba(255,255,255,0.75)",
                   margin: 0,
                 }}
               >
@@ -777,7 +783,7 @@ export default function ResultsPage({ results }: ResultsPageProps) {
                   }}
                 >/</code> in any conversation to see your installed skills, or
                 Claude will load them{" "}
-                <strong style={{ color: "rgba(255,255,255,0.75)" }}>automatically</strong> when
+                <strong style={{ color: "#fff" }}>automatically</strong> when
                 they're relevant.
               </p>
             </div>
@@ -801,11 +807,11 @@ export default function ResultsPage({ results }: ResultsPageProps) {
                 fontFamily: "'DM Sans', sans-serif",
                 fontSize: "13px",
                 lineHeight: 1.6,
-                color: "rgba(255,255,255,0.6)",
+                color: "rgba(255,255,255,0.75)",
                 margin: 0,
               }}
             >
-              <strong style={{ color: "rgba(255,255,255,0.8)" }}>Tip:</strong>{" "}
+              <strong style={{ color: "#fff" }}>Tip:</strong>{" "}
               Click any skill card above to go to its page, download
               the <code
                 style={{
