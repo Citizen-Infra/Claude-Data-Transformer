@@ -434,8 +434,7 @@ export default function ResultsPage({ results }: ResultsPageProps) {
                 }}
               >
                 Click <strong style={{ color: "rgba(255,255,255,0.75)" }}>Add skill</strong> and
-                paste the URL to any skill — like a GitHub link to
-                a <code
+                upload the <code
                   style={{
                     fontFamily: "'JetBrains Mono', monospace",
                     fontSize: "11px",
@@ -443,7 +442,7 @@ export default function ResultsPage({ results }: ResultsPageProps) {
                     padding: "2px 6px",
                     borderRadius: "4px",
                   }}
-                >SKILL.md</code> file.
+                >SKILL.md</code> file you downloaded from the skill's page.
               </p>
             </div>
 
@@ -533,8 +532,16 @@ export default function ResultsPage({ results }: ResultsPageProps) {
               }}
             >
               <strong style={{ color: "rgba(255,255,255,0.8)" }}>Tip:</strong>{" "}
-              Click any skill card above to go straight to its page — then copy the URL
-              and paste it into the "Add skill" dialog in Claude.ai.
+              Click any skill card above to go to its page, download
+              the <code
+                style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: "11px",
+                  background: "rgba(255,255,255,0.1)",
+                  padding: "2px 6px",
+                  borderRadius: "4px",
+                }}
+              >SKILL.md</code> file, then upload it in your Claude settings.
             </p>
           </div>
         </div>
