@@ -992,6 +992,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
 
         <div style={{ ...sectionLabel, marginBottom: "20px" }}>Projects</div>
         <div
+          className="projects-grid"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",

@@ -12,6 +12,7 @@ export default function BarChart({ data }: BarChartProps) {
       {data.slice(0, 7).map((b, i) => (
         <div
           key={i}
+          className="bar-chart-row"
           style={{
             display: "flex",
             alignItems: "center",
@@ -20,6 +21,7 @@ export default function BarChart({ data }: BarChartProps) {
           }}
         >
           <div
+            className="bar-label"
             style={{
               width: "110px",
               fontSize: "13px",
