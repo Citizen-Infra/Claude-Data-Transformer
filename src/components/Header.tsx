@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import type { AppView } from "../lib/types";
 import logoLight from "../assets/logo-light.svg";
-import logoDark from "../assets/logo-dark.svg";
 
 interface HeaderProps {
   view: AppView;
@@ -48,7 +47,6 @@ const COLORS = {
 };
 
 export default function Header({ view, hasResults, onLogoClick, onNavigate }: HeaderProps) {
-  const isDark = view === "results" || view === "commons";
   const [activeSection, setActiveSection] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -161,7 +159,7 @@ export default function Header({ view, hasResults, onLogoClick, onNavigate }: He
           }}
         >
           <img
-            src={isDark ? logoDark : logoLight}
+            src={logoLight}
             alt="claude.pdt — personal data transformer"
             className="header-logo"
           />
