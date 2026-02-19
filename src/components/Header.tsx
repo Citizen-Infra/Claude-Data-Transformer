@@ -5,9 +5,18 @@ import logoDark from "../assets/logo-dark.svg";
 
 interface HeaderProps {
   view: AppView;
+  hasResults: boolean;
   onLogoClick: () => void;
   onNavigate?: (view: AppView) => void;
 }
+
+/* ── Section scroll nav arrays per view ── */
+const LANDING_NAV = [
+  { id: "how-it-works", label: "How it works" },
+  { id: "upload", label: "Upload your data" },
+  { id: "how-we-keep-it-private", label: "Protecting your Privacy" },
+  { id: "about-the-builders", label: "About the builders" },
+];
 
 const RESULTS_NAV = [
   { id: "results-overview", label: "Overview" },
@@ -23,7 +32,22 @@ const COMMONS_NAV = [
   { id: "contribute", label: "Contribute" },
 ];
 
-export default function Header({ view, onLogoClick, onNavigate }: HeaderProps) {
+/* ── Color tokens ── */
+const COLORS = {
+  green: "#2D4A3E",
+  greenDeep: "#1a2f26",
+  greenMid: "#3a5a4a",
+  cream: "#FDF6EC",
+  creamDeep: "#F5EBDA",
+  creamBorder: "#E8DCCA",
+  text: "#2D4A3E",
+  textMuted: "#7A7A6C",
+  white: "#FFFFFF",
+  sage: "#8BA898",
+  sageLight: "#c8d8cf",
+};
+
+export default function Header({ view, hasResults, onLogoClick, onNavigate }: HeaderProps) {
   const isDark = view === "results" || view === "commons";
   const [activeSection, setActiveSection] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
@@ -46,9 +70,16 @@ export default function Header({ view, onLogoClick, onNavigate }: HeaderProps) {
     setMenuOpen(false);
   }, [view]);
 
-  // Scroll-based section highlighting for results and commons views
+  // Scroll-based section highlighting
   useEffect(() => {
-    const sections = view === "results" ? RESULTS_NAV : view === "commons" ? COMMONS_NAV : [];
+    const sections =
+      view === "results"
+        ? RESULTS_NAV
+        : view === "commons"
+        ? COMMONS_NAV
+        : view === "landing"
+        ? LANDING_NAV
+        : [];
     if (sections.length === 0) {
       setActiveSection("");
       return;
@@ -76,70 +107,22 @@ export default function Header({ view, onLogoClick, onNavigate }: HeaderProps) {
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
-      const y = el.getBoundingClientRect().top + window.scrollY - 88;
+      const y = el.getBoundingClientRect().top + window.scrollY - 110;
       window.scrollTo({ top: y, behavior: "smooth" });
     }
   };
 
-  const hamburgerColor = isDark ? "#fff" : "#1a3a2a";
+  /* ── Section scroll items for current view ── */
+  const currentSections =
+    view === "results"
+      ? RESULTS_NAV
+      : view === "commons"
+      ? COMMONS_NAV
+      : view === "landing"
+      ? LANDING_NAV
+      : [];
 
-  // Render section nav buttons (used for both results and commons)
-  const renderSectionNav = (sections: typeof RESULTS_NAV) => (
-    <nav
-      className="nav-results-scroll"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "4px",
-        overflowX: "auto",
-        WebkitOverflowScrolling: "touch",
-        msOverflowStyle: "none",
-        scrollbarWidth: "none",
-        flexShrink: 1,
-        minWidth: 0,
-      }}
-    >
-      {sections.map(({ id, label }) => {
-        const isActive = activeSection === id;
-        return (
-          <button
-            key={id}
-            onClick={() => scrollTo(id)}
-            style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: "13px",
-              fontWeight: isActive ? 600 : 500,
-              color: isActive ? "#fff" : "rgba(255,255,255,0.5)",
-              padding: "8px 14px",
-              borderRadius: "6px",
-              position: "relative",
-              transition: "color 0.2s ease",
-              whiteSpace: "nowrap",
-              flexShrink: 0,
-            }}
-          >
-            {label}
-            <span
-              style={{
-                position: "absolute",
-                bottom: "2px",
-                left: "14px",
-                right: "14px",
-                height: "2px",
-                borderRadius: "1px",
-                background: "#52b788",
-                opacity: isActive ? 1 : 0,
-                transition: "opacity 0.2s ease",
-              }}
-            />
-          </button>
-        );
-      })}
-    </nav>
-  );
+  const showSubNav = currentSections.length > 0;
 
   return (
     <header
@@ -147,20 +130,24 @@ export default function Header({ view, onLogoClick, onNavigate }: HeaderProps) {
         position: "sticky",
         top: 0,
         zIndex: 50,
-        background: isDark ? "#1a3a2a" : "#fff",
-        borderBottom: isDark ? "1px solid rgba(255,255,255,0.1)" : "1px solid #e0e0e0",
       }}
     >
-      {/* ── Main bar ── */}
+      {/* ══════════════════════════════════════════════
+          PRIMARY NAV — white bar, logo + page tabs
+          ══════════════════════════════════════════════ */}
       <div
+        className="primary-nav"
         style={{
-          padding: "0 24px",
-          height: "72px",
+          background: COLORS.white,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
+          padding: "0 28px",
+          height: "56px",
+          borderBottom: `1px solid ${COLORS.creamBorder}`,
         }}
       >
+        {/* Logo */}
         <button
           onClick={onLogoClick}
           style={{
@@ -180,193 +167,367 @@ export default function Header({ view, onLogoClick, onNavigate }: HeaderProps) {
           />
         </button>
 
-        {/* ── Desktop nav (landing) ── */}
-        {view === "landing" && (
-          <nav className="nav-desktop" style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-            <a
-              href="#how-it-works"
-              style={{
-                fontFamily: "'DM Sans', sans-serif",
-                fontSize: "14px",
-                fontWeight: 500,
-                color: "#555",
-                textDecoration: "none",
-                transition: "color 0.2s",
-                padding: "8px 12px",
-              }}
-            >
-              How it works
-            </a>
+        {/* ── Desktop page-level tabs ── */}
+        <nav
+          className="nav-desktop"
+          style={{
+            display: "flex",
+            alignItems: "stretch",
+            gap: 0,
+            height: "56px",
+          }}
+        >
+          {/* About — shown when not on landing (navigates back to landing) */}
+          {view !== "landing" && (
             <button
-              onClick={() => onNavigate?.("commons")}
+              onClick={() => onNavigate?.("landing")}
               style={{
                 background: "none",
                 border: "none",
-                fontFamily: "'DM Sans', sans-serif",
-                fontSize: "14px",
-                fontWeight: 500,
-                color: "#555",
-                textDecoration: "none",
-                transition: "color 0.2s",
-                padding: "8px 12px",
+                borderLeft: "1px solid transparent",
+                borderRight: "1px solid transparent",
                 cursor: "pointer",
-              }}
-            >
-              Skills Commons
-            </button>
-            <a
-              href="#how-we-keep-it-private"
-              style={{
                 fontFamily: "'DM Sans', sans-serif",
-                fontSize: "14px",
+                fontSize: "13px",
                 fontWeight: 500,
-                color: "#555",
+                color: COLORS.text,
                 textDecoration: "none",
-                transition: "color 0.2s",
-                padding: "8px 12px",
-              }}
-            >
-              Privacy
-            </a>
-            <a
-              href="#upload"
-              style={{
-                display: "inline-flex",
+                padding: "0 20px",
+                display: "flex",
                 alignItems: "center",
-                padding: "10px 20px",
-                background: "#1a3a2a",
-                color: "#fff",
-                border: "none",
-                borderRadius: "8px",
-                fontFamily: "'DM Sans', sans-serif",
-                fontSize: "14px",
-                fontWeight: 600,
-                textDecoration: "none",
-                transition: "background 0.2s",
-                cursor: "pointer",
-                marginLeft: "8px",
+                transition: "all 0.15s ease",
+                whiteSpace: "nowrap",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = COLORS.cream;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "none";
               }}
             >
-              Get started
-            </a>
-          </nav>
-        )}
+              About
+            </button>
+          )}
 
-        {/* ── Results nav ── */}
-        {view === "results" && renderSectionNav(RESULTS_NAV)}
-
-        {/* ── Commons nav ── */}
-        {view === "commons" && renderSectionNav(COMMONS_NAV)}
-
-        {/* ── Hamburger button (landing mobile only) ── */}
-        {view === "landing" && (
+          {/* Skills Commons */}
           <button
-            className="nav-hamburger"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Toggle menu"
+            onClick={() => onNavigate?.("commons")}
             style={{
-              display: "none", // shown via CSS on mobile
-              background: "none",
+              background: view === "commons" ? COLORS.sageLight : "none",
               border: "none",
+              borderLeft: view === "commons" ? `1px solid ${COLORS.creamBorder}` : "1px solid transparent",
+              borderRight: view === "commons" ? `1px solid ${COLORS.creamBorder}` : "1px solid transparent",
               cursor: "pointer",
-              padding: "8px",
-              flexShrink: 0,
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: "13px",
+              fontWeight: 500,
+              color: view === "commons" ? COLORS.greenDeep : COLORS.text,
+              textDecoration: "none",
+              padding: "0 20px",
+              display: "flex",
+              alignItems: "center",
+              transition: "all 0.15s ease",
+              whiteSpace: "nowrap",
+            }}
+            onMouseEnter={(e) => {
+              if (view !== "commons") e.currentTarget.style.background = COLORS.cream;
+            }}
+            onMouseLeave={(e) => {
+              if (view !== "commons") e.currentTarget.style.background = "none";
             }}
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              {menuOpen ? (
-                <path d="M6 6L18 18M6 18L18 6" stroke={hamburgerColor} strokeWidth="2" strokeLinecap="round" />
-              ) : (
-                <>
-                  <path d="M4 7h16" stroke={hamburgerColor} strokeWidth="2" strokeLinecap="round" />
-                  <path d="M4 12h16" stroke={hamburgerColor} strokeWidth="2" strokeLinecap="round" />
-                  <path d="M4 17h16" stroke={hamburgerColor} strokeWidth="2" strokeLinecap="round" />
-                </>
-              )}
-            </svg>
+            Skills Commons
           </button>
-        )}
+
+          {/* Your Skill Suggestions — shown after data upload */}
+          {hasResults && (
+            <button
+              onClick={() => onNavigate?.("results")}
+              style={{
+                background: view === "results" ? COLORS.sageLight : "none",
+                border: "none",
+                borderLeft: view === "results" ? `1px solid ${COLORS.creamBorder}` : "1px solid transparent",
+                borderRight: view === "results" ? `1px solid ${COLORS.creamBorder}` : "1px solid transparent",
+                cursor: "pointer",
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: "13px",
+                fontWeight: 500,
+                color: view === "results" ? COLORS.greenDeep : COLORS.text,
+                textDecoration: "none",
+                padding: "0 20px",
+                display: "flex",
+                alignItems: "center",
+                transition: "all 0.15s ease",
+                whiteSpace: "nowrap",
+              }}
+              onMouseEnter={(e) => {
+                if (view !== "results") e.currentTarget.style.background = COLORS.cream;
+              }}
+              onMouseLeave={(e) => {
+                if (view !== "results") e.currentTarget.style.background = "none";
+              }}
+            >
+              Your Skill Suggestions
+            </button>
+          )}
+        </nav>
+
+        {/* ── Hamburger (mobile) ── */}
+        <button
+          className="nav-hamburger"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle menu"
+          style={{
+            display: "none",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            padding: "8px",
+            flexShrink: 0,
+          }}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={COLORS.text} strokeWidth="2">
+            {menuOpen ? (
+              <>
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </>
+            ) : (
+              <>
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </>
+            )}
+          </svg>
+        </button>
       </div>
 
-      {/* ── Mobile dropdown (landing) ── */}
-      {view === "landing" && menuOpen && (
+      {/* ══════════════════════════════════════════════
+          MOBILE DROPDOWN
+          ══════════════════════════════════════════════ */}
+      {menuOpen && (
         <div
           ref={menuRef}
           className="nav-mobile-dropdown"
           style={{
-            padding: "8px 24px 16px",
-            display: "flex",
-            flexDirection: "column",
-            gap: "4px",
-            borderTop: `1px solid ${isDark ? "rgba(255,255,255,0.1)" : "#e0e0e0"}`,
-            background: isDark ? "#1a3a2a" : "#fff",
+            background: COLORS.greenDeep,
+            padding: "8px 0",
           }}
         >
-          <a
-            href="#how-it-works"
-            onClick={() => setMenuOpen(false)}
-            style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: "15px",
-              fontWeight: 500,
-              color: isDark ? "rgba(255,255,255,0.8)" : "#555",
-              textDecoration: "none",
-              padding: "10px 0",
-            }}
-          >
-            How it works
-          </a>
+          {/* Home / About — links back to landing */}
           <button
-            onClick={() => { setMenuOpen(false); onNavigate?.("commons"); }}
+            onClick={() => { setMenuOpen(false); onNavigate?.("landing"); }}
             style={{
+              display: "block",
+              width: "100%",
               fontFamily: "'DM Sans', sans-serif",
-              fontSize: "15px",
+              fontSize: "14px",
               fontWeight: 500,
-              color: isDark ? "rgba(255,255,255,0.8)" : "#555",
+              color: view === "landing" ? COLORS.cream : `rgba(253,246,236,0.6)`,
               background: "none",
               border: "none",
               textAlign: "left",
-              padding: "10px 0",
+              padding: "12px 20px",
+              cursor: "pointer",
+            }}
+          >
+            Home
+          </button>
+
+          {/* Section scroll sub-items (nested under Home) */}
+          {currentSections.length > 0 && (
+            <div style={{
+              padding: "0 0 8px 0",
+              borderBottom: "1px solid rgba(255,255,255,0.06)",
+            }}>
+              {currentSections.map(({ id, label }) => (
+                <button
+                  key={id}
+                  onClick={() => { setMenuOpen(false); scrollTo(id); }}
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    fontFamily: "'DM Mono', monospace",
+                    fontSize: "12px",
+                    fontWeight: 400,
+                    color: activeSection === id
+                      ? "rgba(253,246,236,0.6)"
+                      : "rgba(253,246,236,0.35)",
+                    background: "none",
+                    border: "none",
+                    textAlign: "left",
+                    padding: "7px 20px 7px 36px",
+                    cursor: "pointer",
+                  }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Skills Commons */}
+          <button
+            onClick={() => { setMenuOpen(false); onNavigate?.("commons"); }}
+            style={{
+              display: "block",
+              width: "100%",
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: "14px",
+              fontWeight: 500,
+              color: view === "commons" ? COLORS.cream : "rgba(253,246,236,0.6)",
+              background: "none",
+              border: "none",
+              textAlign: "left",
+              padding: "12px 20px",
               cursor: "pointer",
             }}
           >
             Skills Commons
           </button>
-          <a
-            href="#how-we-keep-it-private"
-            onClick={() => setMenuOpen(false)}
+
+          {/* Divider */}
+          <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", margin: "4px 0" }} />
+
+          {/* Your Skill Suggestions — disabled when no results */}
+          {hasResults ? (
+            <button
+              onClick={() => { setMenuOpen(false); onNavigate?.("results"); }}
+              style={{
+                display: "block",
+                width: "100%",
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: "14px",
+                fontWeight: 500,
+                color: view === "results" ? COLORS.cream : "rgba(253,246,236,0.6)",
+                background: "none",
+                border: "none",
+                textAlign: "left",
+                padding: "12px 20px",
+                cursor: "pointer",
+              }}
+            >
+              Your Skill Suggestions
+            </button>
+          ) : (
+            <span
+              style={{
+                display: "block",
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: "14px",
+                fontWeight: 500,
+                color: "rgba(253,246,236,0.2)",
+                padding: "12px 20px",
+              }}
+            >
+              Your Skill Suggestions
+            </span>
+          )}
+
+          {/* About — shown post-analysis when not on landing */}
+          {hasResults && view !== "landing" && (
+            <button
+              onClick={() => { setMenuOpen(false); onNavigate?.("landing"); }}
+              style={{
+                display: "block",
+                width: "100%",
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: "14px",
+                fontWeight: 500,
+                color: "rgba(253,246,236,0.6)",
+                background: "none",
+                border: "none",
+                textAlign: "left",
+                padding: "12px 20px",
+                cursor: "pointer",
+              }}
+            >
+              About
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════
+          SECONDARY NAV — dark green bar, section scroll
+          ══════════════════════════════════════════════ */}
+      {showSubNav && (
+        <div
+          className="header-subnav"
+          style={{
+            background: COLORS.green,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "42px",
+            position: "relative",
+          }}
+        >
+          {/* Bottom accent line */}
+          <div style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: "3px",
+            background: COLORS.greenMid,
+          }} />
+
+          <nav
+            className="nav-results-scroll"
             style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: "15px",
-              fontWeight: 500,
-              color: isDark ? "rgba(255,255,255,0.8)" : "#555",
-              textDecoration: "none",
-              padding: "10px 0",
-            }}
-          >
-            Privacy
-          </a>
-          <a
-            href="#upload"
-            onClick={() => setMenuOpen(false)}
-            style={{
-              display: "inline-flex",
+              display: "flex",
               alignItems: "center",
-              justifyContent: "center",
-              padding: "12px 20px",
-              marginTop: "4px",
-              background: isDark ? "#fff" : "#1a3a2a",
-              color: isDark ? "#1a3a2a" : "#fff",
-              border: "none",
-              borderRadius: "8px",
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: "15px",
-              fontWeight: 600,
-              textDecoration: "none",
+              gap: 0,
+              overflowX: "auto",
+              WebkitOverflowScrolling: "touch",
+              msOverflowStyle: "none",
+              scrollbarWidth: "none",
             }}
           >
-            Get started
-          </a>
+            {currentSections.map(({ id, label }) => {
+              const isActive = activeSection === id;
+              return (
+                <button
+                  key={id}
+                  onClick={() => scrollTo(id)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    fontFamily: "'DM Mono', monospace",
+                    fontSize: "12px",
+                    fontWeight: isActive ? 500 : 400,
+                    color: isActive ? COLORS.cream : "rgba(253, 246, 236, 0.6)",
+                    textDecoration: "none",
+                    padding: "10px 20px",
+                    transition: "all 0.15s ease",
+                    whiteSpace: "nowrap",
+                    position: "relative",
+                    zIndex: 1,
+                    flexShrink: 0,
+                  }}
+                >
+                  {label}
+                  {/* Active underline */}
+                  {isActive && (
+                    <span
+                      style={{
+                        position: "absolute",
+                        bottom: 0,
+                        left: "16px",
+                        right: "16px",
+                        height: "3px",
+                        background: COLORS.sage,
+                        borderRadius: "2px 2px 0 0",
+                      }}
+                    />
+                  )}
+                </button>
+              );
+            })}
+          </nav>
         </div>
       )}
     </header>

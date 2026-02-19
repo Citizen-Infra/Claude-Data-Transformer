@@ -33,10 +33,8 @@ export default function App() {
     >
       <Header
         view={view}
-        onLogoClick={() => {
-          setResults(null);
-          navigateTo("landing");
-        }}
+        hasResults={!!results}
+        onLogoClick={() => navigateTo("landing")}
         onNavigate={navigateTo}
       />
 

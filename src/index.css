@@ -201,7 +201,7 @@ a {
 
 /* ── Header / nav responsive ── */
 .header-logo {
-  height: 60px;
+  height: 56px;
   width: auto;
 }
 
@@ -230,6 +230,10 @@ html, body {
 
   .nav-hamburger {
     display: flex !important;
+  }
+
+  .header-subnav {
+    display: none !important;
   }
 
   .nav-results-scroll {

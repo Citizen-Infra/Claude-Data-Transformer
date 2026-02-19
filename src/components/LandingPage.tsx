@@ -409,7 +409,7 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
       {/* ─── Before you upload (export steps) ─── */}
       <section
         id="how-it-works"
-        style={{ padding: "0 24px 72px", maxWidth: "800px", margin: "0 auto" }}
+        style={{ padding: "0 24px 72px", maxWidth: "800px", margin: "0 auto", scrollMarginTop: "120px" }}
       >
         <div style={sectionLabel}>Before you upload</div>
         <h2 style={{ ...headline, fontSize: "32px", marginBottom: "12px" }}>
@@ -504,6 +504,7 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
           background: C.cream,
           borderTop: `1px solid ${C.border}`,
           borderBottom: `1px solid ${C.border}`,
+          scrollMarginTop: "120px",
         }}
       >
         <div style={{ maxWidth: "780px", margin: "0 auto" }}>
@@ -738,7 +739,7 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
       {/* ─── Privacy section ─── */}
       <section
         id="how-we-keep-it-private"
-        style={{ padding: "72px 24px", maxWidth: "800px", margin: "0 auto", scrollMarginTop: "24px" }}
+        style={{ padding: "72px 24px", maxWidth: "800px", margin: "0 auto", scrollMarginTop: "120px" }}
       >
         <div style={sectionLabel}>How privacy works here</div>
         <h2 style={{ ...headline, fontSize: "32px", marginBottom: "12px" }}>
@@ -952,10 +953,12 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
 
       {/* ─── Who We Are / Citizen Infra ─── */}
       <section
+        id="about-the-builders"
         style={{
           padding: "72px 24px",
           maxWidth: "800px",
           margin: "0 auto",
+          scrollMarginTop: "120px",
         }}
       >
         <div style={sectionLabel}>Who We Are</div>
