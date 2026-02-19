@@ -2,17 +2,26 @@ import { useState } from "react";
 import type { ParsedConversation } from "../lib/types";
 
 const C = {
-  dark: "#1a3a2a",
-  mid: "#2d5a3f",
+  green: "#1a3a2a",
+  greenMuted: "#2d5a3f",
   accent: "#3d7a56",
-  cream: "#f7f5f0",
+  cream: "#f5f0e8",
+  creamDark: "#ebe5d9",
   surface: "#fff",
   cardBg: "#e8f0eb",
-  border: "#e0e0e0",
-  ink: "#1a1a1a",
-  body: "#555",
-  subtle: "#888",
+  border: "#d8d2c6",
+  borderLight: "#e8e2d6",
+  text: "#1a1a18",
+  textMuted: "#4d4943",
+  warmGray: "#5e594f",
+  warmGrayLight: "#76716a",
+  white: "#ffffff",
 };
+
+const mono = "'DM Mono', 'IBM Plex Mono', monospace";
+const sans = "'DM Sans', 'Helvetica Neue', sans-serif";
+
+const VISIBLE_ROWS = 5;
 
 interface ParsedPreviewProps {
   conversations: ParsedConversation[];
@@ -52,8 +61,10 @@ export default function ParsedPreview({
   onAnalyze,
   onReset,
 }: ParsedPreviewProps) {
-  const [listOpen, setListOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const isSample = dataSource === "persona";
+  const hasMore = conversations.length > VISIBLE_ROWS;
+  const visibleConvs = expanded ? conversations : conversations.slice(0, VISIBLE_ROWS);
 
   return (
     <div
@@ -61,7 +72,7 @@ export default function ParsedPreview({
       style={{
         background: C.surface,
         border: `1px solid ${C.border}`,
-        borderRadius: "16px",
+        borderRadius: "14px",
         overflow: "hidden",
       }}
     >
@@ -83,10 +94,10 @@ export default function ParsedPreview({
             display: "flex",
             alignItems: "center",
             gap: "8px",
-            fontFamily: "'DM Sans', sans-serif",
+            fontFamily: sans,
             fontSize: "13px",
             fontWeight: 600,
-            color: C.mid,
+            color: C.greenMuted,
           }}
         >
           <svg
@@ -94,7 +105,7 @@ export default function ParsedPreview({
             height="14"
             viewBox="0 0 24 24"
             fill="none"
-            stroke={C.mid}
+            stroke={C.greenMuted}
             strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -116,10 +127,10 @@ export default function ParsedPreview({
               background: C.surface,
               border: `1px solid ${C.border}`,
               borderRadius: "100px",
-              fontFamily: "'JetBrains Mono', monospace",
+              fontFamily: mono,
               fontSize: "10px",
               fontWeight: 500,
-              color: C.subtle,
+              color: C.warmGray,
               textTransform: "uppercase",
               letterSpacing: "0.5px",
             }}
@@ -155,7 +166,7 @@ export default function ParsedPreview({
                   fontFamily: "'DM Serif Display', Georgia, serif",
                   fontSize: i === 3 ? "14px" : "24px",
                   fontWeight: 400,
-                  color: C.dark,
+                  color: C.green,
                   marginBottom: "4px",
                   lineHeight: 1.2,
                 }}
@@ -164,12 +175,12 @@ export default function ParsedPreview({
               </div>
               <div
                 style={{
-                  fontFamily: "'JetBrains Mono', monospace",
+                  fontFamily: mono,
                   fontSize: "10px",
                   fontWeight: 500,
                   letterSpacing: "1px",
                   textTransform: "uppercase",
-                  color: C.subtle,
+                  color: C.warmGray,
                 }}
               >
                 {s.label}
@@ -178,7 +189,7 @@ export default function ParsedPreview({
           ))}
         </div>
 
-        {/* ── Expandable conversation list ── */}
+        {/* ── Conversation list (first 5 visible, expandable) ── */}
         <div
           style={{
             border: `1px solid ${C.border}`,
@@ -187,207 +198,125 @@ export default function ParsedPreview({
             overflow: "hidden",
           }}
         >
-          <button
-            onClick={() => setListOpen(!listOpen)}
+          {/* Column headers */}
+          <div
             style={{
-              width: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: "12px 16px",
-              background: listOpen ? C.cream : "transparent",
-              border: "none",
-              cursor: "pointer",
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: "13px",
-              color: C.body,
-              textAlign: "left",
-              transition: "background 0.15s",
+              display: "grid",
+              gridTemplateColumns: "1fr 60px 70px",
+              gap: "8px",
+              padding: "8px 16px",
+              background: C.creamDark,
+              borderBottom: `1px solid ${C.border}`,
+              fontFamily: mono,
+              fontSize: "10px",
+              fontWeight: 500,
+              letterSpacing: "1px",
+              textTransform: "uppercase",
+              color: C.warmGray,
             }}
           >
-            <span>
-              See all conversation titles — this is everything the tool can see
-            </span>
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke={C.subtle}
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              style={{
-                flexShrink: 0,
-                marginLeft: "8px",
-                transform: listOpen ? "rotate(180deg)" : "none",
-                transition: "transform 0.2s",
-              }}
-            >
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
-          </button>
+            <span>Title</span>
+            <span style={{ textAlign: "center" }}>Msgs</span>
+            <span style={{ textAlign: "right" }}>Date</span>
+          </div>
 
-          {listOpen && (
-            <div className="conversation-list">
-              {/* Column headers */}
+          {/* Rows */}
+          <div className={expanded ? "conversation-list" : undefined}>
+            {visibleConvs.map((conv, i) => (
               <div
+                key={conv.id}
+                className="reveal-up"
                 style={{
-                  position: "sticky",
-                  top: 0,
                   display: "grid",
                   gridTemplateColumns: "1fr 60px 70px",
                   gap: "8px",
                   padding: "8px 16px",
-                  background: C.cream,
-                  borderBottom: `1px solid ${C.border}`,
-                  fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: "10px",
-                  fontWeight: 500,
-                  letterSpacing: "1px",
-                  textTransform: "uppercase",
-                  color: C.subtle,
+                  borderBottom:
+                    i < visibleConvs.length - 1
+                      ? `1px solid ${C.borderLight}`
+                      : "none",
+                  animationDelay: `${Math.min(i * 30, 600)}ms`,
                 }}
               >
-                <span>Title</span>
-                <span style={{ textAlign: "center" }}>Msgs</span>
-                <span style={{ textAlign: "right" }}>Date</span>
-              </div>
-
-              {/* Rows */}
-              {conversations.map((conv, i) => (
-                <div
-                  key={conv.id}
-                  className="reveal-up"
+                <span
                   style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 60px 70px",
-                    gap: "8px",
-                    padding: "8px 16px",
-                    borderBottom:
-                      i < conversations.length - 1
-                        ? `1px solid ${C.border}`
-                        : "none",
-                    animationDelay: `${Math.min(i * 30, 600)}ms`,
+                    fontFamily: sans,
+                    fontSize: "13px",
+                    color: C.text,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
                   }}
                 >
-                  <span
-                    style={{
-                      fontFamily: "'DM Sans', sans-serif",
-                      fontSize: "13px",
-                      color: C.ink,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {conv.title}
-                  </span>
-                  <span
-                    style={{
-                      fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: "12px",
-                      color: C.subtle,
-                      textAlign: "center",
-                    }}
-                  >
-                    {conv.message_count}
-                  </span>
-                  <span
-                    style={{
-                      fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: "11px",
-                      color: C.subtle,
-                      textAlign: "right",
-                    }}
-                  >
-                    {formatRelativeDate(conv.created_at)}
-                  </span>
-                </div>
-              ))}
-            </div>
+                  {conv.title}
+                </span>
+                <span
+                  style={{
+                    fontFamily: mono,
+                    fontSize: "12px",
+                    color: C.warmGray,
+                    textAlign: "center",
+                  }}
+                >
+                  {conv.message_count}
+                </span>
+                <span
+                  style={{
+                    fontFamily: mono,
+                    fontSize: "11px",
+                    color: C.warmGray,
+                    textAlign: "right",
+                  }}
+                >
+                  {formatRelativeDate(conv.created_at)}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Show all / Show less button */}
+          {hasMore && (
+            <button
+              onClick={() => setExpanded(!expanded)}
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
+                padding: "10px 16px",
+                background: C.cream,
+                border: "none",
+                borderTop: `1px solid ${C.borderLight}`,
+                cursor: "pointer",
+                fontFamily: sans,
+                fontSize: "12px",
+                fontWeight: 500,
+                color: C.greenMuted,
+                transition: "background 0.15s",
+              }}
+            >
+              {expanded
+                ? "Show less"
+                : `Show all ${conversations.length} conversations`}
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke={C.greenMuted}
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{
+                  transform: expanded ? "rotate(180deg)" : "none",
+                  transition: "transform 0.2s",
+                }}
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
           )}
-        </div>
-
-        {/* ── Info panels ── */}
-        <div
-          className="preview-info-panels"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "12px",
-            marginBottom: "24px",
-          }}
-        >
-          <div
-            style={{
-              padding: "16px",
-              background: C.cream,
-              borderRadius: "10px",
-            }}
-          >
-            <div
-              style={{
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: "10px",
-                fontWeight: 500,
-                letterSpacing: "1px",
-                textTransform: "uppercase",
-                color: C.subtle,
-                marginBottom: "8px",
-              }}
-            >
-              What just happened
-            </div>
-            <p
-              style={{
-                fontFamily: "'DM Sans', sans-serif",
-                fontSize: "13px",
-                lineHeight: 1.6,
-                color: C.body,
-                margin: 0,
-              }}
-            >
-              {isSample
-                ? `We loaded ${personaName}'s fictional conversations entirely in your browser. This is the same view you'd get with your own data.`
-                : "Your file was read entirely inside your browser. We extracted titles, message counts, and dates — nothing else. No message content was read yet."}
-            </p>
-          </div>
-
-          <div
-            style={{
-              padding: "16px",
-              background: C.cream,
-              borderRadius: "10px",
-            }}
-          >
-            <div
-              style={{
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: "10px",
-                fontWeight: 500,
-                letterSpacing: "1px",
-                textTransform: "uppercase",
-                color: C.subtle,
-                marginBottom: "8px",
-              }}
-            >
-              What happens next
-            </div>
-            <p
-              style={{
-                fontFamily: "'DM Sans', sans-serif",
-                fontSize: "13px",
-                lineHeight: 1.6,
-                color: C.body,
-                margin: 0,
-              }}
-            >
-              {isSample
-                ? `Click below to run the full analysis on this sample. You'll see the complete experience — then decide about your own data.`
-                : "We analyze your patterns locally using pattern-matching heuristics — still no network requests. Everything stays in your browser."}
-            </p>
-          </div>
         </div>
 
         {/* ── Action buttons ── */}
@@ -404,10 +333,10 @@ export default function ParsedPreview({
             style={{
               padding: "12px 20px",
               background: "none",
-              color: C.body,
+              color: C.textMuted,
               border: `1px solid ${C.border}`,
               borderRadius: "10px",
-              fontFamily: "'DM Sans', sans-serif",
+              fontFamily: sans,
               fontSize: "14px",
               fontWeight: 500,
               cursor: "pointer",
@@ -424,11 +353,11 @@ export default function ParsedPreview({
             style={{
               flex: 1,
               padding: "14px 24px",
-              background: `linear-gradient(135deg, ${C.mid}, ${C.accent})`,
+              background: `linear-gradient(135deg, ${C.greenMuted}, ${C.accent})`,
               color: "#fff",
               border: "none",
               borderRadius: "10px",
-              fontFamily: "'DM Sans', sans-serif",
+              fontFamily: sans,
               fontSize: "15px",
               fontWeight: 700,
               cursor: "pointer",
@@ -437,8 +366,8 @@ export default function ParsedPreview({
             }}
           >
             {isSample
-              ? `Analyze ${personaName}'s data →`
-              : "Continue to analysis →"}
+              ? `See ${personaName}'s suggested skills →`
+              : "See suggested skills →"}
           </button>
         </div>
       </div>

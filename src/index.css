@@ -156,6 +156,23 @@ a {
   animation: revealUp 0.4s ease-out both;
 }
 
+/* ── Modal overlay animations ── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 /* ── Privacy monitor pulse ── */
 @keyframes privacyPulse {
   0%, 100% { opacity: 1; }
@@ -283,10 +300,6 @@ html, body {
   /* ── Preview: stats 2-col, info panels stack, buttons stack ── */
   .preview-stats {
     grid-template-columns: repeat(2, 1fr) !important;
-  }
-
-  .preview-info-panels {
-    grid-template-columns: 1fr !important;
   }
 
   .preview-actions {
