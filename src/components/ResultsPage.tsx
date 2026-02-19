@@ -100,7 +100,7 @@ function MakeSkillSection() {
           }}
         />
 
-        <div style={{ padding: "40px" }}>
+        <div className="make-skill-inner" style={{ padding: "40px" }}>
           <h2
             style={{
               ...headline,
@@ -245,6 +245,7 @@ function MakeSkillSection() {
 
           {/* Buttons */}
           <div
+            className="make-skill-buttons"
             style={{
               display: "flex",
               alignItems: "center",
@@ -385,6 +386,7 @@ export default function ResultsPage({ results }: ResultsPageProps) {
         }}
       >
         <div
+          className="stats-grid"
           style={{
             background: "#fff",
             borderRadius: "16px",
@@ -443,6 +445,7 @@ export default function ResultsPage({ results }: ResultsPageProps) {
         </p>
 
         <div
+          className="usage-grid"
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
@@ -606,6 +609,7 @@ export default function ResultsPage({ results }: ResultsPageProps) {
 
           {/* Steps */}
           <div
+            className="install-grid"
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(3, 1fr)",

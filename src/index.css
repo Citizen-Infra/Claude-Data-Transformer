@@ -154,7 +154,13 @@ a {
   display: none;
 }
 
+/* ── Prevent horizontal overflow on all screens ── */
+html, body {
+  overflow-x: hidden;
+}
+
 @media (max-width: 640px) {
+  /* ── Header / Nav ── */
   .header-logo {
     height: 44px;
   }
@@ -174,6 +180,82 @@ a {
   .nav-results-scroll button {
     font-size: 12px !important;
     padding: 8px 10px !important;
+  }
+
+  /* ── Results page: Stats grid 4→2 columns ── */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    padding: 20px !important;
+    gap: 16px !important;
+  }
+
+  /* ── Results page: Usage signature 2→1 column ── */
+  .usage-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+
+  /* ── Results page: Install steps 3→1 column ── */
+  .install-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Results page: Make-a-skill section ── */
+  .make-skill-inner {
+    padding: 24px 20px !important;
+  }
+
+  .make-skill-buttons {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .make-skill-buttons button,
+  .make-skill-buttons a {
+    justify-content: center !important;
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  /* ── Skill cards: reduce padding ── */
+  .skill-card {
+    padding: 20px 16px !important;
+  }
+
+  /* ── BarChart: reduce label width ── */
+  .bar-chart-row .bar-label {
+    width: 80px !important;
+    font-size: 12px !important;
+  }
+
+  /* ── Landing page: project cards 1 column on mobile ── */
+  .projects-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* ── Footer: stack vertically ── */
+  .site-footer {
+    flex-direction: column !important;
+    gap: 16px !important;
+    text-align: center !important;
+    padding: 24px 16px !important;
+  }
+
+  .footer-links {
+    gap: 16px !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+  }
+}
+
+/* ── Intermediate breakpoint for tablets ── */
+@media (max-width: 768px) and (min-width: 641px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .install-grid {
+    grid-template-columns: 1fr !important;
   }
 }
 
