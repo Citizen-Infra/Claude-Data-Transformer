@@ -140,6 +140,48 @@ a {
   animation: analyze-pulse 2s ease-in-out 3;
 }
 
+/* ── Reveal-up animation (narration steps, preview entrance) ── */
+@keyframes revealUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal-up {
+  animation: revealUp 0.4s ease-out both;
+}
+
+/* ── Privacy monitor pulse ── */
+@keyframes privacyPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.privacy-dot {
+  animation: privacyPulse 2s ease-in-out infinite;
+}
+
+/* ── Conversation list scrollbar ── */
+.conversation-list {
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.conversation-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.conversation-list::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 2px;
+}
+
 /* ── Header / nav responsive ── */
 .header-logo {
   height: 60px;
@@ -226,6 +268,38 @@ html, body {
   .bar-chart-row .bar-label {
     width: 80px !important;
     font-size: 12px !important;
+  }
+
+  /* ── Persona picker: 2 columns on mobile ── */
+  .persona-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .persona-card {
+    padding: 16px 12px !important;
+  }
+
+  .persona-card-actions {
+    flex-direction: column !important;
+    gap: 6px !important;
+  }
+
+  /* ── Preview: stats 2-col, info panels stack, buttons stack ── */
+  .preview-stats {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .preview-info-panels {
+    grid-template-columns: 1fr !important;
+  }
+
+  .preview-actions {
+    flex-direction: column !important;
+  }
+
+  .preview-actions button {
+    width: 100% !important;
   }
 
   /* ── Landing page: project cards 1 column on mobile ── */
