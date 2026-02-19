@@ -82,6 +82,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
   // Upload state
   const [dragOver, setDragOver] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [hoverPrivacyLink, setHoverPrivacyLink] = useState(false);
 
   // Raw JSON (stored between narrating and preview)
   const [rawJson, setRawJson] = useState<ClaudeConversation[] | null>(null);
@@ -198,57 +199,122 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
       {/* ─── Hero ─── */}
       <section
         style={{
-          background: `linear-gradient(135deg, ${C.green} 0%, ${C.greenMuted} 100%)`,
-          padding: "80px 24px 72px",
+          background: C.green,
+          padding: "100px 32px 80px",
           textAlign: "center",
         }}
       >
-        <div style={{ ...sectionLabel, color: "#88E7BB", marginBottom: "20px" }}>
+        {/* Eyebrow */}
+        <div style={{
+          fontFamily: mono,
+          fontSize: "11px",
+          color: "#7dba96",
+          textTransform: "uppercase",
+          letterSpacing: "0.14em",
+          marginBottom: "20px",
+        }}>
           Improve how you work
         </div>
+
+        {/* Headline */}
         <h1
           style={{
-            ...headline,
+            fontFamily: "'Playfair Display', Georgia, serif",
             fontSize: "clamp(32px, 5vw, 52px)",
-            color: "#fff",
-            maxWidth: "640px",
-            margin: "0 auto 20px",
+            fontWeight: 700,
+            color: C.cream,
+            lineHeight: 1.12,
+            letterSpacing: "-0.01em",
+            maxWidth: "700px",
+            margin: "0 auto 24px",
           }}
         >
           Find the Claude Skills you didn't know you needed.
         </h1>
+
+        {/* Subhead */}
         <p
           style={{
+            fontFamily: sans,
             fontSize: "17px",
-            lineHeight: 1.7,
-            color: "rgba(255,255,255,0.8)",
-            maxWidth: "520px",
-            margin: "0 auto 36px",
-            fontFamily: "'DM Sans', sans-serif",
+            color: "#b8cfc0",
+            lineHeight: 1.65,
+            maxWidth: "540px",
+            margin: "0 auto",
           }}
         >
-          Upload your Claude history. We'll analyze your patterns and recommend
-          Skills that make Claude work harder for you. Everything runs in your
-          browser.
+          Upload your Claude history. We'll analyze your patterns and
+          recommend Skills that make Claude work harder for you.
         </p>
+
+        {/* Privacy pill link */}
         <a
-          href="#upload"
+          href="#how-we-keep-it-private"
+          onMouseEnter={() => setHoverPrivacyLink(true)}
+          onMouseLeave={() => setHoverPrivacyLink(false)}
           style={{
-            display: "inline-block",
-            padding: "14px 32px",
-            background: "#fff",
-            color: C.green,
-            border: "none",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "8px",
+            marginTop: "20px",
+            padding: "10px 20px",
+            background: hoverPrivacyLink
+              ? "rgba(125, 186, 150, 0.2)"
+              : "rgba(125, 186, 150, 0.12)",
+            border: hoverPrivacyLink
+              ? "1px solid rgba(125, 186, 150, 0.4)"
+              : "1px solid rgba(125, 186, 150, 0.25)",
             borderRadius: "8px",
-            fontFamily: "'DM Sans', sans-serif",
-            fontSize: "15px",
-            fontWeight: 600,
             textDecoration: "none",
             cursor: "pointer",
+            transition: "all 0.2s ease",
           }}
         >
-          Get started
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
+            <path d="M8 1L2 4.5V8c0 3.5 2.5 6.5 6 7.5 3.5-1 6-4 6-7.5V4.5L8 1z" stroke="#7dba96" strokeWidth="1.3" fill="none"/>
+            <path d="M5.5 8L7 9.5L10.5 6" stroke="#7dba96" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <span style={{
+            fontFamily: sans,
+            fontSize: "14.5px",
+            fontWeight: 500,
+            color: C.cream,
+          }}>
+            Everything runs in your browser.
+          </span>
+          <span style={{
+            fontFamily: sans,
+            fontSize: "13px",
+            color: "#9dcbad",
+            textDecoration: "underline",
+            textUnderlineOffset: "3px",
+            textDecorationColor: "rgba(125, 186, 150, 0.4)",
+          }}>
+            Learn how ↓
+          </span>
         </a>
+
+        {/* CTA button */}
+        <div style={{ marginTop: "32px" }}>
+          <a
+            href="#upload"
+            style={{
+              display: "inline-block",
+              padding: "14px 36px",
+              background: C.cream,
+              color: C.green,
+              border: "none",
+              borderRadius: "8px",
+              fontFamily: sans,
+              fontSize: "15px",
+              fontWeight: 600,
+              textDecoration: "none",
+              cursor: "pointer",
+            }}
+          >
+            Get started
+          </a>
+        </div>
       </section>
 
       {/* ─── What you'll get ─── */}
@@ -670,8 +736,8 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
 
       {/* ─── Privacy section ─── */}
       <section
-        id="privacy"
-        style={{ padding: "72px 24px", maxWidth: "800px", margin: "0 auto" }}
+        id="how-we-keep-it-private"
+        style={{ padding: "72px 24px", maxWidth: "800px", margin: "0 auto", scrollMarginTop: "24px" }}
       >
         <div style={sectionLabel}>How privacy works here</div>
         <h2 style={{ ...headline, fontSize: "32px", marginBottom: "12px" }}>
