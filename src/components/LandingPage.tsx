@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from "react";
 import { testApiKey } from "../lib/anthropicApi";
 import { parseClaudeExport } from "../lib/parseClaudeExport";
+import { SAMPLE_CONVERSATIONS } from "../data/sampleConversations";
 import type { ParsedConversation } from "../lib/types";
 
 interface LandingPageProps {
@@ -252,6 +253,27 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
       );
     }
     setParsing(false);
+  }, []);
+
+  // Load sample data without file upload
+  const handleSampleData = useCallback(() => {
+    const conversations = parseClaudeExport(SAMPLE_CONVERSATIONS);
+    const totalMessages = conversations.reduce(
+      (s, c) => s + c.message_count,
+      0
+    );
+    setUploadedConvs(conversations);
+    setUploadStats({
+      conversations: conversations.length,
+      messages: totalMessages,
+    });
+    setUploadError(null);
+    setTimeout(() => {
+      analyzeBtnRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    }, 150);
   }, []);
 
   // Ready to analyze?
@@ -719,6 +741,33 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
                     }}
                   >
                     Accepts conversations.json
+                  </div>
+                  <div
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSampleData();
+                    }}
+                    style={{
+                      marginTop: "16px",
+                      paddingTop: "12px",
+                      borderTop: `1px solid ${C.border}`,
+                      fontFamily: "'DM Sans', sans-serif",
+                      fontSize: "13px",
+                      color: C.body,
+                    }}
+                  >
+                    Hesitant?{" "}
+                    <span
+                      style={{
+                        color: C.mid,
+                        fontWeight: 600,
+                        textDecoration: "underline",
+                        textUnderlineOffset: "3px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Try with sample data
+                    </span>
                   </div>
                 </div>
               )}
