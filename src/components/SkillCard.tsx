@@ -112,7 +112,7 @@ export default function SkillCard({ recommendation: rec }: SkillCardProps) {
                 opacity: 0.6,
               }}
             />
-            {rec.skill?.source === "anthropic" ? "Official" : "Community"}
+            {rec.skill?.source === "anthropic" ? "Anthropic" : "Community"}
           </span>
         </div>
 
