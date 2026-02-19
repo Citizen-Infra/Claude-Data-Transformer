@@ -1,7 +1,13 @@
 import { useState, useRef, useCallback } from "react";
-import { parseClaudeExport } from "../lib/parseClaudeExport";
-import { SAMPLE_CONVERSATIONS } from "../data/sampleConversations";
-import type { ParsedConversation } from "../lib/types";
+import { getDateRange } from "../lib/parseClaudeExport";
+import { getPersonaById } from "../data/samplePersonas";
+import { downloadPersonaExport } from "../lib/generatePersonaExport";
+import ParsingNarration from "./ParsingNarration";
+import ParsedPreview from "./ParsedPreview";
+import PersonaPicker from "./PersonaPicker";
+import PrivacyMonitor from "./PrivacyMonitor";
+import DevToolsPrompt from "./DevToolsPrompt";
+import type { ParsedConversation, ClaudeConversation } from "../lib/types";
 
 interface LandingPageProps {
   onDataReady: (conversations: ParsedConversation[]) => void;
@@ -48,88 +54,115 @@ const bodyText: React.CSSProperties = {
   maxWidth: "560px",
 };
 
+/* ── Phase types ── */
+type UploadPhase = "upload" | "narrating" | "preview";
+type DataSource = "file" | "persona" | null;
+
 /* ── Main LandingPage ── */
 export default function LandingPage({ onDataReady }: LandingPageProps) {
+  // Phase state machine
+  const [phase, setPhase] = useState<UploadPhase>("upload");
+  const [dataSource, setDataSource] = useState<DataSource>(null);
+  const [selectedPersona, setSelectedPersona] = useState<string | null>(null);
+
   // Upload state
   const [dragOver, setDragOver] = useState(false);
-  const [parsing, setParsing] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
+  // Raw JSON (stored between narrating and preview)
+  const [rawJson, setRawJson] = useState<ClaudeConversation[] | null>(null);
+
+  // Parsed results (set after narration completes)
   const [uploadedConvs, setUploadedConvs] = useState<ParsedConversation[] | null>(null);
   const [uploadStats, setUploadStats] = useState<{
     conversations: number;
     messages: number;
+    withArtifacts: number;
   } | null>(null);
-  const [uploadError, setUploadError] = useState<string | null>(null);
-  const fileRef = useRef<HTMLInputElement>(null);
-  const analyzeBtnRef = useRef<HTMLButtonElement>(null);
+  const [dateRange, setDateRange] = useState<{ earliest: string; latest: string } | null>(null);
 
-  // Handle file
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  // ── Handle real file upload ──
   const handleFile = useCallback(async (file: File) => {
-    setParsing(true);
     setUploadError(null);
+    if (file.name.endsWith(".zip")) {
+      setUploadError(
+        "Please extract the ZIP first and upload the conversations.json file inside it."
+      );
+      return;
+    }
     try {
-      if (file.name.endsWith(".zip")) {
-        setUploadError(
-          "Please extract the ZIP first and upload the conversations.json file inside it."
-        );
-        setParsing(false);
-        return;
-      }
       const text = await file.text();
       const jsonData = JSON.parse(text);
-      const conversations = parseClaudeExport(jsonData);
-      const totalMessages = conversations.reduce(
-        (s, c) => s + c.message_count,
-        0
-      );
-      setUploadedConvs(conversations);
-      setUploadStats({
-        conversations: conversations.length,
-        messages: totalMessages,
-      });
-      // Nudge the analyze button into view after render
-      setTimeout(() => {
-        analyzeBtnRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "nearest",
-        });
-      }, 150);
+      const arr: ClaudeConversation[] = Array.isArray(jsonData) ? jsonData : [jsonData];
+      setRawJson(arr);
+      setDataSource("file");
+      setSelectedPersona(null);
+      setPhase("narrating");
     } catch {
       setUploadError(
         "Couldn't parse that file. Make sure it's the conversations.json from your Claude export."
       );
     }
-    setParsing(false);
   }, []);
 
-  // Load sample data without file upload
-  const handleSampleData = useCallback(() => {
-    const conversations = parseClaudeExport(SAMPLE_CONVERSATIONS);
-    const totalMessages = conversations.reduce(
-      (s, c) => s + c.message_count,
-      0
-    );
-    setUploadedConvs(conversations);
-    setUploadStats({
-      conversations: conversations.length,
-      messages: totalMessages,
-    });
+  // ── Handle persona "Try demo" ──
+  const handleTryDemo = useCallback((personaId: string) => {
+    const persona = getPersonaById(personaId);
+    if (!persona) return;
+    setRawJson(persona.conversations);
+    setDataSource("persona");
+    setSelectedPersona(personaId);
+    setPhase("narrating");
     setUploadError(null);
-    setTimeout(() => {
-      analyzeBtnRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "nearest",
-      });
-    }, 150);
   }, []);
 
-  // Ready to analyze?
-  const hasFile = uploadedConvs && uploadedConvs.length > 0;
+  // ── Handle persona "Download .json" ──
+  const handleDownload = useCallback((personaId: string) => {
+    const persona = getPersonaById(personaId);
+    if (!persona) return;
+    downloadPersonaExport(
+      persona.conversations,
+      `conversations-${personaId}-sample.json`
+    );
+  }, []);
 
-  const handleAnalyze = () => {
-    if (hasFile && uploadedConvs) {
+  // ── Handle narration completion ──
+  const handleNarrationComplete = useCallback(
+    (
+      convs: ParsedConversation[],
+      stats: { conversations: number; messages: number; withArtifacts: number }
+    ) => {
+      setUploadedConvs(convs);
+      setUploadStats(stats);
+      setDateRange(getDateRange(convs));
+      setPhase("preview");
+    },
+    []
+  );
+
+  // ── Handle analyze (proceed to app flow) ──
+  const handleAnalyze = useCallback(() => {
+    if (uploadedConvs) {
       onDataReady(uploadedConvs);
     }
-  };
+  }, [uploadedConvs, onDataReady]);
+
+  // ── Reset to upload phase ──
+  const handleReset = useCallback(() => {
+    setPhase("upload");
+    setDataSource(null);
+    setSelectedPersona(null);
+    setRawJson(null);
+    setUploadedConvs(null);
+    setUploadStats(null);
+    setDateRange(null);
+    setUploadError(null);
+  }, []);
+
+  // Persona info for display
+  const persona = selectedPersona ? getPersonaById(selectedPersona) : null;
 
   return (
     <div>
@@ -300,26 +333,10 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
           }}
         >
           {[
-            {
-              step: "1",
-              title: "Open Claude Settings",
-              desc: "Go to claude.ai, click your initials, then Settings.",
-            },
-            {
-              step: "2",
-              title: "Find Privacy",
-              desc: "Navigate to the Privacy tab.",
-            },
-            {
-              step: "3",
-              title: "Export Data",
-              desc: 'Click "Export data." Claude emails you a download link.',
-            },
-            {
-              step: "4",
-              title: "Find conversations.json",
-              desc: "Download the ZIP, extract it, and find conversations.json inside.",
-            },
+            { step: "1", title: "Open Claude Settings", desc: "Go to claude.ai, click your initials, then Settings." },
+            { step: "2", title: "Find Privacy", desc: "Navigate to the Privacy tab." },
+            { step: "3", title: "Export Data", desc: 'Click "Export data." Claude emails you a download link.' },
+            { step: "4", title: "Find conversations.json", desc: "Download the ZIP, extract it, and find conversations.json inside." },
           ].map((item) => (
             <div
               key={item.step}
@@ -359,13 +376,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
               >
                 {item.title}
               </div>
-              <div
-                style={{
-                  fontSize: "14px",
-                  lineHeight: 1.6,
-                  color: C.body,
-                }}
-              >
+              <div style={{ fontSize: "14px", lineHeight: 1.6, color: C.body }}>
                 {item.desc}
               </div>
             </div>
@@ -389,7 +400,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
         </a>
       </section>
 
-      {/* ─── Upload section ─── */}
+      {/* ─── Upload section (phase-driven) ─── */}
       <section
         id="upload"
         style={{
@@ -409,139 +420,80 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
             patterns and recommend Skills — entirely in your browser.
           </p>
 
-          {/* ── Drop zone ── */}
-          <div style={{ marginBottom: "8px" }}>
-            <label
-              style={{
-                fontFamily: "'DM Sans', sans-serif",
-                fontSize: "14px",
-                fontWeight: 600,
-                color: C.ink,
-                display: "block",
-                marginBottom: "4px",
-              }}
-            >
-              Claude Export File
-            </label>
-            <div
-              style={{
-                fontFamily: "'DM Sans', sans-serif",
-                fontSize: "13px",
-                color: C.body,
-                marginBottom: "10px",
-                lineHeight: 1.5,
-              }}
-            >
-              Upload the{" "}
-              <code
-                style={{
-                  fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: "12px",
-                  background: C.cardBg,
-                  padding: "2px 6px",
-                  borderRadius: "4px",
-                  color: C.mid,
-                  fontWeight: 500,
-                }}
-              >
-                conversations.json
-              </code>{" "}
-              file from your Claude data export.
-            </div>
-            <div
-              onDragOver={(e) => {
-                e.preventDefault();
-                setDragOver(true);
-              }}
-              onDragLeave={() => setDragOver(false)}
-              onDrop={(e) => {
-                e.preventDefault();
-                setDragOver(false);
-                if (e.dataTransfer.files[0])
-                  handleFile(e.dataTransfer.files[0]);
-              }}
-              onClick={() => fileRef.current?.click()}
-              style={{
-                border: `2px dashed ${
-                  uploadStats
-                    ? C.accent
-                    : dragOver
-                    ? C.mid
-                    : C.cardBorder
-                }`,
-                borderRadius: "16px",
-                background: uploadStats
-                  ? C.cardBg
-                  : dragOver
-                  ? C.cream
-                  : C.surface,
-                padding: "48px 32px",
-                textAlign: "center",
-                cursor: "pointer",
-                transition: "all 0.2s ease",
-              }}
-            >
-              <input
-                ref={fileRef}
-                type="file"
-                accept=".json"
-                onChange={(e) =>
-                  e.target.files?.[0] && handleFile(e.target.files[0])
-                }
-                style={{ display: "none" }}
-              />
-
-              {parsing ? (
-                <div
+          {/* ── Phase 1: Upload zone + persona picker ── */}
+          {phase === "upload" && (
+            <>
+              {/* Drop zone */}
+              <div style={{ marginBottom: "8px" }}>
+                <label
                   style={{
-                    fontFamily: "'JetBrains Mono', monospace",
+                    fontFamily: "'DM Sans', sans-serif",
                     fontSize: "14px",
-                    color: C.subtle,
+                    fontWeight: 600,
+                    color: C.ink,
+                    display: "block",
+                    marginBottom: "4px",
                   }}
                 >
-                  Parsing conversations...
-                </div>
-              ) : uploadStats ? (
-                <div>
-                  <div
-                    style={{
-                      width: "48px",
-                      height: "48px",
-                      margin: "0 auto 12px",
-                      borderRadius: "50%",
-                      background: C.mid,
-                      color: "#fff",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "24px",
-                    }}
-                  >
-                    ✓
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "'DM Sans', sans-serif",
-                      fontSize: "16px",
-                      fontWeight: 600,
-                      color: C.ink,
-                      marginBottom: "4px",
-                    }}
-                  >
-                    {uploadStats.conversations.toLocaleString()} conversations
-                  </div>
-                  <div
+                  Claude Export File
+                </label>
+                <div
+                  style={{
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: "13px",
+                    color: C.body,
+                    marginBottom: "10px",
+                    lineHeight: 1.5,
+                  }}
+                >
+                  Upload the{" "}
+                  <code
                     style={{
                       fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: "13px",
-                      color: C.body,
+                      fontSize: "12px",
+                      background: C.cardBg,
+                      padding: "2px 6px",
+                      borderRadius: "4px",
+                      color: C.mid,
+                      fontWeight: 500,
                     }}
                   >
-                    {uploadStats.messages.toLocaleString()} messages found
-                  </div>
+                    conversations.json
+                  </code>{" "}
+                  file from your Claude data export.
                 </div>
-              ) : (
-                <div>
+                <div
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setDragOver(true);
+                  }}
+                  onDragLeave={() => setDragOver(false)}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setDragOver(false);
+                    if (e.dataTransfer.files[0])
+                      handleFile(e.dataTransfer.files[0]);
+                  }}
+                  onClick={() => fileRef.current?.click()}
+                  style={{
+                    border: `2px dashed ${dragOver ? C.mid : C.cardBorder}`,
+                    borderRadius: "16px",
+                    background: dragOver ? C.cream : C.surface,
+                    padding: "48px 32px",
+                    textAlign: "center",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                  }}
+                >
+                  <input
+                    ref={fileRef}
+                    type="file"
+                    accept=".json"
+                    onChange={(e) =>
+                      e.target.files?.[0] && handleFile(e.target.files[0])
+                    }
+                    style={{ display: "none" }}
+                  />
                   <div
                     style={{
                       fontSize: "32px",
@@ -585,102 +537,63 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
                   >
                     Accepts conversations.json
                   </div>
+                </div>
+
+                {uploadError && (
                   <div
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleSampleData();
-                    }}
                     style={{
-                      marginTop: "16px",
-                      paddingTop: "12px",
-                      borderTop: `1px solid ${C.border}`,
-                      fontFamily: "'DM Sans', sans-serif",
+                      marginTop: "8px",
+                      padding: "10px 14px",
                       fontSize: "13px",
-                      color: C.body,
+                      background: "#fef2f2",
+                      color: "#991b1b",
+                      border: "1px solid #fecaca",
+                      borderRadius: "8px",
                     }}
                   >
-                    Hesitant?{" "}
-                    <span
-                      style={{
-                        color: C.mid,
-                        fontWeight: 600,
-                        textDecoration: "underline",
-                        textUnderlineOffset: "3px",
-                        cursor: "pointer",
-                      }}
-                    >
-                      Try with sample data
-                    </span>
+                    {uploadError}
                   </div>
-                </div>
-              )}
-            </div>
-
-            {uploadError && (
-              <div
-                style={{
-                  marginTop: "8px",
-                  padding: "10px 14px",
-                  fontSize: "13px",
-                  background: "#fef2f2",
-                  color: "#991b1b",
-                  border: "1px solid #fecaca",
-                  borderRadius: "8px",
-                }}
-              >
-                {uploadError}
+                )}
               </div>
-            )}
-          </div>
 
-          {/* ── Analyze button ── */}
-          <button
-            ref={analyzeBtnRef}
-            onClick={handleAnalyze}
-            disabled={!hasFile}
-            className={hasFile ? "analyze-btn-pulse" : ""}
-            style={{
-              width: "100%",
-              marginTop: "12px",
-              padding: "16px",
-              border: "none",
-              borderRadius: "12px",
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: "16px",
-              fontWeight: 700,
-              cursor: hasFile ? "pointer" : "default",
-              background: hasFile
-                ? `linear-gradient(135deg, ${C.mid}, ${C.accent})`
-                : "#e0e0e0",
-              color: hasFile ? "#fff" : "#aaa",
-              transition: "all 0.2s",
-              letterSpacing: "-0.2px",
-            }}
-          >
-            Analyze my conversations →
-          </button>
+              {/* Persona picker */}
+              <PersonaPicker
+                onTryDemo={handleTryDemo}
+                onDownload={handleDownload}
+              />
+            </>
+          )}
 
-          {/* ── Privacy note ── */}
-          <div
-            style={{
-              marginTop: "20px",
-              display: "flex",
-              alignItems: "flex-start",
-              gap: "12px",
-              padding: "16px",
-              background: C.surface,
-              border: `1px solid ${C.border}`,
-              borderRadius: "12px",
-            }}
-          >
-            <span style={{ fontSize: "16px" }}>🔒</span>
-            <div style={{ fontSize: "13px", lineHeight: 1.65, color: C.body }}>
-              <strong style={{ color: C.ink }}>Privacy guarantee:</strong> Your
-              conversation data never leaves your browser. All analysis runs
-              locally using JavaScript — no servers, no APIs, no accounts.
-              Close this tab and everything is gone.
-            </div>
-          </div>
+          {/* ── Phase 2: Narrated parsing ── */}
+          {phase === "narrating" && rawJson && (
+            <ParsingNarration
+              rawJson={rawJson}
+              dataSource={dataSource || "file"}
+              personaName={persona?.name}
+              personaEmoji={persona?.emoji}
+              onComplete={handleNarrationComplete}
+            />
+          )}
+
+          {/* ── Phase 3: Expanded preview ── */}
+          {phase === "preview" && uploadedConvs && uploadStats && dateRange && (
+            <ParsedPreview
+              conversations={uploadedConvs}
+              stats={uploadStats}
+              dateRange={dateRange}
+              dataSource={dataSource || "file"}
+              personaName={persona?.name}
+              personaEmoji={persona?.emoji}
+              onAnalyze={handleAnalyze}
+              onReset={handleReset}
+            />
+          )}
+
+          {/* ── Privacy monitor (always visible) ── */}
+          <PrivacyMonitor phase={phase} dataSource={dataSource} />
+
+          {/* ── Dev tools prompt (always visible) ── */}
+          <DevToolsPrompt />
         </div>
       </section>
 
@@ -760,11 +673,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
                 {item.title}
               </div>
               <div
-                style={{
-                  fontSize: "14px",
-                  lineHeight: 1.65,
-                  color: C.body,
-                }}
+                style={{ fontSize: "14px", lineHeight: 1.65, color: C.body }}
               >
                 {item.desc}
               </div>
@@ -800,7 +709,6 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
             e.currentTarget.style.borderColor = C.border;
           }}
         >
-          {/* GitHub icon */}
           <svg
             width="32"
             height="32"
@@ -860,12 +768,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
         }}
       >
         <h2
-          style={{
-            ...headline,
-            fontSize: "28px",
-            color: "#fff",
-            marginBottom: "8px",
-          }}
+          style={{ ...headline, fontSize: "28px", color: "#fff", marginBottom: "8px" }}
         >
           Ready to find your skills?
         </h2>
@@ -898,7 +801,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
         </a>
       </section>
 
-      {/* ─── More tools from Bloom ─── */}
+      {/* ─── Who We Are / Citizen Infra ─── */}
       <section
         style={{
           padding: "72px 24px",
@@ -918,12 +821,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
           }}
         >
           <p
-            style={{
-              ...bodyText,
-              fontStyle: "italic",
-              marginBottom: "6px",
-              lineHeight: 1.7,
-            }}
+            style={{ ...bodyText, fontStyle: "italic", marginBottom: "6px", lineHeight: 1.7 }}
           >
             "If you want to teach people a new way of thinking, don't bother
             trying to teach them. Instead, give them a tool, the use of which
@@ -956,12 +854,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
 
         <div style={{ ...sectionLabel, marginBottom: "16px" }}>Principles</div>
         <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "10px",
-            marginBottom: "48px",
-          }}
+          style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: "48px" }}
         >
           {[
             "Pedagogical by design",
@@ -1046,13 +939,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
             >
               ChatGPT Data Transformer
             </div>
-            <div
-              style={{
-                fontSize: "14px",
-                lineHeight: 1.65,
-                color: C.body,
-              }}
-            >
+            <div style={{ fontSize: "14px", lineHeight: 1.65, color: C.body }}>
               Analyze your ChatGPT export — see your usage signature, topics,
               and conversation patterns. Same privacy-first approach, built for
               OpenAI's format.
@@ -1084,11 +971,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
             }}
           >
             <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
+              style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}
             >
               <div
                 style={{
@@ -1128,13 +1011,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
             >
               Claude Personal Data Transformer
             </div>
-            <div
-              style={{
-                fontSize: "14px",
-                lineHeight: 1.65,
-                color: C.body,
-              }}
-            >
+            <div style={{ fontSize: "14px", lineHeight: 1.65, color: C.body }}>
               Analyze your Claude export — discover your usage patterns and get
               matched with Skills that make your workflows more efficient.
             </div>
