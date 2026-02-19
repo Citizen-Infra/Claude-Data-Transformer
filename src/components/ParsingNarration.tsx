@@ -4,16 +4,19 @@ import { buildHeuristicProfile, matchSkillsHeuristic } from "../lib/heuristicAna
 import { SKILLS_CATALOG } from "../data/skillsCatalog";
 import type { ClaudeConversation, ParsedConversation, UserProfile, EnrichedRecommendation } from "../lib/types";
 
+/* ── Color tokens (aligned with mockup) ── */
 const C = {
-  green: "#1a3a2a",
-  greenMuted: "#2d5a3f",
-  accent: "#3d7a56",
-  cream: "#f5f0e8",
-  warmGray: "#5e594f",
+  greenDeep: "#1a2f26",
+  green: "#2D4A3E",
+  cream: "#FDF6EC",
+  creamMuted: "rgba(253,246,236,0.7)",
+  creamDim: "rgba(253,246,236,0.35)",
+  sageBright: "#6DBF73",
+  sage: "#8BA898",
 };
 
-const mono = "'DM Mono', 'IBM Plex Mono', monospace";
-const sans = "'DM Sans', 'Helvetica Neue', sans-serif";
+const mono = "'DM Mono', monospace";
+const sans = "'DM Sans', sans-serif";
 
 interface UploadStats {
   conversations: number;
@@ -66,7 +69,12 @@ export default function ParsingNarration({
   const [progress, setProgress] = useState(0);
   const [showTrust, setShowTrust] = useState(false);
   const [done, setDone] = useState(false);
-  const [matchSummary, setMatchSummary] = useState<{ total: number; buckets: { label: string; count: number }[] } | null>(null);
+  const [matchSummary, setMatchSummary] = useState<{
+    total: number;
+    high: number;
+    medium: number;
+    lower: number;
+  } | null>(null);
   const hasRun = useRef(false);
   const resultsRef = useRef<NarrationResults | null>(null);
 
@@ -97,18 +105,12 @@ export default function ParsingNarration({
       recommendations: enriched,
     };
 
-    // Build match summary buckets for display
+    // Build match summary counts
     const high = enriched.filter((r) => r.relevance_score >= 0.7).length;
     const medium = enriched.filter((r) => r.relevance_score >= 0.4 && r.relevance_score < 0.7).length;
     const lower = enriched.filter((r) => r.relevance_score > 0 && r.relevance_score < 0.4).length;
 
-    const buckets: { label: string; count: number }[] = [];
-    if (high > 0) buckets.push({ label: "70%+ match", count: high });
-    if (medium > 0) buckets.push({ label: "40–69%", count: medium });
-    if (lower > 0) buckets.push({ label: "under 40%", count: lower });
-
-    // Stash for later reveal
-    setTimeout(() => setMatchSummary({ total: enriched.length, buckets }), 0);
+    setTimeout(() => setMatchSummary({ total: enriched.length, high, medium, lower }), 0);
 
     // Build step sequence
     const parseSteps: NarrationStep[] = dataSource === "persona"
@@ -169,6 +171,53 @@ export default function ParsingNarration({
       ? `${personaEmoji || ""} Exploring ${personaName}'s history…`
       : "Parsing your data…";
 
+  /* ── Build the match summary sentence ── */
+  const renderMatchSentence = () => {
+    if (!matchSummary || matchSummary.total === 0) return null;
+
+    const parts: React.ReactNode[] = [];
+
+    if (matchSummary.high > 0 && matchSummary.medium > 0) {
+      parts.push(
+        <span key="strong" style={{ color: C.sageBright, fontWeight: 600 }}>
+          {matchSummary.high} strong
+        </span>,
+        " (70%+) and ",
+        `${matchSummary.medium} partial (40–69%)`,
+      );
+    } else if (matchSummary.high > 0) {
+      parts.push(
+        <span key="strong" style={{ color: C.sageBright, fontWeight: 600 }}>
+          {matchSummary.high} strong
+        </span>,
+        " (70%+)",
+      );
+    } else if (matchSummary.medium > 0) {
+      parts.push(`${matchSummary.medium} partial (40–69%)`);
+    }
+
+    if (matchSummary.lower > 0) {
+      if (parts.length > 0) parts.push(` and ${matchSummary.lower} exploratory`);
+      else parts.push(`${matchSummary.lower} exploratory`);
+    }
+
+    return (
+      <div
+        style={{
+          fontSize: "15px",
+          color: "rgba(253,246,236,0.55)",
+          lineHeight: 1.6,
+        }}
+      >
+        <strong style={{ color: C.cream, fontWeight: 600 }}>
+          {matchSummary.total} skills
+        </strong>
+        {" matched your usage — "}
+        {parts}
+      </div>
+    );
+  };
+
   return (
     <div
       className="narration-modal-backdrop"
@@ -179,42 +228,55 @@ export default function ParsingNarration({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "rgba(0, 0, 0, 0.5)",
         padding: "24px",
         animation: "fadeIn 0.25s ease",
       }}
     >
+      {/* Frosted backdrop */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: "rgba(45,74,62,0.65)",
+          backdropFilter: "blur(8px)",
+          WebkitBackdropFilter: "blur(8px)",
+        }}
+      />
+
+      {/* Modal */}
       <div
         className="narration-modal"
         style={{
+          position: "relative",
           width: "100%",
-          maxWidth: "540px",
-          background: C.green,
+          maxWidth: "480px",
+          background: C.greenDeep,
           borderRadius: "16px",
+          boxShadow: "0 24px 48px rgba(0,0,0,0.3)",
           overflow: "hidden",
           animation: "modalSlideUp 0.3s ease",
         }}
       >
         {/* Progress bar */}
-        <div style={{ height: "3px", background: "rgba(255,255,255,0.1)" }}>
+        <div style={{ height: "3px", background: "rgba(255,255,255,0.06)" }}>
           <div
             style={{
               height: "100%",
               width: `${progress}%`,
-              background: `linear-gradient(90deg, ${C.greenMuted}, ${C.accent})`,
+              background: `linear-gradient(90deg, ${C.sage}, ${C.sageBright})`,
               transition: "width 0.5s ease",
             }}
           />
         </div>
 
-        <div style={{ padding: "28px 28px 24px" }}>
+        <div style={{ padding: "32px 32px 28px" }}>
           {/* Title */}
           <div
             style={{
               fontFamily: sans,
-              fontSize: "17px",
+              fontSize: "20px",
               fontWeight: 600,
-              color: "rgba(255,255,255,0.9)",
+              color: C.cream,
               textAlign: "center",
               marginBottom: "24px",
             }}
@@ -223,7 +285,7 @@ export default function ParsingNarration({
           </div>
 
           {/* Steps */}
-          <div style={{ fontFamily: mono, fontSize: "12px", lineHeight: 2 }}>
+          <div style={{ fontFamily: sans, fontSize: "14px" }}>
             {steps.map((step, i) => {
               const isComplete = i < currentStep;
               const isCurrent = i === currentStep - 1 && currentStep <= steps.length;
@@ -235,28 +297,43 @@ export default function ParsingNarration({
                   style={{
                     display: i < currentStep ? "flex" : "none",
                     justifyContent: "space-between",
+                    alignItems: "baseline",
                     gap: "16px",
+                    padding: "6px 0",
                     animationDelay: `${i * 50}ms`,
                   }}
                 >
                   <span
                     style={{
-                      color: isComplete ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.4)",
+                      display: "flex",
+                      alignItems: "baseline",
+                      gap: "8px",
+                      color: C.creamMuted,
                     }}
                   >
-                    <span
-                      style={{
-                        color: isComplete && !isCurrent ? "#52b788" : "#88E7BB",
-                        marginRight: "8px",
-                      }}
-                    >
-                      {isComplete && !isCurrent ? "✓" : "●"}
-                    </span>
-                    {step.label}…
+                    {isComplete && !isCurrent ? (
+                      <span style={{ color: C.sageBright }}>✓</span>
+                    ) : (
+                      <span
+                        style={{
+                          display: "inline-block",
+                          width: "6px",
+                          height: "6px",
+                          background: C.sageBright,
+                          borderRadius: "50%",
+                          flexShrink: 0,
+                          position: "relative",
+                          top: "-1px",
+                        }}
+                      />
+                    )}
+                    {step.label}{isComplete && !isCurrent ? "" : "…"}
                   </span>
                   <span
                     style={{
-                      color: "rgba(255,255,255,0.4)",
+                      fontFamily: mono,
+                      fontSize: "12px",
+                      color: C.creamDim,
                       textAlign: "right",
                       flexShrink: 0,
                     }}
@@ -269,69 +346,46 @@ export default function ParsingNarration({
 
             {/* Blinking cursor while in progress */}
             {!done && currentStep > 0 && (
-              <div style={{ color: "rgba(255,255,255,0.3)" }}>
+              <div style={{ color: "rgba(255,255,255,0.3)", padding: "2px 0" }}>
                 <span className="blink">▊</span>
               </div>
             )}
           </div>
 
-          {/* Match summary (shown when done) */}
+          {/* ── Match summary sentence (shown when done) ── */}
           {done && matchSummary && matchSummary.total > 0 && (
             <div
               className="reveal-up"
               style={{
-                marginTop: "16px",
-                padding: "14px 16px",
-                background: "rgba(255,255,255,0.06)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: "10px",
+                marginTop: "20px",
+                paddingTop: "16px",
+                borderTop: "1px solid rgba(255,255,255,0.06)",
               }}
             >
               <div
                 style={{
                   fontFamily: mono,
                   fontSize: "10px",
-                  color: "rgba(255,255,255,0.5)",
+                  letterSpacing: "0.12em",
                   textTransform: "uppercase",
-                  letterSpacing: "0.06em",
-                  marginBottom: "10px",
+                  color: "rgba(253,246,236,0.3)",
+                  marginBottom: "12px",
                 }}
               >
-                Skill matches found
+                Skill Matches Found
               </div>
-              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                {matchSummary.buckets.map((bucket, i) => (
-                  <span
-                    key={i}
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "6px",
-                      padding: "4px 12px",
-                      background: i === 0 ? "rgba(82,183,136,0.2)" : "rgba(255,255,255,0.08)",
-                      border: `1px solid ${i === 0 ? "rgba(82,183,136,0.3)" : "rgba(255,255,255,0.1)"}`,
-                      borderRadius: "6px",
-                      fontFamily: mono,
-                      fontSize: "11px",
-                      color: i === 0 ? "#88E7BB" : "rgba(255,255,255,0.6)",
-                    }}
-                  >
-                    <span style={{ fontWeight: 600, fontSize: "13px" }}>{bucket.count}</span>
-                    {bucket.label}
-                  </span>
-                ))}
-              </div>
+              {renderMatchSentence()}
             </div>
           )}
 
-          {/* Trust line (shown during parsing, hidden when done to make room for match summary) */}
+          {/* Trust line (shown during parsing, hidden when done) */}
           {showTrust && !done && (
             <div
               className="reveal-up"
               style={{
                 marginTop: "16px",
                 paddingTop: "12px",
-                borderTop: "1px solid rgba(255,255,255,0.1)",
+                borderTop: "1px solid rgba(255,255,255,0.06)",
                 fontFamily: sans,
                 fontSize: "12px",
                 color: "rgba(255,255,255,0.5)",
@@ -364,15 +418,16 @@ export default function ParsingNarration({
               onClick={handleGotIt}
               disabled={!done}
               style={{
-                padding: "12px 40px",
-                background: done ? C.greenMuted : "rgba(255,255,255,0.08)",
-                color: done ? C.cream : "rgba(255,255,255,0.3)",
+                width: "200px",
+                padding: "12px 0",
+                background: done ? C.green : "rgba(255,255,255,0.06)",
+                color: done ? C.cream : "rgba(253,246,236,0.3)",
                 border: done
-                  ? `1px solid ${C.accent}`
-                  : "1px solid rgba(255,255,255,0.1)",
+                  ? "1px solid rgba(255,255,255,0.1)"
+                  : "1px solid rgba(255,255,255,0.06)",
                 borderRadius: "10px",
                 fontFamily: sans,
-                fontSize: "14px",
+                fontSize: "15px",
                 fontWeight: 600,
                 cursor: done ? "pointer" : "default",
                 transition: "all 0.3s ease",
