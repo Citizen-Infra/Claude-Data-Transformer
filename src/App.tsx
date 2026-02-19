@@ -3,6 +3,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import LandingPage from "./components/LandingPage";
 import ResultsPage from "./components/ResultsPage";
+import SkillsCommonsPage from "./components/SkillsCommonsPage";
 import type { AppView, AnalysisResults } from "./lib/types";
 
 export default function App() {
@@ -12,6 +13,11 @@ export default function App() {
   const handleDataReady = (res: AnalysisResults) => {
     setResults(res);
     setView("results");
+    window.scrollTo(0, 0);
+  };
+
+  const navigateTo = (target: AppView) => {
+    setView(target);
     window.scrollTo(0, 0);
   };
 
@@ -28,17 +34,27 @@ export default function App() {
       <Header
         view={view}
         onLogoClick={() => {
-          setView("landing");
           setResults(null);
-          window.scrollTo(0, 0);
+          navigateTo("landing");
         }}
+        onNavigate={navigateTo}
       />
 
       {view === "landing" && (
-        <LandingPage onDataReady={handleDataReady} />
+        <LandingPage onDataReady={handleDataReady} onNavigate={navigateTo} />
       )}
 
-      {view === "results" && results && <ResultsPage results={results} />}
+      {view === "results" && results && (
+        <ResultsPage results={results} onNavigate={navigateTo} />
+      )}
+
+      {view === "commons" && (
+        <SkillsCommonsPage
+          userProfile={results?.userProfile}
+          recommendations={results?.recommendations}
+          onNavigate={navigateTo}
+        />
+      )}
 
       <Footer />
     </div>

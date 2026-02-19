@@ -54,12 +54,15 @@ export interface UserProfile {
 export interface SkillCatalogEntry {
   skill_id: string;
   name: string;
-  source: "anthropic" | "community";
+  source: "anthropic" | "community" | "skillsmp" | "skillhub";
   domains: string[];
   work_patterns: string[];
   description: string;
   url?: string;
 }
+
+// App view state
+export type AppView = "landing" | "results" | "commons";
 
 // AI-generated recommendation
 export interface SkillRecommendation {
@@ -93,6 +96,3 @@ export interface LogEntry {
   time: string;
   msg: string;
 }
-
-// App view state
-export type AppView = "landing" | "results";

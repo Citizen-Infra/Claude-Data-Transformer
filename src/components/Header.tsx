@@ -6,9 +6,10 @@ import logoDark from "../assets/logo-dark.svg";
 interface HeaderProps {
   view: AppView;
   onLogoClick: () => void;
+  onNavigate?: (view: AppView) => void;
 }
 
-const NAV_SECTIONS = [
+const RESULTS_NAV = [
   { id: "results-overview", label: "Overview" },
   { id: "results-usage", label: "Usage" },
   { id: "results-skills", label: "Skills" },
@@ -16,8 +17,14 @@ const NAV_SECTIONS = [
   { id: "results-install", label: "Install" },
 ];
 
-export default function Header({ view, onLogoClick }: HeaderProps) {
-  const isDark = view === "results";
+const COMMONS_NAV = [
+  { id: "commons-how", label: "How it works" },
+  { id: "browse", label: "Browse" },
+  { id: "contribute", label: "Contribute" },
+];
+
+export default function Header({ view, onLogoClick, onNavigate }: HeaderProps) {
+  const isDark = view === "results" || view === "commons";
   const [activeSection, setActiveSection] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -39,20 +46,21 @@ export default function Header({ view, onLogoClick }: HeaderProps) {
     setMenuOpen(false);
   }, [view]);
 
+  // Scroll-based section highlighting for results and commons views
   useEffect(() => {
-    if (view !== "results") {
+    const sections = view === "results" ? RESULTS_NAV : view === "commons" ? COMMONS_NAV : [];
+    if (sections.length === 0) {
       setActiveSection("");
       return;
     }
 
     const handleScroll = () => {
-      const offsets = NAV_SECTIONS.map(({ id }) => {
+      const offsets = sections.map(({ id }) => {
         const el = document.getElementById(id);
         if (!el) return { id, top: Infinity };
         return { id, top: el.getBoundingClientRect().top };
       });
 
-      // Find the section closest to the top (within 200px of viewport top)
       let current = "";
       for (const { id, top } of offsets) {
         if (top <= 200) current = id;
@@ -74,6 +82,64 @@ export default function Header({ view, onLogoClick }: HeaderProps) {
   };
 
   const hamburgerColor = isDark ? "#fff" : "#1a3a2a";
+
+  // Render section nav buttons (used for both results and commons)
+  const renderSectionNav = (sections: typeof RESULTS_NAV) => (
+    <nav
+      className="nav-results-scroll"
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "4px",
+        overflowX: "auto",
+        WebkitOverflowScrolling: "touch",
+        msOverflowStyle: "none",
+        scrollbarWidth: "none",
+        flexShrink: 1,
+        minWidth: 0,
+      }}
+    >
+      {sections.map(({ id, label }) => {
+        const isActive = activeSection === id;
+        return (
+          <button
+            key={id}
+            onClick={() => scrollTo(id)}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: "13px",
+              fontWeight: isActive ? 600 : 500,
+              color: isActive ? "#fff" : "rgba(255,255,255,0.5)",
+              padding: "8px 14px",
+              borderRadius: "6px",
+              position: "relative",
+              transition: "color 0.2s ease",
+              whiteSpace: "nowrap",
+              flexShrink: 0,
+            }}
+          >
+            {label}
+            <span
+              style={{
+                position: "absolute",
+                bottom: "2px",
+                left: "14px",
+                right: "14px",
+                height: "2px",
+                borderRadius: "1px",
+                background: "#52b788",
+                opacity: isActive ? 1 : 0,
+                transition: "opacity 0.2s ease",
+              }}
+            />
+          </button>
+        );
+      })}
+    </nav>
+  );
 
   return (
     <header
@@ -131,8 +197,25 @@ export default function Header({ view, onLogoClick }: HeaderProps) {
             >
               How it works
             </a>
+            <button
+              onClick={() => onNavigate?.("commons")}
+              style={{
+                background: "none",
+                border: "none",
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: "14px",
+                fontWeight: 500,
+                color: "#555",
+                textDecoration: "none",
+                transition: "color 0.2s",
+                padding: "8px 12px",
+                cursor: "pointer",
+              }}
+            >
+              Skills Commons
+            </button>
             <a
-              href="#privacy"
+              href="#how-we-keep-it-private"
               style={{
                 fontFamily: "'DM Sans', sans-serif",
                 fontSize: "14px",
@@ -169,63 +252,11 @@ export default function Header({ view, onLogoClick }: HeaderProps) {
           </nav>
         )}
 
-        {/* ── Results nav (horizontal scroll on mobile) ── */}
-        {view === "results" && (
-          <nav
-            className="nav-results-scroll"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "4px",
-              overflowX: "auto",
-              WebkitOverflowScrolling: "touch",
-              msOverflowStyle: "none",
-              scrollbarWidth: "none",
-              flexShrink: 1,
-              minWidth: 0,
-            }}
-          >
-            {NAV_SECTIONS.map(({ id, label }) => {
-              const isActive = activeSection === id;
-              return (
-                <button
-                  key={id}
-                  onClick={() => scrollTo(id)}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    fontFamily: "'DM Sans', sans-serif",
-                    fontSize: "13px",
-                    fontWeight: isActive ? 600 : 500,
-                    color: isActive ? "#fff" : "rgba(255,255,255,0.5)",
-                    padding: "8px 14px",
-                    borderRadius: "6px",
-                    position: "relative",
-                    transition: "color 0.2s ease",
-                    whiteSpace: "nowrap",
-                    flexShrink: 0,
-                  }}
-                >
-                  {label}
-                  <span
-                    style={{
-                      position: "absolute",
-                      bottom: "2px",
-                      left: "14px",
-                      right: "14px",
-                      height: "2px",
-                      borderRadius: "1px",
-                      background: "#52b788",
-                      opacity: isActive ? 1 : 0,
-                      transition: "opacity 0.2s ease",
-                    }}
-                  />
-                </button>
-              );
-            })}
-          </nav>
-        )}
+        {/* ── Results nav ── */}
+        {view === "results" && renderSectionNav(RESULTS_NAV)}
+
+        {/* ── Commons nav ── */}
+        {view === "commons" && renderSectionNav(COMMONS_NAV)}
 
         {/* ── Hamburger button (landing mobile only) ── */}
         {view === "landing" && (
@@ -285,8 +316,24 @@ export default function Header({ view, onLogoClick }: HeaderProps) {
           >
             How it works
           </a>
+          <button
+            onClick={() => { setMenuOpen(false); onNavigate?.("commons"); }}
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: "15px",
+              fontWeight: 500,
+              color: isDark ? "rgba(255,255,255,0.8)" : "#555",
+              background: "none",
+              border: "none",
+              textAlign: "left",
+              padding: "10px 0",
+              cursor: "pointer",
+            }}
+          >
+            Skills Commons
+          </button>
           <a
-            href="#privacy"
+            href="#how-we-keep-it-private"
             onClick={() => setMenuOpen(false)}
             style={{
               fontFamily: "'DM Sans', sans-serif",

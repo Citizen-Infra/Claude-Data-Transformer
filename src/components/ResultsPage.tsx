@@ -1,4 +1,4 @@
-import type { AnalysisResults } from "../lib/types";
+import type { AnalysisResults, AppView } from "../lib/types";
 import StatCard from "./StatCard";
 import BarChart from "./BarChart";
 import TagCloud from "./TagCloud";
@@ -7,6 +7,7 @@ import SkillBuilderCard from "./SkillBuilderCard";
 
 interface ResultsPageProps {
   results: AnalysisResults;
+  onNavigate: (view: AppView) => void;
 }
 
 const C = {
@@ -48,7 +49,7 @@ const bodyText: React.CSSProperties = {
   color: C.body,
 };
 
-export default function ResultsPage({ results }: ResultsPageProps) {
+export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
   const {
     userProfile,
     recommendations,
@@ -574,7 +575,7 @@ export default function ResultsPage({ results }: ResultsPageProps) {
         <h2
           style={{ ...headline, fontSize: "28px", marginBottom: "12px" }}
         >
-          Want to build citizen infrastructure?
+          Browse the full catalog
         </h2>
         <p
           style={{
@@ -584,40 +585,26 @@ export default function ResultsPage({ results }: ResultsPageProps) {
             maxWidth: "520px",
           }}
         >
-          The skills commons is an open, community-curated collection of Skills
-          for everyone. Upload your own, browse what others have built, and help
-          close the gap between tools and the people who need them.
+          The Skills Commons is an open, community-curated collection of Skills
+          for everyone. Browse what others have built, contribute your own, and
+          help close the gap between tools and the people who need them.
         </p>
-        <div
+        <button
+          onClick={() => onNavigate("commons")}
           style={{
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: "12px",
-            color: C.subtle,
+            padding: "13px 28px",
+            background: C.mid,
+            color: "#fff",
+            border: "none",
+            borderRadius: "8px",
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: "15px",
+            fontWeight: 600,
+            cursor: "pointer",
           }}
         >
-          Coming soon &middot;{" "}
-          <a
-            href="#"
-            style={{
-              color: C.mid,
-              textDecoration: "underline",
-              textUnderlineOffset: "3px",
-            }}
-          >
-            Get in touch →
-          </a>
-          {" · "}
-          <a
-            href="#"
-            style={{
-              color: C.mid,
-              textDecoration: "underline",
-              textUnderlineOffset: "3px",
-            }}
-          >
-            Learn about CIBC →
-          </a>
-        </div>
+          Browse the Skills Commons &rarr;
+        </button>
       </section>
     </div>
   );
