@@ -108,11 +108,11 @@ export default function SkillCard({ recommendation: rec }: SkillCardProps) {
                 width: "5px",
                 height: "5px",
                 borderRadius: "50%",
-                background: rec.skill?.source === "anthropic" ? "#2d6a4f" : "#52b788",
+                background: "#52b788",
                 opacity: 0.6,
               }}
             />
-            {rec.skill?.source === "anthropic" ? "Anthropic" : "Community"}
+            Community
           </span>
         </div>
 

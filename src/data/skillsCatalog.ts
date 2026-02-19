@@ -1,109 +1,6 @@
 import type { SkillCatalogEntry } from "../lib/types";
 
 export const SKILLS_CATALOG: SkillCatalogEntry[] = [
-  // ─── Official Anthropic community repo ───
-  {
-    skill_id: "canvas-design",
-    name: "Canvas Design",
-    source: "anthropic",
-    domains: ["design", "creative", "visual"],
-    work_patterns: ["poster-design", "visual-art", "art-generation"],
-    description:
-      "Create sophisticated visual art in PNG and PDF formats using a design-philosophy-first approach — 90% visual, 10% text.",
-    url: "https://github.com/anthropics/skills/tree/main/skills/canvas-design",
-  },
-  {
-    skill_id: "doc-coauthoring",
-    name: "Doc Co-authoring",
-    source: "anthropic",
-    domains: ["writing", "documentation", "business"],
-    work_patterns: ["co-authoring", "document-creation", "content-planning"],
-    description:
-      "A structured 3-stage workflow for co-authoring documentation, proposals, technical specs, and decision docs.",
-    url: "https://github.com/anthropics/skills/tree/main/skills/doc-coauthoring",
-  },
-  {
-    skill_id: "internal-comms",
-    name: "Internal Comms",
-    source: "anthropic",
-    domains: ["communication", "business", "writing"],
-    work_patterns: ["status-reporting", "newsletter-writing", "document-creation"],
-    description:
-      "Compose internal communications: 3P updates, newsletters, FAQs, status reports, leadership updates, and incident reports.",
-    url: "https://github.com/anthropics/skills/tree/main/skills/internal-comms",
-  },
-  {
-    skill_id: "mcp-builder",
-    name: "MCP Server Builder",
-    source: "anthropic",
-    domains: ["development", "integration", "tooling"],
-    work_patterns: ["api-integration", "server-building", "tool-creation"],
-    description:
-      "Build Model Context Protocol servers to connect Claude to external services across 4 phases: research, implementation, review, evaluation.",
-    url: "https://github.com/anthropics/skills/tree/main/skills/mcp-builder",
-  },
-  {
-    skill_id: "skill-creator",
-    name: "Skill Creator",
-    source: "anthropic",
-    domains: ["development", "tooling", "meta"],
-    work_patterns: ["template-creation", "tool-creation", "automation"],
-    description:
-      "Interactive guide for building new Claude Skills with proper structure, progressive disclosure, and bundled resources.",
-    url: "https://github.com/anthropics/skills/tree/main/skills/skill-creator",
-  },
-  {
-    skill_id: "theme-factory",
-    name: "Theme Factory",
-    source: "anthropic",
-    domains: ["design", "business", "presentation"],
-    work_patterns: ["theming", "visual-styling", "presentation-design"],
-    description:
-      "Apply consistent professional styling with 10 pre-set themes (plus custom generation) to slides, docs, reports, and HTML pages.",
-    url: "https://github.com/anthropics/skills/tree/main/skills/theme-factory",
-  },
-  {
-    skill_id: "web-artifacts-builder",
-    name: "Web Artifacts Builder",
-    source: "anthropic",
-    domains: ["development", "design", "web"],
-    work_patterns: ["frontend-building", "component-creation", "web-development"],
-    description:
-      "Create multi-component HTML artifacts using React 18, TypeScript, Tailwind CSS, and 40+ shadcn/ui components.",
-    url: "https://github.com/anthropics/skills/tree/main/skills/web-artifacts-builder",
-  },
-  {
-    skill_id: "webapp-testing",
-    name: "Web App Testing",
-    source: "anthropic",
-    domains: ["development", "testing", "quality"],
-    work_patterns: ["browser-testing", "test-writing", "debugging"],
-    description:
-      "Test local web applications using Playwright with automated server lifecycle management and DOM inspection.",
-    url: "https://github.com/anthropics/skills/tree/main/skills/webapp-testing",
-  },
-  {
-    skill_id: "brand-guidelines",
-    name: "Brand Guidelines",
-    source: "anthropic",
-    domains: ["design", "marketing", "brand-identity"],
-    work_patterns: ["brand-consistency", "styling", "document-creation"],
-    description:
-      "Apply consistent brand colors, typography, and visual identity across all documents and presentations.",
-    url: "https://github.com/anthropics/skills/tree/main/skills/brand-guidelines",
-  },
-  {
-    skill_id: "slack-gif-creator",
-    name: "Slack GIF Creator",
-    source: "anthropic",
-    domains: ["creative", "communication", "design"],
-    work_patterns: ["gif-animation", "visual-art", "content-planning"],
-    description:
-      "Create animated GIFs optimized for Slack with proper dimensions, frame rates, and easing functions.",
-    url: "https://github.com/anthropics/skills/tree/main/skills/slack-gif-creator",
-  },
-
-  // ─── Community skills ───
   {
     skill_id: "systematic-debugging",
     name: "Systematic Debugging",
@@ -203,5 +100,85 @@ export const SKILLS_CATALOG: SkillCatalogEntry[] = [
     description:
       "Convert markdown documents, chat summaries, or research reports into downloadable EPUB files for e-readers and Kindle.",
     url: "https://github.com/smerchek/claude-epub-skill",
+  },
+  {
+    skill_id: "brainstorming",
+    name: "Brainstorming",
+    source: "community",
+    domains: ["planning", "creative", "strategy"],
+    work_patterns: ["brainstorming", "ideation", "project-planning"],
+    description:
+      "Transforms rough ideas into fully-formed designs through structured questioning and alternative exploration. From the Superpowers library.",
+    url: "https://github.com/obra/superpowers/tree/main/skills/brainstorming",
+  },
+  {
+    skill_id: "playwright-skill",
+    name: "Playwright Browser Automation",
+    source: "community",
+    domains: ["development", "testing", "automation"],
+    work_patterns: ["browser-testing", "test-writing", "automation"],
+    description:
+      "General-purpose browser automation using Playwright for end-to-end testing, scraping, and workflow automation.",
+    url: "https://github.com/lackeyjb/playwright-skill",
+  },
+  {
+    skill_id: "web-asset-generator",
+    name: "Web Asset Generator",
+    source: "community",
+    domains: ["design", "development", "web"],
+    work_patterns: ["frontend-building", "web-development", "visual-styling"],
+    description:
+      "Generate favicons, app icons, and social media images (Open Graph, Twitter Cards) for web projects.",
+    url: "https://github.com/alonw0/web-asset-generator",
+  },
+  {
+    skill_id: "pm-skills",
+    name: "Product Management Skills",
+    source: "community",
+    domains: ["product-management", "business", "strategy"],
+    work_patterns: ["project-planning", "roadmap-creation", "content-planning"],
+    description:
+      "24 product management skills across the Triple Diamond lifecycle — discovery, PRDs, roadmapping, and prioritization.",
+    url: "https://github.com/product-on-purpose/pm-skills",
+  },
+  {
+    skill_id: "aws-skills",
+    name: "AWS Development Skills",
+    source: "community",
+    domains: ["development", "cloud", "devops"],
+    work_patterns: ["server-building", "automation", "api-integration"],
+    description:
+      "AWS development with CDK best practices, cost optimization, serverless patterns, and event-driven architecture.",
+    url: "https://github.com/zxkane/aws-skills",
+  },
+  {
+    skill_id: "meeting-insights",
+    name: "Meeting Insights Analyzer",
+    source: "community",
+    domains: ["productivity", "communication", "business"],
+    work_patterns: ["content-planning", "status-reporting", "data-analysis"],
+    description:
+      "Transform meeting transcripts into actionable insights about communication patterns, decisions, and action items.",
+    url: "https://github.com/ComposioHQ/awesome-claude-skills/blob/master/meeting-insights-analyzer",
+  },
+  {
+    skill_id: "invoice-organizer",
+    name: "Invoice Organizer",
+    source: "community",
+    domains: ["finance", "automation", "productivity"],
+    work_patterns: ["data-analysis", "automation", "formatting"],
+    description:
+      "Automatically organize invoices and receipts for tax preparation, expense tracking, and financial record-keeping.",
+    url: "https://github.com/ComposioHQ/awesome-claude-skills/blob/master/invoice-organizer",
+  },
+  {
+    skill_id: "trail-of-bits-security",
+    name: "Security Code Auditing",
+    source: "community",
+    domains: ["security", "development", "quality"],
+    work_patterns: ["code-review", "security-testing", "root-cause-analysis"],
+    description:
+      "Static analysis with CodeQL/Semgrep, variant analysis, code auditing, and fix verification. By Trail of Bits.",
+    url: "https://github.com/trailofbits/skills",
   },
 ];
