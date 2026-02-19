@@ -215,7 +215,7 @@ export default function Header({ view, onLogoClick, onNavigate }: HeaderProps) {
               Skills Commons
             </button>
             <a
-              href="#how-we-keep-it-private"
+              href="#security-details"
               style={{
                 fontFamily: "'DM Sans', sans-serif",
                 fontSize: "14px",
@@ -333,7 +333,7 @@ export default function Header({ view, onLogoClick, onNavigate }: HeaderProps) {
             Skills Commons
           </button>
           <a
-            href="#how-we-keep-it-private"
+            href="#security-details"
             onClick={() => setMenuOpen(false)}
             style={{
               fontFamily: "'DM Sans', sans-serif",
