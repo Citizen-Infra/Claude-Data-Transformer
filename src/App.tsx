@@ -4,6 +4,7 @@ import Footer from "./components/Footer";
 import LandingPage from "./components/LandingPage";
 import AnalyzeStep from "./components/AnalyzeStep";
 import ResultsPage from "./components/ResultsPage";
+import NetworkInspector from "./components/NetworkInspector";
 import type { AppView, ParsedConversation, AnalysisResults } from "./lib/types";
 
 export default function App() {
@@ -60,6 +61,7 @@ export default function App() {
       {view === "results" && results && <ResultsPage results={results} />}
 
       <Footer />
+      <NetworkInspector />
     </div>
   );
 }
