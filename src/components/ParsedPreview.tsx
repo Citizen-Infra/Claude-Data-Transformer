@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { ParsedConversation } from "../lib/types";
+import type { ParsedConversation, UserProfile, EnrichedRecommendation } from "../lib/types";
 
 const C = {
   green: "#1a3a2a",
@@ -30,6 +30,8 @@ interface ParsedPreviewProps {
   dataSource: "file" | "persona";
   personaName?: string;
   personaEmoji?: string;
+  userProfile?: UserProfile | null;
+  recommendations?: EnrichedRecommendation[] | null;
   onAnalyze: () => void;
   onReset: () => void;
 }
@@ -58,6 +60,8 @@ export default function ParsedPreview({
   dataSource,
   personaName,
   personaEmoji,
+  userProfile,
+  recommendations,
   onAnalyze,
   onReset,
 }: ParsedPreviewProps) {
@@ -65,6 +69,9 @@ export default function ParsedPreview({
   const isSample = dataSource === "persona";
   const hasMore = conversations.length > VISIBLE_ROWS;
   const visibleConvs = expanded ? conversations : conversations.slice(0, VISIBLE_ROWS);
+
+  const skillCount = recommendations?.length ?? 0;
+  const gaps = userProfile?.skill_gaps ?? [];
 
   return (
     <div
@@ -112,8 +119,7 @@ export default function ParsedPreview({
           >
             <polyline points="20 6 9 17 4 12" />
           </svg>
-          {stats.conversations} conversations parsed locally · 0 data sent
-          anywhere
+          {stats.conversations} conversations parsed locally · {skillCount} skills matched
         </div>
 
         {/* Sample badge */}
@@ -154,7 +160,7 @@ export default function ParsedPreview({
           {[
             { value: stats.conversations.toString(), label: "Conversations" },
             { value: stats.messages.toLocaleString(), label: "Messages" },
-            { value: stats.withArtifacts.toString(), label: "With artifacts" },
+            { value: skillCount.toString(), label: "Skills matched" },
             {
               value: `${dateRange.earliest} — ${dateRange.latest}`,
               label: "Date range",
@@ -189,7 +195,51 @@ export default function ParsedPreview({
           ))}
         </div>
 
-        {/* ── Conversation list (first 5 visible, expandable) ── */}
+        {/* ── Gaps we identified ── */}
+        {gaps.length > 0 && (
+          <div style={{ marginBottom: "24px" }}>
+            <div
+              style={{
+                fontFamily: mono,
+                fontSize: "10px",
+                fontWeight: 500,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                color: C.warmGray,
+                marginBottom: "10px",
+              }}
+            >
+              Gaps we identified
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                gap: "8px",
+              }}
+            >
+              {gaps.map((gap, i) => (
+                <div
+                  key={i}
+                  style={{
+                    padding: "12px 16px",
+                    background: C.cream,
+                    border: `1px solid ${C.borderLight}`,
+                    borderRadius: "8px",
+                    fontFamily: sans,
+                    fontSize: "13px",
+                    lineHeight: 1.55,
+                    color: C.textMuted,
+                  }}
+                >
+                  {gap}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── Conversation list ── */}
         <div
           style={{
             border: `1px solid ${C.border}`,
@@ -198,6 +248,40 @@ export default function ParsedPreview({
             overflow: "hidden",
           }}
         >
+          {/* Label above table */}
+          <div
+            style={{
+              padding: "10px 16px",
+              background: C.creamDark,
+              borderBottom: `1px solid ${C.border}`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <span
+              style={{
+                fontFamily: mono,
+                fontSize: "10px",
+                fontWeight: 500,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                color: C.warmGray,
+              }}
+            >
+              Conversations analyzed
+            </span>
+            <span
+              style={{
+                fontFamily: mono,
+                fontSize: "10px",
+                color: C.warmGrayLight,
+              }}
+            >
+              {conversations.length} total
+            </span>
+          </div>
+
           {/* Column headers */}
           <div
             style={{
@@ -205,14 +289,13 @@ export default function ParsedPreview({
               gridTemplateColumns: "1fr 60px 70px",
               gap: "8px",
               padding: "8px 16px",
-              background: C.creamDark,
-              borderBottom: `1px solid ${C.border}`,
+              borderBottom: `1px solid ${C.borderLight}`,
               fontFamily: mono,
               fontSize: "10px",
               fontWeight: 500,
               letterSpacing: "1px",
               textTransform: "uppercase",
-              color: C.warmGray,
+              color: C.warmGrayLight,
             }}
           >
             <span>Title</span>
