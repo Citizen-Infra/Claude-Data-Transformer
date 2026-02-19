@@ -55,6 +55,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  padding-bottom: 36px;
 }
 
 ::selection {
@@ -137,6 +138,16 @@ a {
 
 .analyze-btn-pulse {
   animation: analyze-pulse 2s ease-in-out 3;
+}
+
+/* ── Network inspector pending pulse ── */
+@keyframes network-pending-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.network-pending-pulse {
+  animation: network-pending-pulse 1.5s ease-in-out infinite;
 }
 
 /* ── Header / nav responsive ── */
