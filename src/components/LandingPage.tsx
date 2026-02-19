@@ -15,26 +15,38 @@ interface LandingPageProps {
 
 /* ── Design tokens ── */
 const C = {
-  dark: "#1a3a2a",
-  mid: "#2d5a3f",
+  green: "#1a3a2a",
+  greenMuted: "#2d5a3f",
   accent: "#3d7a56",
-  cream: "#f7f5f0",
+  greenLight: "#c8ddd0",
+  greenPale: "#e8f0eb",
+  cream: "#f5f0e8",
+  creamDark: "#ebe5d9",
   surface: "#fff",
   cardBg: "#e8f0eb",
-  border: "#e0e0e0",
+  border: "#d8d2c6",
+  borderLight: "#e8e2d6",
   cardBorder: "#d8d8d8",
-  ink: "#1a1a1a",
+  ink: "#1a1a18",
+  text: "#1a1a18",
+  textMuted: "#4d4943",
   body: "#555",
+  warmGray: "#5e594f",
+  warmGrayLight: "#76716a",
   subtle: "#888",
+  white: "#ffffff",
 };
 
+const mono = "'DM Mono', 'IBM Plex Mono', monospace";
+const sans = "'DM Sans', 'Helvetica Neue', sans-serif";
+
 const sectionLabel: React.CSSProperties = {
-  fontFamily: "'JetBrains Mono', monospace",
-  fontSize: "11px",
+  fontFamily: mono,
+  fontSize: "10.5px",
   fontWeight: 500,
-  letterSpacing: "1.5px",
+  letterSpacing: "0.1em",
   textTransform: "uppercase",
-  color: C.subtle,
+  color: C.warmGray,
   marginBottom: "12px",
 };
 
@@ -169,7 +181,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
       {/* ─── Hero ─── */}
       <section
         style={{
-          background: `linear-gradient(135deg, ${C.dark} 0%, ${C.mid} 100%)`,
+          background: `linear-gradient(135deg, ${C.green} 0%, ${C.greenMuted} 100%)`,
           padding: "80px 24px 72px",
           textAlign: "center",
         }}
@@ -208,7 +220,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
             display: "inline-block",
             padding: "14px 32px",
             background: "#fff",
-            color: C.dark,
+            color: C.green,
             border: "none",
             borderRadius: "8px",
             fontFamily: "'DM Sans', sans-serif",
@@ -352,7 +364,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
                   width: "32px",
                   height: "32px",
                   borderRadius: "8px",
-                  background: C.dark,
+                  background: C.green,
                   color: "#fff",
                   display: "flex",
                   alignItems: "center",
@@ -391,7 +403,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
             fontFamily: "'DM Sans', sans-serif",
             fontSize: "14px",
             fontWeight: 600,
-            color: C.mid,
+            color: C.greenMuted,
             textDecoration: "underline",
             textUnderlineOffset: "3px",
           }}
@@ -410,158 +422,198 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
           borderBottom: `1px solid ${C.border}`,
         }}
       >
-        <div style={{ maxWidth: "600px", margin: "0 auto" }}>
-          <div style={{ ...sectionLabel, color: C.mid }}>Get started</div>
-          <h2 style={{ ...headline, fontSize: "32px", marginBottom: "8px" }}>
+        <div style={{ maxWidth: "780px", margin: "0 auto" }}>
+          <div style={{ ...sectionLabel, color: C.warmGray }}>Get started</div>
+          <h2 style={{
+            fontFamily: sans,
+            fontSize: "28px",
+            fontWeight: 600,
+            color: C.text,
+            marginBottom: "8px",
+            letterSpacing: "-0.01em",
+          }}>
             Upload your data.
           </h2>
-          <p style={{ ...bodyText, marginBottom: "36px" }}>
+          <p style={{
+            fontFamily: sans,
+            fontSize: "15px",
+            color: C.textMuted,
+            lineHeight: 1.6,
+            marginBottom: "28px",
+            maxWidth: "540px",
+          }}>
             Drop your Claude export file below. We'll analyze your conversation
             patterns and recommend Skills — entirely in your browser.
           </p>
 
           {/* ── Phase 1: Upload zone + persona picker ── */}
           {phase === "upload" && (
-            <>
-              {/* Drop zone */}
-              <div style={{ marginBottom: "8px" }}>
-                <label
-                  style={{
-                    fontFamily: "'DM Sans', sans-serif",
-                    fontSize: "14px",
-                    fontWeight: 600,
-                    color: C.ink,
-                    display: "block",
-                    marginBottom: "4px",
-                  }}
-                >
+            <div
+              style={{
+                border: `2px dashed ${dragOver ? C.greenMuted : C.border}`,
+                borderRadius: "14px",
+                background: C.white,
+                overflow: "hidden",
+                transition: "border-color 0.2s ease",
+              }}
+            >
+              {/* File label */}
+              <div style={{ padding: "14px 24px 6px" }}>
+                <div style={{
+                  fontFamily: sans,
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  color: C.text,
+                  marginBottom: "2px",
+                }}>
                   Claude Export File
-                </label>
-                <div
-                  style={{
-                    fontFamily: "'DM Sans', sans-serif",
-                    fontSize: "13px",
-                    color: C.body,
-                    marginBottom: "10px",
-                    lineHeight: 1.5,
-                  }}
-                >
+                </div>
+                <div style={{ fontFamily: sans, fontSize: "13px", color: C.textMuted }}>
                   Upload the{" "}
-                  <code
-                    style={{
-                      fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: "12px",
-                      background: C.cardBg,
-                      padding: "2px 6px",
-                      borderRadius: "4px",
-                      color: C.mid,
-                      fontWeight: 500,
-                    }}
-                  >
+                  <code style={{
+                    fontFamily: mono,
+                    fontSize: "11.5px",
+                    background: C.creamDark,
+                    padding: "1px 6px",
+                    borderRadius: "3px",
+                    border: `1px solid ${C.borderLight}`,
+                  }}>
                     conversations.json
                   </code>{" "}
                   file from your Claude data export.
                 </div>
-                <div
-                  onDragOver={(e) => {
-                    e.preventDefault();
-                    setDragOver(true);
-                  }}
-                  onDragLeave={() => setDragOver(false)}
-                  onDrop={(e) => {
-                    e.preventDefault();
-                    setDragOver(false);
-                    if (e.dataTransfer.files[0])
-                      handleFile(e.dataTransfer.files[0]);
-                  }}
-                  onClick={() => fileRef.current?.click()}
-                  style={{
-                    border: `2px dashed ${dragOver ? C.mid : C.cardBorder}`,
-                    borderRadius: "16px",
-                    background: dragOver ? C.cream : C.surface,
-                    padding: "48px 32px",
-                    textAlign: "center",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
-                  }}
-                >
-                  <input
-                    ref={fileRef}
-                    type="file"
-                    accept=".json"
-                    onChange={(e) =>
-                      e.target.files?.[0] && handleFile(e.target.files[0])
-                    }
-                    style={{ display: "none" }}
-                  />
-                  <div
-                    style={{
-                      fontSize: "32px",
-                      marginBottom: "12px",
-                      opacity: 0.5,
-                    }}
-                  >
-                    📄
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "15px",
-                      color: C.body,
-                      marginBottom: "6px",
-                    }}
-                  >
-                    Drop your file here, or
-                  </div>
-                  <div
-                    style={{
-                      display: "inline-block",
-                      padding: "10px 28px",
-                      background: C.mid,
-                      color: "#fff",
-                      borderRadius: "8px",
-                      fontFamily: "'DM Sans', sans-serif",
-                      fontSize: "14px",
-                      fontWeight: 600,
-                      marginBottom: "12px",
-                    }}
-                  >
-                    Choose file
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: "11px",
-                      color: C.subtle,
-                      letterSpacing: "0.3px",
-                    }}
-                  >
-                    Accepts conversations.json
-                  </div>
-                </div>
-
-                {uploadError && (
-                  <div
-                    style={{
-                      marginTop: "8px",
-                      padding: "10px 14px",
-                      fontSize: "13px",
-                      background: "#fef2f2",
-                      color: "#991b1b",
-                      border: "1px solid #fecaca",
-                      borderRadius: "8px",
-                    }}
-                  >
-                    {uploadError}
-                  </div>
-                )}
               </div>
 
-              {/* Persona picker */}
+              {/* Drop zone (inner) */}
+              <div
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  setDragOver(true);
+                }}
+                onDragLeave={() => setDragOver(false)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setDragOver(false);
+                  if (e.dataTransfer.files[0])
+                    handleFile(e.dataTransfer.files[0]);
+                }}
+                onClick={() => fileRef.current?.click()}
+                style={{
+                  margin: "12px 24px 0",
+                  padding: "40px 32px",
+                  textAlign: "center",
+                  cursor: "pointer",
+                  background: dragOver ? C.greenPale : C.cream,
+                  borderRadius: "10px",
+                  border: `1.5px dashed ${dragOver ? C.greenMuted : C.borderLight}`,
+                  transition: "all 0.2s ease",
+                }}
+              >
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept=".json"
+                  onChange={(e) =>
+                    e.target.files?.[0] && handleFile(e.target.files[0])
+                  }
+                  style={{ display: "none" }}
+                />
+
+                {/* File icon SVG */}
+                <div style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginBottom: "14px",
+                }}>
+                  <svg width="28" height="34" viewBox="0 0 32 38" fill="none">
+                    <path
+                      d="M2 4C2 2.9 2.9 2 4 2H20L30 12V34C30 35.1 29.1 36 28 36H4C2.9 36 2 35.1 2 34V4Z"
+                      stroke={C.warmGray}
+                      strokeWidth="1.5"
+                      fill="none"
+                    />
+                    <path d="M20 2V12H30" stroke={C.warmGray} strokeWidth="1.5" />
+                    <line x1="8" y1="19" x2="24" y2="19" stroke={C.warmGray} strokeWidth="1" />
+                    <line x1="8" y1="24" x2="24" y2="24" stroke={C.warmGray} strokeWidth="1" />
+                    <line x1="8" y1="29" x2="18" y2="29" stroke={C.warmGray} strokeWidth="1" />
+                  </svg>
+                </div>
+
+                <div style={{
+                  fontFamily: sans,
+                  fontSize: "14px",
+                  color: C.textMuted,
+                  marginBottom: "12px",
+                }}>
+                  Drop your file here, or
+                </div>
+
+                <div style={{
+                  display: "inline-block",
+                  padding: "10px 32px",
+                  background: C.green,
+                  color: C.cream,
+                  borderRadius: "8px",
+                  fontFamily: sans,
+                  fontSize: "13.5px",
+                  fontWeight: 500,
+                }}>
+                  Choose file
+                </div>
+
+                <div style={{
+                  marginTop: "12px",
+                  fontFamily: mono,
+                  fontSize: "10.5px",
+                  color: C.warmGray,
+                }}>
+                  Accepts conversations.json
+                </div>
+              </div>
+
+              {uploadError && (
+                <div
+                  style={{
+                    margin: "8px 24px 0",
+                    padding: "10px 14px",
+                    fontSize: "13px",
+                    background: "#fef2f2",
+                    color: "#991b1b",
+                    border: "1px solid #fecaca",
+                    borderRadius: "8px",
+                  }}
+                >
+                  {uploadError}
+                </div>
+              )}
+
+              {/* ── or ── divider */}
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "16px",
+                padding: "22px 28px",
+              }}>
+                <div style={{ flex: 1, height: "1px", background: C.borderLight }} />
+                <span style={{
+                  fontFamily: mono,
+                  fontSize: "10.5px",
+                  color: C.warmGray,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                }}>
+                  or
+                </span>
+                <div style={{ flex: 1, height: "1px", background: C.borderLight }} />
+              </div>
+
+              {/* Persona section (always visible, inside the container) */}
               <PersonaPicker
                 onTryDemo={handleTryDemo}
                 onDownload={handleDownload}
               />
-            </>
+            </div>
           )}
 
           {/* ── Phase 2: Narrated parsing ── */}
@@ -589,11 +641,11 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
             />
           )}
 
-          {/* ── Privacy monitor (always visible) ── */}
-          <PrivacyMonitor phase={phase} dataSource={dataSource} />
-
           {/* ── Dev tools prompt (always visible) ── */}
           <DevToolsPrompt />
+
+          {/* ── Privacy monitor (always visible) ── */}
+          <PrivacyMonitor phase={phase} dataSource={dataSource} />
         </div>
       </section>
 
@@ -763,7 +815,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
       <section
         style={{
           padding: "64px 24px",
-          background: `linear-gradient(135deg, ${C.dark} 0%, ${C.mid} 100%)`,
+          background: `linear-gradient(135deg, ${C.green} 0%, ${C.greenMuted} 100%)`,
           textAlign: "center",
         }}
       >
@@ -789,7 +841,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
             display: "inline-block",
             padding: "14px 32px",
             background: "#fff",
-            color: C.dark,
+            color: C.green,
             borderRadius: "8px",
             fontFamily: "'DM Sans', sans-serif",
             fontSize: "15px",
@@ -815,7 +867,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
         </h2>
         <div
           style={{
-            borderLeft: `3px solid ${C.mid}`,
+            borderLeft: `3px solid ${C.greenMuted}`,
             paddingLeft: "20px",
             marginBottom: "28px",
           }}
@@ -874,7 +926,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
                 padding: "6px 14px",
                 borderRadius: "6px",
                 background: C.cardBg,
-                color: C.mid,
+                color: C.greenMuted,
                 border: `1px solid ${C.border}`,
               }}
             >
@@ -949,7 +1001,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
                 fontFamily: "'DM Sans', sans-serif",
                 fontSize: "13px",
                 fontWeight: 600,
-                color: C.mid,
+                color: C.greenMuted,
                 marginTop: "auto",
               }}
             >
@@ -962,7 +1014,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
             style={{
               padding: "28px 24px",
               background: C.cardBg,
-              border: `1px solid ${C.mid}`,
+              border: `1px solid ${C.greenMuted}`,
               borderRadius: "12px",
               display: "flex",
               flexDirection: "column",
@@ -994,7 +1046,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
                   textTransform: "uppercase",
                   padding: "2px 8px",
                   borderRadius: "4px",
-                  background: C.mid,
+                  background: C.greenMuted,
                   color: "#fff",
                 }}
               >
@@ -1021,7 +1073,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
                 fontFamily: "'DM Sans', sans-serif",
                 fontSize: "13px",
                 fontWeight: 600,
-                color: C.mid,
+                color: C.greenMuted,
                 textDecoration: "none",
                 marginTop: "auto",
               }}

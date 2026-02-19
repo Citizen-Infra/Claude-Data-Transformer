@@ -277,12 +277,7 @@ html, body {
   }
 
   .persona-card {
-    padding: 16px 12px !important;
-  }
-
-  .persona-card-actions {
-    flex-direction: column !important;
-    gap: 6px !important;
+    padding: 16px 10px 14px !important;
   }
 
   /* ── Preview: stats 2-col, info panels stack, buttons stack ── */

@@ -2,195 +2,159 @@ import { useState } from "react";
 import { PERSONAS } from "../data/samplePersonas";
 
 const C = {
-  mid: "#2d5a3f",
-  accent: "#3d7a56",
-  surface: "#fff",
-  cardBg: "#e8f0eb",
-  border: "#e0e0e0",
-  ink: "#1a1a1a",
-  body: "#555",
-  subtle: "#888",
+  green: "#1a3a2a",
+  greenMuted: "#2d5a3f",
+  cream: "#f5f0e8",
+  text: "#1a1a18",
+  textMuted: "#4d4943",
+  borderLight: "#e8e2d6",
+  white: "#ffffff",
 };
+
+const mono = "'DM Mono', 'IBM Plex Mono', monospace";
+const sans = "'DM Sans', 'Helvetica Neue', sans-serif";
 
 interface PersonaPickerProps {
   onTryDemo: (personaId: string) => void;
   onDownload: (personaId: string) => void;
 }
 
+function PersonaCard({
+  persona,
+  onTryDemo,
+  onDownload,
+}: {
+  persona: (typeof PERSONAS)[number];
+  onTryDemo: () => void;
+  onDownload: () => void;
+}) {
+  const [hover, setHover] = useState(false);
+
+  return (
+    <div
+      className="persona-card"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        padding: "20px 12px 16px",
+        background: hover ? C.cream : C.white,
+        border: `1.5px solid ${hover ? C.greenMuted : C.borderLight}`,
+        borderRadius: "10px",
+        textAlign: "center",
+        cursor: "default",
+        transition: "all 0.2s ease",
+        transform: hover ? "translateY(-3px)" : "none",
+        boxShadow: hover
+          ? "0 6px 16px rgba(0,0,0,0.07)"
+          : "0 1px 3px rgba(0,0,0,0.03)",
+      }}
+    >
+      <div style={{ fontSize: "30px", marginBottom: "10px", lineHeight: 1 }}>
+        {persona.emoji}
+      </div>
+      <div
+        style={{
+          fontFamily: sans,
+          fontSize: "13px",
+          fontWeight: 600,
+          color: C.text,
+          marginBottom: "4px",
+          lineHeight: 1.3,
+        }}
+      >
+        {persona.name}
+      </div>
+      <div
+        style={{
+          fontFamily: sans,
+          fontSize: "11px",
+          color: C.textMuted,
+          lineHeight: 1.5,
+          marginBottom: "16px",
+          minHeight: "34px",
+        }}
+      >
+        {persona.tagline}
+      </div>
+      <button
+        onClick={onTryDemo}
+        style={{
+          display: "inline-block",
+          padding: "7px 16px",
+          background: C.green,
+          color: C.cream,
+          borderRadius: "6px",
+          fontFamily: sans,
+          fontSize: "11.5px",
+          fontWeight: 500,
+          border: "none",
+          cursor: "pointer",
+          marginBottom: "8px",
+        }}
+      >
+        Try demo
+      </button>
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+          onDownload();
+        }}
+        style={{
+          fontFamily: mono,
+          fontSize: "10px",
+          color: C.greenMuted,
+          cursor: "pointer",
+          textDecoration: hover ? "underline" : "none",
+          textUnderlineOffset: "2px",
+        }}
+      >
+        ↓ Download .json
+      </div>
+    </div>
+  );
+}
+
 export default function PersonaPicker({
   onTryDemo,
   onDownload,
 }: PersonaPickerProps) {
-  const [open, setOpen] = useState(false);
-
   return (
-    <div style={{ marginTop: "20px" }}>
-      {/* Toggle link */}
-      <button
-        onClick={() => setOpen(!open)}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "8px",
-          width: "100%",
-          background: "none",
-          border: "none",
-          cursor: "pointer",
-          padding: "12px 0",
-          fontFamily: "'DM Sans', sans-serif",
-          fontSize: "13px",
-          color: C.body,
-          textAlign: "left",
-        }}
-      >
-        <span style={{ color: C.mid, fontWeight: 600 }}>
-          {open ? "Hide sample personas" : "Hesitant? Try with sample data"}
-        </span>
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke={C.mid}
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+    <div style={{ padding: "0 28px 32px" }}>
+      <div style={{ textAlign: "center", marginBottom: "22px" }}>
+        <div
           style={{
-            transform: open ? "rotate(180deg)" : "none",
-            transition: "transform 0.2s",
+            fontFamily: sans,
+            fontSize: "18px",
+            fontWeight: 600,
+            color: C.text,
+            marginBottom: "5px",
           }}
         >
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
-      </button>
-
-      {open && (
-        <div>
-          <p
-            style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: "13px",
-              color: C.body,
-              lineHeight: 1.6,
-              marginBottom: "16px",
-            }}
-          >
-            Pick a famous persona and see the full experience with fictional
-            conversations.
-          </p>
-
-          {/* Persona grid */}
-          <div
-            className="persona-grid"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
-              gap: "12px",
-            }}
-          >
-            {PERSONAS.map((persona) => (
-              <div
-                key={persona.id}
-                className="persona-card"
-                style={{
-                  padding: "20px 16px",
-                  background: C.surface,
-                  border: `1px solid ${C.border}`,
-                  borderRadius: "12px",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "10px",
-                  transition: "box-shadow 0.2s, transform 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow =
-                    "0 4px 20px rgba(0,0,0,0.06)";
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = "none";
-                  e.currentTarget.style.transform = "none";
-                }}
-              >
-                {/* Persona info */}
-                <div>
-                  <div style={{ fontSize: "24px", marginBottom: "6px" }}>
-                    {persona.emoji}
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "'DM Sans', sans-serif",
-                      fontSize: "14px",
-                      fontWeight: 600,
-                      color: C.ink,
-                      marginBottom: "2px",
-                    }}
-                  >
-                    {persona.name}
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "'DM Sans', sans-serif",
-                      fontSize: "12px",
-                      color: C.subtle,
-                      lineHeight: 1.4,
-                    }}
-                  >
-                    {persona.tagline}
-                  </div>
-                </div>
-
-                {/* Actions */}
-                <div
-                  className="persona-card-actions"
-                  style={{
-                    display: "flex",
-                    gap: "8px",
-                    marginTop: "auto",
-                  }}
-                >
-                  <button
-                    onClick={() => onTryDemo(persona.id)}
-                    style={{
-                      flex: 1,
-                      padding: "8px 12px",
-                      background: C.mid,
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: "6px",
-                      fontFamily: "'DM Sans', sans-serif",
-                      fontSize: "12px",
-                      fontWeight: 600,
-                      cursor: "pointer",
-                      transition: "background 0.15s",
-                    }}
-                  >
-                    Try demo
-                  </button>
-                  <button
-                    onClick={() => onDownload(persona.id)}
-                    style={{
-                      padding: "8px 12px",
-                      background: "none",
-                      color: C.mid,
-                      border: `1px solid ${C.border}`,
-                      borderRadius: "6px",
-                      fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: "11px",
-                      fontWeight: 500,
-                      cursor: "pointer",
-                      transition: "border-color 0.15s",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    ↓ .json
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+          Not ready to upload your own data?
         </div>
-      )}
+        <div style={{ fontFamily: sans, fontSize: "14px", color: C.textMuted }}>
+          See how it works with a famous persona.
+        </div>
+      </div>
+
+      {/* Responsive grid — wraps at ~135px per card */}
+      <div
+        className="persona-grid"
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(135px, 1fr))",
+          gap: "12px",
+        }}
+      >
+        {PERSONAS.map((persona) => (
+          <PersonaCard
+            key={persona.id}
+            persona={persona}
+            onTryDemo={() => onTryDemo(persona.id)}
+            onDownload={() => onDownload(persona.id)}
+          />
+        ))}
+      </div>
     </div>
   );
 }
