@@ -95,4 +95,4 @@ export interface LogEntry {
 }
 
 // App view state
-export type AppView = "landing" | "flow" | "results";
+export type AppView = "landing" | "results";
