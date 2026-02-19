@@ -409,7 +409,7 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
       {/* ─── Before you upload (export steps) ─── */}
       <section
         id="how-it-works"
-        style={{ padding: "0 24px 72px", maxWidth: "800px", margin: "0 auto" }}
+        style={{ padding: "0 24px 72px", maxWidth: "800px", margin: "0 auto", scrollMarginTop: "120px" }}
       >
         <div style={sectionLabel}>Before you upload</div>
         <h2 style={{ ...headline, fontSize: "32px", marginBottom: "12px" }}>
@@ -504,6 +504,7 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
           background: C.cream,
           borderTop: `1px solid ${C.border}`,
           borderBottom: `1px solid ${C.border}`,
+          scrollMarginTop: "120px",
         }}
       >
         <div style={{ maxWidth: "780px", margin: "0 auto" }}>
@@ -789,7 +790,7 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
         style={{
           background: C.surface,
           borderTop: `1px solid ${C.border}`,
-          scrollMarginTop: "24px",
+          scrollMarginTop: "120px",
         }}
       >
         <div style={{ maxWidth: "800px", margin: "0 auto", padding: "56px 32px 48px" }}>
