@@ -56,7 +56,6 @@ function formatRelativeDate(dateStr: string): string {
 export default function ParsedPreview({
   conversations,
   stats,
-  dateRange,
   dataSource,
   personaName,
   personaEmoji,
@@ -75,6 +74,7 @@ export default function ParsedPreview({
 
   return (
     <div
+      id="parsed-preview"
       className="reveal-up"
       style={{
         background: C.surface,
@@ -147,54 +147,6 @@ export default function ParsedPreview({
       </div>
 
       <div style={{ padding: "24px 20px" }}>
-        {/* ── Stats row ── */}
-        <div
-          className="preview-stats"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: "16px",
-            marginBottom: "24px",
-          }}
-        >
-          {[
-            { value: stats.conversations.toString(), label: "Conversations" },
-            { value: stats.messages.toLocaleString(), label: "Messages" },
-            { value: skillCount.toString(), label: "Skills matched" },
-            {
-              value: `${dateRange.earliest} — ${dateRange.latest}`,
-              label: "Date range",
-            },
-          ].map((s, i) => (
-            <div key={i} style={{ textAlign: "center" }}>
-              <div
-                style={{
-                  fontFamily: "'DM Serif Display', Georgia, serif",
-                  fontSize: i === 3 ? "14px" : "24px",
-                  fontWeight: 400,
-                  color: C.green,
-                  marginBottom: "4px",
-                  lineHeight: 1.2,
-                }}
-              >
-                {s.value}
-              </div>
-              <div
-                style={{
-                  fontFamily: mono,
-                  fontSize: "10px",
-                  fontWeight: 500,
-                  letterSpacing: "1px",
-                  textTransform: "uppercase",
-                  color: C.warmGray,
-                }}
-              >
-                {s.label}
-              </div>
-            </div>
-          ))}
-        </div>
-
         {/* ── Gaps we identified ── */}
         {gaps.length > 0 && (
           <div style={{ marginBottom: "24px" }}>
