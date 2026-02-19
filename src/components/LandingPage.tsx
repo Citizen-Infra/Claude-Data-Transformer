@@ -8,6 +8,7 @@ import ParsedPreview from "./ParsedPreview";
 import PersonaPicker from "./PersonaPicker";
 import PrivacyMonitor from "./PrivacyMonitor";
 import DevToolsPrompt from "./DevToolsPrompt";
+import SkillBuilderCard from "./SkillBuilderCard";
 import type { ParsedConversation, ClaudeConversation, UserProfile, EnrichedRecommendation, AnalysisResults } from "../lib/types";
 
 interface LandingPageProps {
@@ -827,6 +828,17 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
             <path d="M7 17L17 7M17 7H7M17 7v10" />
           </svg>
         </a>
+      </section>
+
+      {/* ─── Skills Commons / Build a Skill ─── */}
+      <section
+        style={{
+          padding: "0 24px 72px",
+          maxWidth: "800px",
+          margin: "0 auto",
+        }}
+      >
+        <SkillBuilderCard variant="homepage" />
       </section>
 
       {/* ─── CTA ─── */}
