@@ -154,10 +154,10 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
       setUserProfile(results.userProfile);
       setRecommendations(results.recommendations);
       setPhase("preview");
-      // Scroll to upload section so the preview is centered on screen
+      // Scroll to center the preview card on screen
       setTimeout(() => {
-        document.getElementById("upload")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 100);
+        document.getElementById("parsed-preview")?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 150);
     },
     []
   );
