@@ -8,10 +8,10 @@ import ParsedPreview from "./ParsedPreview";
 import PersonaPicker from "./PersonaPicker";
 import PrivacyMonitor from "./PrivacyMonitor";
 import DevToolsPrompt from "./DevToolsPrompt";
-import type { ParsedConversation, ClaudeConversation, UserProfile, EnrichedRecommendation } from "../lib/types";
+import type { ParsedConversation, ClaudeConversation, UserProfile, EnrichedRecommendation, AnalysisResults } from "../lib/types";
 
 interface LandingPageProps {
-  onDataReady: (conversations: ParsedConversation[]) => void;
+  onDataReady: (results: AnalysisResults) => void;
 }
 
 /* ── Design tokens ── */
@@ -92,7 +92,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
     messages: number;
     withArtifacts: number;
   } | null>(null);
-  const [dateRange, setDateRange] = useState<{ earliest: string; latest: string } | null>(null);
+  const [dateRange, setDateRange] = useState<{ earliest: string; latest: string; years: number } | null>(null);
 
   // Analysis results (from narration modal)
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -162,12 +162,18 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
     []
   );
 
-  // ── Handle analyze (proceed to app flow) ──
+  // ── Handle analyze (proceed straight to results) ──
   const handleAnalyze = useCallback(() => {
-    if (uploadedConvs) {
-      onDataReady(uploadedConvs);
+    if (uploadedConvs && userProfile && recommendations && dateRange) {
+      onDataReady({
+        userProfile,
+        recommendations,
+        dateRange,
+        totalConversations: uploadedConvs.length,
+        totalMessages: uploadedConvs.reduce((s, c) => s + c.message_count, 0),
+      });
     }
-  }, [uploadedConvs, onDataReady]);
+  }, [uploadedConvs, userProfile, recommendations, dateRange, onDataReady]);
 
   // ── Reset to upload phase ──
   const handleReset = useCallback(() => {
@@ -197,7 +203,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
         }}
       >
         <div style={{ ...sectionLabel, color: "#88E7BB", marginBottom: "20px" }}>
-          Skills discovery
+          Improve how you work
         </div>
         <h1
           style={{
@@ -208,7 +214,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
             margin: "0 auto 20px",
           }}
         >
-          Find the Skills that fit how you already think.
+          Find the Claude Skills you didn't know you needed.
         </h1>
         <p
           style={{

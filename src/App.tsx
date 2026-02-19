@@ -2,18 +2,17 @@ import { useState } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import LandingPage from "./components/LandingPage";
-import AnalyzeStep from "./components/AnalyzeStep";
 import ResultsPage from "./components/ResultsPage";
-import type { AppView, ParsedConversation, AnalysisResults } from "./lib/types";
+import type { AppView, AnalysisResults } from "./lib/types";
 
 export default function App() {
   const [view, setView] = useState<AppView>("landing");
-  const [conversations, setConversations] = useState<ParsedConversation[] | null>(null);
   const [results, setResults] = useState<AnalysisResults | null>(null);
 
-  const handleDataReady = (convs: ParsedConversation[]) => {
-    setConversations(convs);
-    setView("flow");
+  const handleDataReady = (res: AnalysisResults) => {
+    setResults(res);
+    setView("results");
+    window.scrollTo(0, 0);
   };
 
   return (
@@ -31,24 +30,12 @@ export default function App() {
         onLogoClick={() => {
           setView("landing");
           setResults(null);
-          setConversations(null);
           window.scrollTo(0, 0);
         }}
       />
 
       {view === "landing" && (
         <LandingPage onDataReady={handleDataReady} />
-      )}
-
-      {view === "flow" && conversations && (
-        <AnalyzeStep
-          conversations={conversations}
-          onComplete={(res) => {
-            setResults(res);
-            setView("results");
-            window.scrollTo(0, 0);
-          }}
-        />
       )}
 
       {view === "results" && results && <ResultsPage results={results} />}
