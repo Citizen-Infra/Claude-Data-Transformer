@@ -250,7 +250,7 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
 
         {/* Privacy pill link */}
         <a
-          href="#security-details"
+          href="#how-we-keep-it-private"
           onMouseEnter={() => setHoverPrivacyLink(true)}
           onMouseLeave={() => setHoverPrivacyLink(false)}
           style={{
@@ -409,7 +409,7 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
       {/* ─── Before you upload (export steps) ─── */}
       <section
         id="how-it-works"
-        style={{ padding: "0 24px 72px", maxWidth: "800px", margin: "0 auto", scrollMarginTop: "120px" }}
+        style={{ padding: "0 24px 72px", maxWidth: "800px", margin: "0 auto" }}
       >
         <div style={sectionLabel}>Before you upload</div>
         <h2 style={{ ...headline, fontSize: "32px", marginBottom: "12px" }}>
@@ -504,7 +504,6 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
           background: C.cream,
           borderTop: `1px solid ${C.border}`,
           borderBottom: `1px solid ${C.border}`,
-          scrollMarginTop: "120px",
         }}
       >
         <div style={{ maxWidth: "780px", margin: "0 auto" }}>
@@ -517,235 +516,187 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
             marginBottom: "8px",
             letterSpacing: "-0.01em",
           }}>
-            See how it works.
+            Upload your data.
           </h2>
           <p style={{
             fontFamily: sans,
             fontSize: "15px",
             color: C.textMuted,
             lineHeight: 1.6,
+            marginBottom: "28px",
             maxWidth: "540px",
           }}>
-            We analyze your conversation patterns and recommend Skills that fit
-            how you already use Claude.
+            Drop your Claude export file below. We'll analyze your conversation
+            patterns and recommend Skills — entirely in your browser.
           </p>
 
-          {/* Trust line */}
-          <div style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            marginTop: "16px",
-            marginBottom: "28px",
-          }}>
-            <div style={{
-              width: "20px",
-              height: "20px",
-              background: C.green,
-              borderRadius: "50%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-            }}>
-              <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-                <path d="M8 1L2 4v4c0 3.5 2.5 6.5 6 7.5 3.5-1 6-4 6-7.5V4L8 1z" stroke={C.cream} strokeWidth="1.5" fill="none"/>
-                <path d="M5.5 8L7 9.5 10.5 6" stroke={C.cream} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-            <span style={{
-              fontFamily: sans,
-              fontSize: "14px",
-              fontWeight: 500,
-              color: C.text,
-            }}>
-              Your data never leaves your browser. No server, no database, no account.{" "}
-              <a
-                href="#security-details"
-                onClick={(e) => {
+          {/* ── Phase 1: Upload zone + persona picker ── */}
+          {phase === "upload" && (
+            <div
+              style={{
+                border: `2px dashed ${dragOver ? C.greenMuted : C.border}`,
+                borderRadius: "14px",
+                background: C.white,
+                overflow: "hidden",
+                transition: "border-color 0.2s ease",
+              }}
+            >
+              {/* File label */}
+              <div style={{ padding: "14px 24px 6px" }}>
+                <div style={{
+                  fontFamily: sans,
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  color: C.text,
+                  marginBottom: "2px",
+                }}>
+                  Claude Export File
+                </div>
+                <div style={{ fontFamily: sans, fontSize: "13px", color: C.textMuted }}>
+                  Upload the{" "}
+                  <code style={{
+                    fontFamily: mono,
+                    fontSize: "11.5px",
+                    background: C.creamDark,
+                    padding: "1px 6px",
+                    borderRadius: "3px",
+                    border: `1px solid ${C.borderLight}`,
+                  }}>
+                    conversations.json
+                  </code>{" "}
+                  file from your Claude data export.
+                </div>
+              </div>
+
+              {/* Drop zone (inner) */}
+              <div
+                onDragOver={(e) => {
                   e.preventDefault();
-                  document.getElementById("security-details")?.scrollIntoView({ behavior: "smooth" });
+                  setDragOver(true);
                 }}
+                onDragLeave={() => setDragOver(false)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setDragOver(false);
+                  if (e.dataTransfer.files[0])
+                    handleFile(e.dataTransfer.files[0]);
+                }}
+                onClick={() => fileRef.current?.click()}
                 style={{
-                  color: C.green,
-                  textDecoration: "underline",
-                  textUnderlineOffset: "3px",
-                  fontWeight: 500,
+                  margin: "12px 24px 0",
+                  padding: "40px 32px",
+                  textAlign: "center",
+                  cursor: "pointer",
+                  background: dragOver ? C.greenPale : C.cream,
+                  borderRadius: "10px",
+                  border: `1.5px dashed ${dragOver ? C.greenMuted : C.borderLight}`,
+                  transition: "all 0.2s ease",
                 }}
               >
-                How we keep it private &darr;
-              </a>
-            </span>
-          </div>
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept=".json"
+                  onChange={(e) =>
+                    e.target.files?.[0] && handleFile(e.target.files[0])
+                  }
+                  style={{ display: "none" }}
+                />
 
-          {/* ── Phase 1: Persona demos first, then upload zone ── */}
-          {phase === "upload" && (
-            <div>
-              {/* ── Persona demos (primary CTA) ── */}
-              <PersonaPicker
-                onTryDemo={handleTryDemo}
-                onDownload={handleDownload}
-                heading="Try it with a famous mind."
-                subheading="See the full experience with sample data — no upload needed."
-              />
+                {/* File icon SVG */}
+                <div style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginBottom: "14px",
+                }}>
+                  <svg width="28" height="34" viewBox="0 0 32 38" fill="none">
+                    <path
+                      d="M2 4C2 2.9 2.9 2 4 2H20L30 12V34C30 35.1 29.1 36 28 36H4C2.9 36 2 35.1 2 34V4Z"
+                      stroke={C.warmGray}
+                      strokeWidth="1.5"
+                      fill="none"
+                    />
+                    <path d="M20 2V12H30" stroke={C.warmGray} strokeWidth="1.5" />
+                    <line x1="8" y1="19" x2="24" y2="19" stroke={C.warmGray} strokeWidth="1" />
+                    <line x1="8" y1="24" x2="24" y2="24" stroke={C.warmGray} strokeWidth="1" />
+                    <line x1="8" y1="29" x2="18" y2="29" stroke={C.warmGray} strokeWidth="1" />
+                  </svg>
+                </div>
+
+                <div style={{
+                  fontFamily: sans,
+                  fontSize: "14px",
+                  color: C.textMuted,
+                  marginBottom: "12px",
+                }}>
+                  Drop your file here, or
+                </div>
+
+                <div style={{
+                  display: "inline-block",
+                  padding: "10px 32px",
+                  background: C.green,
+                  color: C.cream,
+                  borderRadius: "8px",
+                  fontFamily: sans,
+                  fontSize: "13.5px",
+                  fontWeight: 500,
+                }}>
+                  Choose file
+                </div>
+
+                <div style={{
+                  marginTop: "12px",
+                  fontFamily: mono,
+                  fontSize: "10.5px",
+                  color: C.warmGray,
+                }}>
+                  Accepts conversations.json
+                </div>
+              </div>
+
+              {uploadError && (
+                <div
+                  style={{
+                    margin: "8px 24px 0",
+                    padding: "10px 14px",
+                    fontSize: "13px",
+                    background: "#fef2f2",
+                    color: "#991b1b",
+                    border: "1px solid #fecaca",
+                    borderRadius: "8px",
+                  }}
+                >
+                  {uploadError}
+                </div>
+              )}
 
               {/* ── or ── divider */}
               <div style={{
                 display: "flex",
                 alignItems: "center",
                 gap: "16px",
-                padding: "32px 0",
+                padding: "22px 28px",
               }}>
-                <div style={{ flex: 1, height: "1px", borderTop: `1px dashed ${C.border}` }} />
+                <div style={{ flex: 1, height: "1px", background: C.borderLight }} />
                 <span style={{
                   fontFamily: mono,
-                  fontSize: "11px",
-                  color: C.warmGrayLight,
+                  fontSize: "10.5px",
+                  color: C.warmGray,
                   textTransform: "uppercase",
                   letterSpacing: "0.08em",
                 }}>
                   or
                 </span>
-                <div style={{ flex: 1, height: "1px", borderTop: `1px dashed ${C.border}` }} />
+                <div style={{ flex: 1, height: "1px", background: C.borderLight }} />
               </div>
 
-              {/* ── Upload card (secondary, below demos) ── */}
-              <div
-                style={{
-                  background: C.white,
-                  border: `1px solid ${C.border}`,
-                  borderRadius: "12px",
-                  padding: "32px",
-                }}
-              >
-                <div style={{
-                  fontFamily: sans,
-                  fontSize: "15px",
-                  fontWeight: 700,
-                  color: C.text,
-                  marginBottom: "4px",
-                }}>
-                  Ready? Upload your Claude export.
-                </div>
-                <div style={{ fontFamily: sans, fontSize: "14px", color: C.textMuted, marginBottom: "24px" }}>
-                  Drop the{" "}
-                  <code style={{
-                    fontFamily: mono,
-                    fontSize: "13px",
-                    background: C.creamDark,
-                    padding: "2px 8px",
-                    borderRadius: "4px",
-                    color: C.text,
-                  }}>
-                    conversations.json
-                  </code>{" "}
-                  file from Settings → Privacy → Export Data.
-                </div>
-
-                {/* Drop zone */}
-                <div
-                  onDragOver={(e) => {
-                    e.preventDefault();
-                    setDragOver(true);
-                  }}
-                  onDragLeave={() => setDragOver(false)}
-                  onDrop={(e) => {
-                    e.preventDefault();
-                    setDragOver(false);
-                    if (e.dataTransfer.files[0])
-                      handleFile(e.dataTransfer.files[0]);
-                  }}
-                  onClick={() => fileRef.current?.click()}
-                  style={{
-                    border: `2px dashed ${dragOver ? C.greenMuted : C.border}`,
-                    borderRadius: "12px",
-                    padding: "48px 24px",
-                    textAlign: "center",
-                    cursor: "pointer",
-                    background: dragOver ? C.greenPale : C.cream,
-                    transition: "all 0.2s ease",
-                  }}
-                >
-                  <input
-                    ref={fileRef}
-                    type="file"
-                    accept=".json"
-                    onChange={(e) =>
-                      e.target.files?.[0] && handleFile(e.target.files[0])
-                    }
-                    style={{ display: "none" }}
-                  />
-
-                  {/* File icon SVG */}
-                  <div style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginBottom: "12px",
-                    opacity: 0.5,
-                  }}>
-                    <svg width="28" height="34" viewBox="0 0 32 38" fill="none">
-                      <path
-                        d="M2 4C2 2.9 2.9 2 4 2H20L30 12V34C30 35.1 29.1 36 28 36H4C2.9 36 2 35.1 2 34V4Z"
-                        stroke={C.warmGray}
-                        strokeWidth="1.5"
-                        fill="none"
-                      />
-                      <path d="M20 2V12H30" stroke={C.warmGray} strokeWidth="1.5" />
-                      <line x1="8" y1="19" x2="24" y2="19" stroke={C.warmGray} strokeWidth="1" />
-                      <line x1="8" y1="24" x2="24" y2="24" stroke={C.warmGray} strokeWidth="1" />
-                      <line x1="8" y1="29" x2="18" y2="29" stroke={C.warmGray} strokeWidth="1" />
-                    </svg>
-                  </div>
-
-                  <div style={{
-                    fontFamily: sans,
-                    fontSize: "15px",
-                    color: C.textMuted,
-                    marginBottom: "16px",
-                  }}>
-                    Drop your file here, or
-                  </div>
-
-                  <div style={{
-                    display: "inline-block",
-                    padding: "10px 24px",
-                    background: C.green,
-                    color: C.cream,
-                    borderRadius: "8px",
-                    fontFamily: sans,
-                    fontSize: "14px",
-                    fontWeight: 500,
-                  }}>
-                    Choose file
-                  </div>
-
-                  <div style={{
-                    marginTop: "12px",
-                    fontFamily: mono,
-                    fontSize: "13px",
-                    color: C.warmGray,
-                  }}>
-                    Accepts conversations.json
-                  </div>
-                </div>
-
-                {uploadError && (
-                  <div
-                    style={{
-                      marginTop: "12px",
-                      padding: "10px 14px",
-                      fontSize: "13px",
-                      background: "#fef2f2",
-                      color: "#991b1b",
-                      border: "1px solid #fecaca",
-                      borderRadius: "8px",
-                    }}
-                  >
-                    {uploadError}
-                  </div>
-                )}
-              </div>
+              {/* Persona section (always visible, inside the container) */}
+              <PersonaPicker
+                onTryDemo={handleTryDemo}
+                onDownload={handleDownload}
+              />
             </div>
           )}
 
@@ -784,177 +735,166 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
         </div>
       </section>
 
-      {/* ─── Security Details (scroll target from trust line + hero pill) ─── */}
+      {/* ─── Privacy section ─── */}
       <section
-        id="security-details"
-        style={{
-          background: C.surface,
-          borderTop: `1px solid ${C.border}`,
-          scrollMarginTop: "120px",
-        }}
+        id="how-we-keep-it-private"
+        style={{ padding: "72px 24px", maxWidth: "800px", margin: "0 auto", scrollMarginTop: "24px" }}
       >
-        <div style={{ maxWidth: "800px", margin: "0 auto", padding: "56px 32px 48px" }}>
-          <div style={sectionLabel}>Privacy</div>
-          <h2 style={{ ...headline, fontSize: "26px", marginBottom: "8px" }}>
-            How we keep your data private.
-          </h2>
-          <p style={{
-            fontFamily: sans,
-            fontSize: "15px",
-            color: C.textMuted,
-            lineHeight: 1.6,
-            marginBottom: "36px",
-            maxWidth: "540px",
-          }}>
-            This tool was built by people who believe your AI history belongs to
-            you. Here's exactly how the architecture enforces that.
-          </p>
+        <div style={sectionLabel}>How privacy works here</div>
+        <h2 style={{ ...headline, fontSize: "32px", marginBottom: "12px" }}>
+          Built for you to own your data, not for us to see it.
+        </h2>
+        <p style={{ ...bodyText, marginBottom: "40px" }}>
+          We designed this tool so your data never touches our hands. Everything
+          runs client-side, directly in your browser.
+        </p>
 
-          {/* Security cards grid */}
-          <div style={{
+        <div
+          style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "24px",
-            marginBottom: "40px",
-          }}>
-            {[
-              {
-                title: "Browser-only processing",
-                desc: "Your file is read by JavaScript running on your device. The data never touches a server. There is no server. We use your browser's own compute to parse and analyze everything.",
-                icon: (
-                  <svg viewBox="0 0 24 24" fill="none" stroke={C.cream} strokeWidth="2" width="18" height="18">
-                    <rect x="2" y="3" width="20" height="14" rx="2"/>
-                    <path d="M8 21h8M12 17v4"/>
-                  </svg>
-                ),
-              },
-              {
-                title: "No database to breach",
-                desc: "We don't store anything. There's no user account, no session data, no analytics cookies. Close the tab and everything disappears. There is nothing to hack because there is nothing to store.",
-                icon: (
-                  <svg viewBox="0 0 24 24" fill="none" stroke={C.cream} strokeWidth="2" width="18" height="18">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                  </svg>
-                ),
-              },
-              {
-                title: "Your API key stays in memory",
-                desc: "When you provide an Anthropic API key for analysis, it lives only in browser memory. It's never written to disk, never sent to us, never logged. Close the tab and it's gone.",
-                icon: (
-                  <svg viewBox="0 0 24 24" fill="none" stroke={C.cream} strokeWidth="2" width="18" height="18">
-                    <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
-                  </svg>
-                ),
-              },
-              {
-                title: "Open source",
-                desc: "Every line of code is on GitHub. You can read the source, verify the claims, and audit the network requests yourself. We built this tool to be trustworthy, not to ask for trust.",
-                icon: (
-                  <svg viewBox="0 0 24 24" fill="none" stroke={C.cream} strokeWidth="2" width="18" height="18">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                    <polyline points="14 2 14 8 20 8"/>
-                    <line x1="16" y1="13" x2="8" y2="13"/>
-                    <line x1="16" y1="17" x2="8" y2="17"/>
-                  </svg>
-                ),
-              },
-            ].map((card, i) => (
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gap: "20px",
+          }}
+        >
+          {[
+            {
+              icon: "🔒",
+              title: "Nothing leaves your browser",
+              desc: "Your file is parsed and analyzed entirely using client-side JavaScript. There is no server, no upload, no account.",
+            },
+            {
+              icon: "🛡️",
+              title: "No network requests",
+              desc: "Zero outgoing API calls. Your data is processed locally with pattern-matching heuristics — nothing is sent anywhere.",
+            },
+            {
+              icon: "🗑️",
+              title: "Nothing is stored",
+              desc: "There is no database, no cookies, no local storage. Close the tab and everything is gone. We never see your data.",
+            },
+            {
+              icon: "📊",
+              title: "Privacy-preserving analytics only",
+              desc: "We use fence analytics for simple page-view counts. No cookies, no fingerprinting, no behavioral tracking.",
+            },
+          ].map((item, i) => (
+            <div
+              key={i}
+              style={{
+                padding: "24px",
+                background: C.surface,
+                border: `1px solid ${C.border}`,
+                borderRadius: "12px",
+                transition: "box-shadow 0.2s, transform 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.06)";
+                e.currentTarget.style.transform = "translateY(-2px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.boxShadow = "none";
+                e.currentTarget.style.transform = "none";
+              }}
+            >
+              <div style={{ fontSize: "24px", marginBottom: "12px" }}>
+                {item.icon}
+              </div>
               <div
-                key={i}
                 style={{
-                  background: C.cream,
-                  borderRadius: "12px",
-                  padding: "24px",
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: "15px",
+                  fontWeight: 600,
+                  color: C.ink,
+                  marginBottom: "8px",
                 }}
               >
-                <div style={{
-                  width: "36px",
-                  height: "36px",
-                  background: C.green,
-                  borderRadius: "8px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginBottom: "14px",
-                }}>
-                  {card.icon}
-                </div>
-                <div style={{
-                  fontFamily: sans,
-                  fontSize: "15px",
-                  fontWeight: 700,
-                  color: C.text,
-                  marginBottom: "6px",
-                }}>
-                  {card.title}
-                </div>
-                <div style={{
-                  fontFamily: sans,
-                  fontSize: "13px",
-                  color: C.textMuted,
-                  lineHeight: 1.6,
-                }}>
-                  {card.desc}
-                </div>
+                {item.title}
               </div>
-            ))}
-          </div>
-
-          {/* Dev tools CTA (elevated) */}
-          <div style={{
-            background: C.cream,
-            border: `1px dashed ${C.border}`,
-            borderRadius: "12px",
-            padding: "28px 32px",
-            display: "flex",
-            alignItems: "flex-start",
-            gap: "16px",
-          }}>
-            <div style={{
-              width: "40px",
-              height: "40px",
-              background: C.green,
-              borderRadius: "8px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-            }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke={C.cream} strokeWidth="2" width="20" height="20">
-                <polyline points="16 18 22 12 16 6"/>
-                <polyline points="8 6 2 12 8 18"/>
-              </svg>
-            </div>
-            <div>
-              <div style={{
-                fontFamily: sans,
-                fontSize: "15px",
-                fontWeight: 700,
-                color: C.text,
-                marginBottom: "4px",
-              }}>
-                Want proof? Watch it yourself.
+              <div
+                style={{ fontSize: "14px", lineHeight: 1.65, color: C.body }}
+              >
+                {item.desc}
               </div>
-              <p style={{
-                fontFamily: sans,
-                fontSize: "13px",
-                color: C.textMuted,
-                lineHeight: 1.6,
-                margin: 0,
-              }}>
-                Open your browser's dev tools (
-                <strong style={{ color: C.text }}>F12</strong> or{" "}
-                <strong style={{ color: C.text }}>Cmd+Option+I</strong>
-                ) and switch to the{" "}
-                <strong style={{ color: C.text }}>Network tab</strong> before uploading.
-                You'll see exactly zero requests to our domain. The only outbound
-                traffic is to{" "}
-                <strong style={{ color: C.text }}>api.anthropic.com</strong> — and only
-                when you explicitly trigger analysis with your own API key.
-              </p>
             </div>
-          </div>
+          ))}
         </div>
+
+        {/* ── GitHub repo preview ── */}
+        <a
+          href="https://github.com/Citizen-Infra/Claude-Data-Transformer"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "16px",
+            marginTop: "28px",
+            padding: "20px 24px",
+            background: C.surface,
+            border: `1px solid ${C.border}`,
+            borderRadius: "12px",
+            textDecoration: "none",
+            transition: "box-shadow 0.2s, transform 0.2s, border-color 0.2s",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.06)";
+            e.currentTarget.style.transform = "translateY(-1px)";
+            e.currentTarget.style.borderColor = C.cardBorder;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.boxShadow = "none";
+            e.currentTarget.style.transform = "none";
+            e.currentTarget.style.borderColor = C.border;
+          }}
+        >
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill={C.ink}
+            style={{ flexShrink: 0 }}
+          >
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+          </svg>
+          <div style={{ minWidth: 0 }}>
+            <div
+              style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: "15px",
+                fontWeight: 600,
+                color: C.ink,
+                marginBottom: "2px",
+              }}
+            >
+              Don't trust us — read the code.
+            </div>
+            <div
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: "12px",
+                color: C.subtle,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              github.com/Citizen-Infra/Claude-Data-Transformer
+            </div>
+          </div>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={C.subtle}
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{ flexShrink: 0, marginLeft: "auto" }}
+          >
+            <path d="M7 17L17 7M17 7H7M17 7v10" />
+          </svg>
+        </a>
       </section>
 
       {/* ─── Skills Commons / Build a Skill ─── */}

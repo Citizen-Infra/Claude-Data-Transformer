@@ -7,7 +7,6 @@ interface HeaderProps {
   view: AppView;
   onLogoClick: () => void;
   onNavigate?: (view: AppView) => void;
-  hasResults?: boolean;
 }
 
 const RESULTS_NAV = [
@@ -18,19 +17,13 @@ const RESULTS_NAV = [
   { id: "results-install", label: "Install" },
 ];
 
-const LANDING_NAV = [
-  { id: "how-it-works", label: "How it works" },
-  { id: "upload", label: "Get started" },
-  { id: "security-details", label: "Privacy" },
-];
-
 const COMMONS_NAV = [
   { id: "commons-how", label: "How it works" },
   { id: "browse", label: "Browse" },
   { id: "contribute", label: "Contribute" },
 ];
 
-export default function Header({ view, onLogoClick, onNavigate, hasResults }: HeaderProps) {
+export default function Header({ view, onLogoClick, onNavigate }: HeaderProps) {
   const isDark = view === "results" || view === "commons";
   const [activeSection, setActiveSection] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
@@ -53,9 +46,9 @@ export default function Header({ view, onLogoClick, onNavigate, hasResults }: He
     setMenuOpen(false);
   }, [view]);
 
-  // Scroll-based section highlighting for all views with section nav
+  // Scroll-based section highlighting for results and commons views
   useEffect(() => {
-    const sections = view === "results" ? RESULTS_NAV : view === "commons" ? COMMONS_NAV : view === "landing" ? LANDING_NAV : [];
+    const sections = view === "results" ? RESULTS_NAV : view === "commons" ? COMMONS_NAV : [];
     if (sections.length === 0) {
       setActiveSection("");
       return;
@@ -190,6 +183,20 @@ export default function Header({ view, onLogoClick, onNavigate, hasResults }: He
         {/* ── Desktop nav (landing) ── */}
         {view === "landing" && (
           <nav className="nav-desktop" style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+            <a
+              href="#how-it-works"
+              style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: "14px",
+                fontWeight: 500,
+                color: "#555",
+                textDecoration: "none",
+                transition: "color 0.2s",
+                padding: "8px 12px",
+              }}
+            >
+              How it works
+            </a>
             <button
               onClick={() => onNavigate?.("commons")}
               style={{
@@ -207,29 +214,20 @@ export default function Header({ view, onLogoClick, onNavigate, hasResults }: He
             >
               Skills Commons
             </button>
-            {hasResults && (
-              <button
-                onClick={() => onNavigate?.("results")}
-                style={{
-                  background: "none",
-                  border: "none",
-                  fontFamily: "'DM Sans', sans-serif",
-                  fontSize: "14px",
-                  fontWeight: 600,
-                  color: "#1a3a2a",
-                  padding: "8px 12px",
-                  cursor: "pointer",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "6px",
-                }}
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                </svg>
-                Suggested for you
-              </button>
-            )}
+            <a
+              href="#how-we-keep-it-private"
+              style={{
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: "14px",
+                fontWeight: 500,
+                color: "#555",
+                textDecoration: "none",
+                transition: "color 0.2s",
+                padding: "8px 12px",
+              }}
+            >
+              Privacy
+            </a>
             <a
               href="#upload"
               style={{
@@ -290,61 +288,6 @@ export default function Header({ view, onLogoClick, onNavigate, hasResults }: He
         )}
       </div>
 
-      {/* ── Sub nav bar (landing — on-page scroll navigation) ── */}
-      {view === "landing" && !menuOpen && (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "2px",
-            padding: "0 24px",
-            height: "40px",
-            borderTop: "1px solid #e8e2d6",
-            background: "#fff",
-          }}
-        >
-          {LANDING_NAV.map(({ id, label }) => {
-            const isActive = activeSection === id;
-            return (
-              <button
-                key={id}
-                onClick={() => scrollTo(id)}
-                style={{
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
-                  fontFamily: "'DM Sans', sans-serif",
-                  fontSize: "12.5px",
-                  fontWeight: isActive ? 600 : 500,
-                  color: isActive ? "#1a3a2a" : "#888",
-                  padding: "8px 14px",
-                  borderRadius: "6px",
-                  position: "relative",
-                  transition: "color 0.2s ease",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {label}
-                <span
-                  style={{
-                    position: "absolute",
-                    bottom: "0",
-                    left: "14px",
-                    right: "14px",
-                    height: "2px",
-                    borderRadius: "1px",
-                    background: "#2d5a3f",
-                    opacity: isActive ? 1 : 0,
-                    transition: "opacity 0.2s ease",
-                  }}
-                />
-              </button>
-            );
-          })}
-        </div>
-      )}
-
       {/* ── Mobile dropdown (landing) ── */}
       {view === "landing" && menuOpen && (
         <div
@@ -359,6 +302,20 @@ export default function Header({ view, onLogoClick, onNavigate, hasResults }: He
             background: isDark ? "#1a3a2a" : "#fff",
           }}
         >
+          <a
+            href="#how-it-works"
+            onClick={() => setMenuOpen(false)}
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: "15px",
+              fontWeight: 500,
+              color: isDark ? "rgba(255,255,255,0.8)" : "#555",
+              textDecoration: "none",
+              padding: "10px 0",
+            }}
+          >
+            How it works
+          </a>
           <button
             onClick={() => { setMenuOpen(false); onNavigate?.("commons"); }}
             style={{
@@ -375,24 +332,20 @@ export default function Header({ view, onLogoClick, onNavigate, hasResults }: He
           >
             Skills Commons
           </button>
-          {hasResults && (
-            <button
-              onClick={() => { setMenuOpen(false); onNavigate?.("results"); }}
-              style={{
-                fontFamily: "'DM Sans', sans-serif",
-                fontSize: "15px",
-                fontWeight: 600,
-                color: "#1a3a2a",
-                background: "none",
-                border: "none",
-                textAlign: "left",
-                padding: "10px 0",
-                cursor: "pointer",
-              }}
-            >
-              Suggested for you
-            </button>
-          )}
+          <a
+            href="#how-we-keep-it-private"
+            onClick={() => setMenuOpen(false)}
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: "15px",
+              fontWeight: 500,
+              color: isDark ? "rgba(255,255,255,0.8)" : "#555",
+              textDecoration: "none",
+              padding: "10px 0",
+            }}
+          >
+            Privacy
+          </a>
           <a
             href="#upload"
             onClick={() => setMenuOpen(false)}
