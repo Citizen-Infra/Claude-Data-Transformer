@@ -4,19 +4,14 @@ import Footer from "./components/Footer";
 import LandingPage from "./components/LandingPage";
 import AnalyzeStep from "./components/AnalyzeStep";
 import ResultsPage from "./components/ResultsPage";
-import NetworkInspector from "./components/NetworkInspector";
 import type { AppView, ParsedConversation, AnalysisResults } from "./lib/types";
 
 export default function App() {
   const [view, setView] = useState<AppView>("landing");
-  const [apiKey, setApiKey] = useState("");
-  const [useAI, setUseAI] = useState(false);
   const [conversations, setConversations] = useState<ParsedConversation[] | null>(null);
   const [results, setResults] = useState<AnalysisResults | null>(null);
 
-  const handleDataReady = (key: string, convs: ParsedConversation[], ai: boolean) => {
-    setApiKey(key);
-    setUseAI(ai);
+  const handleDataReady = (convs: ParsedConversation[]) => {
     setConversations(convs);
     setView("flow");
   };
@@ -48,8 +43,6 @@ export default function App() {
       {view === "flow" && conversations && (
         <AnalyzeStep
           conversations={conversations}
-          apiKey={apiKey}
-          useAI={useAI}
           onComplete={(res) => {
             setResults(res);
             setView("results");
@@ -61,7 +54,6 @@ export default function App() {
       {view === "results" && results && <ResultsPage results={results} />}
 
       <Footer />
-      <NetworkInspector />
     </div>
   );
 }

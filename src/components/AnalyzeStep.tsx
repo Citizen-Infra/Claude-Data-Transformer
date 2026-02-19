@@ -1,6 +1,4 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { buildUserProfile, matchSkills } from "../lib/anthropicApi";
-import { buildAnalysisPrompt, buildMatchingPrompt } from "../lib/prompts";
 import { buildHeuristicProfile, matchSkillsHeuristic } from "../lib/heuristicAnalysis";
 import { getDateRange } from "../lib/parseClaudeExport";
 import { SKILLS_CATALOG } from "../data/skillsCatalog";
@@ -8,15 +6,11 @@ import TerminalLog from "./TerminalLog";
 import type {
   ParsedConversation,
   AnalysisResults,
-  UserProfile,
-  SkillRecommendation,
   LogEntry,
 } from "../lib/types";
 
 interface AnalyzeStepProps {
   conversations: ParsedConversation[];
-  apiKey: string;
-  useAI: boolean;
   onComplete: (results: AnalysisResults) => void;
 }
 
@@ -35,8 +29,6 @@ const C = {
 
 export default function AnalyzeStep({
   conversations,
-  apiKey,
-  useAI,
   onComplete,
 }: AnalyzeStepProps) {
   const [status, setStatus] = useState<Status>("starting");
@@ -57,8 +49,9 @@ export default function AnalyzeStep({
     if (hasRun.current) return;
     hasRun.current = true;
 
-    const runHeuristic = async () => {
+    const run = async () => {
       try {
+        addLog("Mode: Local heuristic analysis");
         addLog(`Found ${conversations.length} conversations to analyze`);
         setProgress(15);
 
@@ -96,7 +89,7 @@ export default function AnalyzeStep({
         addLog(`Matched ${enriched.length} skills`);
         setProgress(100);
         setStatus("done");
-        addLog("Analysis complete (local heuristics)");
+        addLog("Analysis complete");
 
         setTimeout(
           () =>
@@ -118,80 +111,8 @@ export default function AnalyzeStep({
       }
     };
 
-    const runAI = async () => {
-      try {
-        addLog(`Found ${conversations.length} conversations to analyze`);
-        setProgress(10);
-
-        addLog("Sampling conversations and building analysis prompt...");
-        setStatus("profiling");
-        setProgress(20);
-
-        const profilePrompt = buildAnalysisPrompt(conversations);
-        const userProfile = await buildUserProfile<UserProfile>(
-          apiKey,
-          profilePrompt
-        );
-
-        addLog(
-          `Profile: ${userProfile.primary_domains?.length || 0} domains, ${
-            userProfile.work_patterns?.length || 0
-          } patterns`
-        );
-        setProgress(55);
-
-        addLog("Matching against skills commons...");
-        setStatus("matching");
-        setProgress(65);
-
-        const matchPrompt = buildMatchingPrompt(userProfile, SKILLS_CATALOG);
-        const recommendations = await matchSkills<SkillRecommendation[]>(
-          apiKey,
-          matchPrompt
-        );
-
-        addLog(`Matched ${recommendations.length} skills`);
-        setProgress(95);
-
-        const enriched = recommendations
-          .map((rec) => ({
-            ...rec,
-            skill: SKILLS_CATALOG.find((s) => s.skill_id === rec.skill_id),
-          }))
-          .filter((r) => r.skill);
-
-        setProgress(100);
-        setStatus("done");
-        addLog("Analysis complete (AI-powered)");
-
-        setTimeout(
-          () =>
-            onComplete({
-              userProfile,
-              recommendations: enriched,
-              dateRange: getDateRange(conversations),
-              totalConversations: conversations.length,
-              totalMessages: conversations.reduce(
-                (s, c) => s + c.message_count,
-                0
-              ),
-            }),
-          500
-        );
-      } catch (e) {
-        addLog(`Error: ${e instanceof Error ? e.message : "Unknown error"}`);
-        setStatus("error");
-      }
-    };
-
-    if (useAI) {
-      addLog("Mode: AI-powered analysis (Anthropic API)");
-      runAI();
-    } else {
-      addLog("Mode: Local heuristic analysis");
-      runHeuristic();
-    }
-  }, [conversations, apiKey, useAI, onComplete, addLog]);
+    run();
+  }, [conversations, onComplete, addLog]);
 
   const statusLabel =
     status === "profiling"
@@ -253,8 +174,6 @@ export default function AnalyzeStep({
       >
         {status === "error"
           ? "Check the log below for details. Reload to try again."
-          : useAI
-          ? "Claude is reading your conversation patterns and matching them against the skills commons. This usually takes 15\u201330 seconds."
           : "Scanning your conversation patterns locally and matching them against the skills commons."}
       </p>
 
