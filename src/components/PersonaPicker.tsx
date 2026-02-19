@@ -17,6 +17,8 @@ const sans = "'DM Sans', 'Helvetica Neue', sans-serif";
 interface PersonaPickerProps {
   onTryDemo: (personaId: string) => void;
   onDownload: (personaId: string) => void;
+  heading?: string;
+  subheading?: string;
 }
 
 function PersonaCard({
@@ -117,6 +119,8 @@ function PersonaCard({
 export default function PersonaPicker({
   onTryDemo,
   onDownload,
+  heading,
+  subheading,
 }: PersonaPickerProps) {
   return (
     <div style={{ padding: "0 28px 32px" }}>
@@ -130,10 +134,10 @@ export default function PersonaPicker({
             marginBottom: "5px",
           }}
         >
-          Not ready to upload your own data?
+          {heading || "Not ready to upload your own data?"}
         </div>
         <div style={{ fontFamily: sans, fontSize: "14px", color: C.textMuted }}>
-          See how it works with a famous persona.
+          {subheading || "See how it works with a famous persona."}
         </div>
       </div>
 
