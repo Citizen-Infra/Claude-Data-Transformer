@@ -1,11 +1,10 @@
 import { useState, useRef, useCallback } from "react";
-import { testApiKey } from "../lib/anthropicApi";
 import { parseClaudeExport } from "../lib/parseClaudeExport";
 import { SAMPLE_CONVERSATIONS } from "../data/sampleConversations";
 import type { ParsedConversation } from "../lib/types";
 
 interface LandingPageProps {
-  onDataReady: (apiKey: string, conversations: ParsedConversation[], useAI: boolean) => void;
+  onDataReady: (conversations: ParsedConversation[]) => void;
 }
 
 /* ── Design tokens ── */
@@ -49,145 +48,8 @@ const bodyText: React.CSSProperties = {
   maxWidth: "560px",
 };
 
-/* ── API Key Modal ── */
-function ApiKeyModal({ onClose }: { onClose: () => void }) {
-  return (
-    <div
-      onClick={onClose}
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 100,
-        background: "rgba(0,0,0,0.4)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "24px",
-      }}
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          background: "#fff",
-          borderRadius: "16px",
-          padding: "36px",
-          maxWidth: "480px",
-          width: "100%",
-          position: "relative",
-        }}
-      >
-        <button
-          onClick={onClose}
-          style={{
-            position: "absolute",
-            top: "16px",
-            right: "16px",
-            background: "none",
-            border: "none",
-            fontSize: "20px",
-            cursor: "pointer",
-            color: C.subtle,
-            lineHeight: 1,
-          }}
-        >
-          &times;
-        </button>
-
-        <div style={{ ...sectionLabel, color: C.mid }}>Getting an API key</div>
-        <h3
-          style={{
-            ...headline,
-            fontSize: "24px",
-            marginBottom: "20px",
-          }}
-        >
-          How to get your Anthropic API key
-        </h3>
-
-        <ol
-          style={{
-            paddingLeft: "20px",
-            margin: "0 0 24px 0",
-            fontSize: "15px",
-            lineHeight: 2.2,
-            color: C.body,
-          }}
-        >
-          <li>
-            Go to{" "}
-            <a
-              href="https://console.anthropic.com/settings/keys"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: C.mid, fontWeight: 600 }}
-            >
-              console.anthropic.com/settings/keys
-            </a>
-          </li>
-          <li>Sign in (or create an Anthropic account)</li>
-          <li>
-            Click <strong>"Create Key"</strong>, name it anything, and copy it
-          </li>
-          <li>
-            Go to{" "}
-            <a
-              href="https://console.anthropic.com/settings/billing"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: C.mid, fontWeight: 600 }}
-            >
-              Billing
-            </a>{" "}
-            and add credits ($5 is plenty)
-          </li>
-        </ol>
-
-        <div
-          style={{
-            padding: "16px",
-            background: C.cream,
-            borderRadius: "12px",
-            fontSize: "14px",
-            color: C.body,
-            lineHeight: 1.6,
-          }}
-        >
-          <strong style={{ color: C.ink }}>Note:</strong> This is an{" "}
-          <strong>Anthropic API key</strong>, not your Claude.ai login. The API
-          console is separate from the chat interface.
-        </div>
-
-        <div
-          style={{
-            marginTop: "16px",
-            padding: "16px",
-            background: C.cardBg,
-            borderRadius: "12px",
-            fontSize: "14px",
-            color: C.body,
-            lineHeight: 1.6,
-          }}
-        >
-          <strong style={{ color: C.ink }}>Cost:</strong> Analysis typically
-          costs <strong>$0.05 - $0.30</strong> depending on your conversation
-          volume. We use Claude Haiku for efficiency.
-        </div>
-      </div>
-    </div>
-  );
-}
-
 /* ── Main LandingPage ── */
 export default function LandingPage({ onDataReady }: LandingPageProps) {
-  // Enhanced mode (API key) state
-  const [enhancedMode, setEnhancedMode] = useState(false);
-  const [apiKey, setApiKey] = useState("");
-  const [showKey, setShowKey] = useState(false);
-  const [testing, setTesting] = useState(false);
-  const [keyValid, setKeyValid] = useState<boolean | null>(null);
-  const [keyError, setKeyError] = useState<string | null>(null);
-  const [showModal, setShowModal] = useState(false);
-
   // Upload state
   const [dragOver, setDragOver] = useState(false);
   const [parsing, setParsing] = useState(false);
@@ -199,22 +61,6 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
   const [uploadError, setUploadError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const analyzeBtnRef = useRef<HTMLButtonElement>(null);
-
-  // Test API key
-  const handleTestKey = async () => {
-    if (!apiKey) return;
-    setTesting(true);
-    setKeyError(null);
-    setKeyValid(null);
-    const result = await testApiKey(apiKey);
-    if (result.success) {
-      setKeyValid(true);
-    } else {
-      setKeyValid(false);
-      setKeyError(result.error || "Invalid key");
-    }
-    setTesting(false);
-  };
 
   // Handle file
   const handleFile = useCallback(async (file: File) => {
@@ -278,18 +124,15 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
 
   // Ready to analyze?
   const hasFile = uploadedConvs && uploadedConvs.length > 0;
-  const canAnalyze = hasFile && (!enhancedMode || keyValid);
 
   const handleAnalyze = () => {
-    if (canAnalyze && uploadedConvs) {
-      onDataReady(apiKey, uploadedConvs, enhancedMode && !!keyValid);
+    if (hasFile && uploadedConvs) {
+      onDataReady(uploadedConvs);
     }
   };
 
   return (
     <div>
-      {showModal && <ApiKeyModal onClose={() => setShowModal(false)} />}
-
       {/* ─── Hero ─── */}
       <section
         style={{
@@ -546,7 +389,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
         </a>
       </section>
 
-      {/* ─── Upload + API Key section ─── */}
+      {/* ─── Upload section ─── */}
       <section
         id="upload"
         style={{
@@ -790,245 +633,12 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
             )}
           </div>
 
-          {/* ── Enhanced mode toggle ── */}
-          <div
-            style={{
-              marginTop: "12px",
-              padding: "16px 20px",
-              background: C.surface,
-              border: `1px solid ${enhancedMode ? C.mid : C.border}`,
-              borderRadius: "12px",
-              transition: "border-color 0.2s",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                cursor: "pointer",
-              }}
-              onClick={() => setEnhancedMode(!enhancedMode)}
-            >
-              <div>
-                <div
-                  style={{
-                    fontFamily: "'DM Sans', sans-serif",
-                    fontSize: "14px",
-                    fontWeight: 600,
-                    color: C.ink,
-                    marginBottom: "2px",
-                  }}
-                >
-                  Enhanced analysis with AI
-                  <span
-                    style={{
-                      marginLeft: "8px",
-                      padding: "2px 8px",
-                      borderRadius: "4px",
-                      fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: "10px",
-                      fontWeight: 500,
-                      letterSpacing: "0.5px",
-                      textTransform: "uppercase",
-                      background: C.cardBg,
-                      color: C.mid,
-                    }}
-                  >
-                    Optional
-                  </span>
-                </div>
-                <div style={{ fontSize: "13px", color: C.body, lineHeight: 1.5 }}>
-                  Use your Anthropic API key for deeper, AI-powered pattern
-                  analysis. Without it, we use fast local heuristics.
-                </div>
-              </div>
-              <div
-                style={{
-                  width: "44px",
-                  height: "24px",
-                  borderRadius: "12px",
-                  background: enhancedMode ? C.mid : "#ddd",
-                  position: "relative",
-                  flexShrink: 0,
-                  marginLeft: "16px",
-                  transition: "background 0.2s",
-                  cursor: "pointer",
-                }}
-              >
-                <div
-                  style={{
-                    width: "18px",
-                    height: "18px",
-                    borderRadius: "50%",
-                    background: "#fff",
-                    position: "absolute",
-                    top: "3px",
-                    left: enhancedMode ? "23px" : "3px",
-                    transition: "left 0.2s",
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.15)",
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* API key input (shown when enhanced mode is on) */}
-            {enhancedMode && (
-              <div style={{ marginTop: "16px", borderTop: `1px solid ${C.border}`, paddingTop: "16px" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginBottom: "8px",
-                  }}
-                >
-                  <label
-                    style={{
-                      fontFamily: "'DM Sans', sans-serif",
-                      fontSize: "13px",
-                      fontWeight: 600,
-                      color: C.ink,
-                    }}
-                  >
-                    Anthropic API Key
-                  </label>
-                  <button
-                    onClick={(e) => { e.stopPropagation(); setShowModal(true); }}
-                    style={{
-                      background: "none",
-                      border: "none",
-                      fontFamily: "'DM Sans', sans-serif",
-                      fontSize: "12px",
-                      fontWeight: 500,
-                      color: C.mid,
-                      cursor: "pointer",
-                      textDecoration: "underline",
-                      textUnderlineOffset: "3px",
-                    }}
-                  >
-                    How to get a key
-                  </button>
-                </div>
-                <div style={{ display: "flex", gap: "8px" }}>
-                  <div style={{ flex: 1, position: "relative" }}>
-                    <input
-                      type={showKey ? "text" : "password"}
-                      value={apiKey}
-                      onChange={(e) => {
-                        setApiKey(e.target.value);
-                        setKeyValid(null);
-                        setKeyError(null);
-                      }}
-                      placeholder="sk-ant-api03-..."
-                      onClick={(e) => e.stopPropagation()}
-                      style={{
-                        width: "100%",
-                        padding: "10px 50px 10px 14px",
-                        border: `1px solid ${
-                          keyValid === true
-                            ? "#bbf7d0"
-                            : keyValid === false
-                            ? "#fecaca"
-                            : C.cardBorder
-                        }`,
-                        borderRadius: "8px",
-                        background: "#fff",
-                        fontFamily: "'JetBrains Mono', monospace",
-                        fontSize: "13px",
-                        color: C.ink,
-                        outline: "none",
-                        boxSizing: "border-box",
-                        transition: "border-color 0.2s",
-                      }}
-                      onFocus={(e) => {
-                        if (keyValid === null) e.currentTarget.style.borderColor = C.mid;
-                      }}
-                      onBlur={(e) => {
-                        if (keyValid === null) e.currentTarget.style.borderColor = C.cardBorder;
-                      }}
-                    />
-                    <button
-                      onClick={(e) => { e.stopPropagation(); setShowKey(!showKey); }}
-                      style={{
-                        position: "absolute",
-                        right: "12px",
-                        top: "50%",
-                        transform: "translateY(-50%)",
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        fontFamily: "'JetBrains Mono', monospace",
-                        fontSize: "11px",
-                        color: C.subtle,
-                      }}
-                    >
-                      {showKey ? "hide" : "show"}
-                    </button>
-                  </div>
-                  <button
-                    onClick={(e) => { e.stopPropagation(); handleTestKey(); }}
-                    disabled={!apiKey || testing}
-                    style={{
-                      padding: "10px 20px",
-                      border: "none",
-                      borderRadius: "8px",
-                      fontFamily: "'DM Sans', sans-serif",
-                      fontSize: "13px",
-                      fontWeight: 600,
-                      whiteSpace: "nowrap",
-                      cursor: apiKey && !testing ? "pointer" : "default",
-                      background: apiKey && !testing ? C.dark : "#e0e0e0",
-                      color: apiKey && !testing ? "#fff" : "#aaa",
-                      transition: "background 0.2s",
-                    }}
-                  >
-                    {testing ? "Testing..." : keyValid ? "✓ Valid" : "Connect"}
-                  </button>
-                </div>
-
-                {keyError && (
-                  <div
-                    style={{
-                      marginTop: "8px",
-                      padding: "8px 12px",
-                      fontSize: "12px",
-                      fontFamily: "'JetBrains Mono', monospace",
-                      background: "#fef2f2",
-                      color: "#991b1b",
-                      border: "1px solid #fecaca",
-                      borderRadius: "8px",
-                    }}
-                  >
-                    ✗ {keyError}
-                  </div>
-                )}
-                {keyValid && (
-                  <div
-                    style={{
-                      marginTop: "8px",
-                      padding: "8px 12px",
-                      fontSize: "12px",
-                      fontFamily: "'JetBrains Mono', monospace",
-                      background: "#f0fdf4",
-                      color: "#166534",
-                      border: "1px solid #bbf7d0",
-                      borderRadius: "8px",
-                    }}
-                  >
-                    ✓ Connected — key is valid
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
           {/* ── Analyze button ── */}
           <button
             ref={analyzeBtnRef}
             onClick={handleAnalyze}
-            disabled={!canAnalyze}
-            className={canAnalyze ? "analyze-btn-pulse" : ""}
+            disabled={!hasFile}
+            className={hasFile ? "analyze-btn-pulse" : ""}
             style={{
               width: "100%",
               marginTop: "12px",
@@ -1038,18 +648,16 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
               fontFamily: "'DM Sans', sans-serif",
               fontSize: "16px",
               fontWeight: 700,
-              cursor: canAnalyze ? "pointer" : "default",
-              background: canAnalyze
+              cursor: hasFile ? "pointer" : "default",
+              background: hasFile
                 ? `linear-gradient(135deg, ${C.mid}, ${C.accent})`
                 : "#e0e0e0",
-              color: canAnalyze ? "#fff" : "#aaa",
+              color: hasFile ? "#fff" : "#aaa",
               transition: "all 0.2s",
               letterSpacing: "-0.2px",
             }}
           >
-            {enhancedMode && keyValid
-              ? "Analyze with AI →"
-              : "Analyze my conversations →"}
+            Analyze my conversations →
           </button>
 
           {/* ── Privacy note ── */}
@@ -1068,9 +676,9 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
             <span style={{ fontSize: "16px" }}>🔒</span>
             <div style={{ fontSize: "13px", lineHeight: 1.65, color: C.body }}>
               <strong style={{ color: C.ink }}>Privacy guarantee:</strong> Your
-              key is held in browser memory only. Your conversation data goes
-              directly from your browser to Anthropic's API. Close this tab and
-              everything is gone.
+              conversation data never leaves your browser. All analysis runs
+              locally using JavaScript — no servers, no APIs, no accounts.
+              Close this tab and everything is gone.
             </div>
           </div>
         </div>
@@ -1101,17 +709,17 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
             {
               icon: "🔒",
               title: "Nothing leaves your browser",
-              desc: "Your file is parsed and analyzed using client-side JavaScript and direct API calls. There is no server, no upload, no account.",
-            },
-            {
-              icon: "🔑",
-              title: "API key stays in memory",
-              desc: "Your key is held in browser memory for this session only. Close the tab and it's gone. We never store, transmit, or log it.",
+              desc: "Your file is parsed and analyzed entirely using client-side JavaScript. There is no server, no upload, no account.",
             },
             {
               icon: "🛡️",
-              title: "We have no database",
-              desc: "There is nothing to breach. Claude processes your data through Anthropic's API — we're just the interface.",
+              title: "No network requests",
+              desc: "Zero outgoing API calls. Your data is processed locally with pattern-matching heuristics — nothing is sent anywhere.",
+            },
+            {
+              icon: "🗑️",
+              title: "Nothing is stored",
+              desc: "There is no database, no cookies, no local storage. Close the tab and everything is gone. We never see your data.",
             },
             {
               icon: "📊",
