@@ -1,14 +1,21 @@
 import { useState, useMemo } from "react";
 
 const C = {
-  dark: "#1a3a2a",
-  mid: "#2d5a3f",
-  cardBg: "#e8f0eb",
-  border: "#e0e0e0",
-  ink: "#1a1a1a",
-  body: "#555",
-  subtle: "#888",
+  green: "#1a3a2a",
+  greenPale: "#e8f0eb",
+  greenLight: "#c8ddd0",
+  cream: "#f5f0e8",
+  text: "#1a1a18",
+  textMuted: "#4d4943",
+  warmGray: "#5e594f",
+  warmGrayLight: "#76716a",
+  border: "#d8d2c6",
+  borderLight: "#e8e2d6",
+  white: "#ffffff",
 };
+
+const mono = "'DM Mono', 'IBM Plex Mono', monospace";
+const sans = "'DM Sans', 'Helvetica Neue', sans-serif";
 
 interface EnvInfo {
   os: "mac" | "windows" | "linux" | "unknown";
@@ -46,177 +53,202 @@ function detectEnv(): EnvInfo {
   return { os, browser, label: `${browserName} on ${osName}` };
 }
 
-function getShortcuts(env: EnvInfo): { primary: string; alt?: string } {
+function getShortcutRows(env: EnvInfo): { label: string; keys: string[] }[] {
   if (env.browser === "safari") {
-    return { primary: "⌘ + ⌥ Option + I" };
+    return [{ label: "Open Developer Tools", keys: ["\u2318", "\u2325 Option", "I"] }];
   }
   if (env.os === "mac") {
-    return { primary: "⌘ + ⌥ Option + I", alt: "F12" };
+    return [
+      { label: "Open Developer Tools", keys: ["\u2318", "\u2325 Option", "I"] },
+      { label: "Alternative", keys: ["F12"] },
+    ];
   }
-  return { primary: "F12", alt: "Ctrl + Shift + I" };
+  return [
+    { label: "Open Developer Tools", keys: ["F12"] },
+    { label: "Alternative", keys: ["Ctrl", "Shift", "I"] },
+  ];
 }
 
 export default function DevToolsPrompt() {
   const [open, setOpen] = useState(false);
   const env = useMemo(detectEnv, []);
-  const shortcuts = useMemo(() => getShortcuts(env), [env]);
+  const shortcutRows = useMemo(() => getShortcutRows(env), [env]);
 
   return (
-    <div
-      style={{
-        marginTop: "12px",
-        border: `1px solid ${C.border}`,
-        borderRadius: "10px",
-        overflow: "hidden",
-        background: "#fff",
-      }}
-    >
+    <div style={{ marginTop: "16px" }}>
       {/* Summary row */}
-      <button
+      <div
         onClick={() => setOpen(!open)}
         style={{
-          width: "100%",
           display: "flex",
           alignItems: "center",
           gap: "8px",
-          padding: "12px 16px",
-          background: "none",
-          border: "none",
+          padding: "12px 18px",
+          background: open ? C.white : "transparent",
+          border: open ? `1px solid ${C.border}` : "1px solid transparent",
+          borderBottom: open ? "none" : undefined,
+          borderRadius: open ? "10px 10px 0 0" : "10px",
           cursor: "pointer",
-          fontFamily: "'DM Sans', sans-serif",
-          fontSize: "13px",
-          color: C.body,
-          textAlign: "left",
+          transition: "all 0.15s ease",
         }}
       >
-        <span style={{ fontSize: "14px", flexShrink: 0 }}>🔍</span>
-        <span>
-          Want proof? Open your browser's{" "}
+        {/* Question mark icon */}
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
+          <circle cx="8" cy="8" r="7" stroke={C.warmGray} strokeWidth="1.2" />
+          <path
+            d="M6 6C6 4.9 6.9 4 8 4s2 .9 2 2c0 .8-.5 1.4-1.2 1.7-.3.1-.8.4-.8.8V10"
+            stroke={C.warmGray}
+            strokeWidth="1.2"
+            strokeLinecap="round"
+          />
+          <circle cx="8" cy="12" r="0.8" fill={C.warmGray} />
+        </svg>
+
+        <span style={{ fontFamily: sans, fontSize: "13px", color: C.textMuted, flex: 1 }}>
+          Want proof?{" "}
           <span
             style={{
+              color: C.text,
+              fontWeight: 500,
               textDecoration: "underline",
               textUnderlineOffset: "3px",
-              color: C.mid,
-              fontWeight: 600,
+              textDecorationColor: C.border,
             }}
           >
-            dev tools
+            Open your browser's dev tools
           </span>{" "}
           and watch the Network tab during upload.
         </span>
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke={C.subtle}
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+
+        <span
           style={{
-            flexShrink: 0,
-            marginLeft: "auto",
+            fontFamily: mono,
+            fontSize: "12px",
+            color: C.warmGray,
             transform: open ? "rotate(180deg)" : "none",
             transition: "transform 0.2s",
+            display: "inline-block",
           }}
         >
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
-      </button>
+          ▾
+        </span>
+      </div>
 
       {/* Expanded content */}
       {open && (
         <div
           style={{
-            padding: "0 16px 16px",
-            borderTop: `1px solid ${C.border}`,
+            padding: "20px",
+            background: C.white,
+            border: `1px solid ${C.border}`,
+            borderTop: `1px solid ${C.borderLight}`,
+            borderRadius: "0 0 10px 10px",
+            animation: "revealUp 0.2s ease",
           }}
         >
-          {/* Detected environment badge */}
+          {/* Detected badge */}
           <div
             style={{
-              display: "inline-flex",
+              display: "flex",
               alignItems: "center",
               gap: "6px",
-              padding: "4px 10px",
-              background: C.cardBg,
-              borderRadius: "6px",
-              marginTop: "12px",
               marginBottom: "16px",
             }}
           >
             <span
               style={{
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: "11px",
-                color: C.mid,
-                fontWeight: 500,
+                fontFamily: mono,
+                fontSize: "10px",
+                color: C.warmGray,
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
               }}
             >
-              Detected: {env.label}
+              Detected:
+            </span>
+            <span
+              style={{
+                padding: "3px 10px",
+                fontFamily: mono,
+                fontSize: "11px",
+                fontWeight: 500,
+                color: C.green,
+                background: C.greenPale,
+                border: `1px solid ${C.greenLight}`,
+                borderRadius: "4px",
+              }}
+            >
+              {env.label}
             </span>
           </div>
 
-          {/* Keyboard shortcuts */}
-          <div style={{ marginBottom: "16px" }}>
+          {/* How to open label */}
+          <div
+            style={{
+              fontFamily: mono,
+              fontSize: "10px",
+              color: C.warmGray,
+              textTransform: "uppercase",
+              letterSpacing: "0.06em",
+              marginBottom: "10px",
+            }}
+          >
+            How to open dev tools
+          </div>
+
+          {/* Keyboard shortcut rows */}
+          {shortcutRows.map((row, i) => (
             <div
+              key={i}
               style={{
-                fontFamily: "'DM Sans', sans-serif",
-                fontSize: "12px",
-                fontWeight: 600,
-                color: C.ink,
-                marginBottom: "8px",
-                textTransform: "uppercase",
-                letterSpacing: "0.5px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "10px 0",
+                borderBottom: `1px solid ${C.borderLight}`,
               }}
             >
-              Open Dev Tools
-            </div>
-            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-              <kbd
-                style={{
-                  display: "inline-block",
-                  padding: "4px 10px",
-                  background: C.dark,
-                  color: "#fff",
-                  borderRadius: "6px",
-                  fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: "12px",
-                  fontWeight: 500,
-                }}
-              >
-                {shortcuts.primary}
-              </kbd>
-              {shortcuts.alt && (
-                <>
+              <span style={{ fontFamily: sans, fontSize: "13px", color: C.text }}>
+                {row.label}
+              </span>
+              <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                {row.keys.map((k, ki) => (
                   <span
-                    style={{
-                      fontSize: "12px",
-                      color: C.subtle,
-                      alignSelf: "center",
-                    }}
+                    key={ki}
+                    style={{ display: "flex", alignItems: "center", gap: "4px" }}
                   >
-                    or
+                    <kbd
+                      style={{
+                        display: "inline-block",
+                        padding: "3px 8px",
+                        fontFamily: mono,
+                        fontSize: "11px",
+                        fontWeight: 500,
+                        color: C.text,
+                        background: C.white,
+                        border: `1px solid ${C.border}`,
+                        borderRadius: "4px",
+                        boxShadow: "0 1px 0 rgba(0,0,0,0.06)",
+                      }}
+                    >
+                      {k}
+                    </kbd>
+                    {ki < row.keys.length - 1 && (
+                      <span
+                        style={{
+                          fontFamily: mono,
+                          fontSize: "9px",
+                          color: C.warmGrayLight,
+                        }}
+                      >
+                        +
+                      </span>
+                    )}
                   </span>
-                  <kbd
-                    style={{
-                      display: "inline-block",
-                      padding: "4px 10px",
-                      background: "#f5f5f5",
-                      color: C.ink,
-                      borderRadius: "6px",
-                      fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: "12px",
-                      fontWeight: 500,
-                      border: `1px solid ${C.border}`,
-                    }}
-                  >
-                    {shortcuts.alt}
-                  </kbd>
-                </>
-              )}
+                ))}
+              </div>
             </div>
-          </div>
+          ))}
 
           {/* Safari note */}
           {env.browser === "safari" && (
@@ -229,7 +261,7 @@ export default function DevToolsPrompt() {
                 fontSize: "12px",
                 color: "#92400e",
                 lineHeight: 1.5,
-                marginBottom: "16px",
+                marginTop: "12px",
               }}
             >
               Safari requires a one-time setup: Open Safari → Settings → Advanced
@@ -238,41 +270,100 @@ export default function DevToolsPrompt() {
           )}
 
           {/* Steps */}
-          <ol
+          <div
             style={{
-              margin: "0 0 16px 0",
-              paddingLeft: "20px",
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: "13px",
-              color: C.body,
-              lineHeight: 1.8,
+              padding: "16px",
+              background: C.cream,
+              border: `1px solid ${C.borderLight}`,
+              borderRadius: "8px",
+              marginTop: "16px",
             }}
           >
-            <li>
-              Click the <strong style={{ color: C.ink }}>Network</strong> tab at
-              the top of the dev tools panel
-            </li>
-            <li>Upload your file (or try a persona demo)</li>
-            <li>
-              Watch the network log —{" "}
-              <strong style={{ color: C.mid }}>it stays completely empty</strong>
-            </li>
-          </ol>
+            <div
+              style={{
+                fontFamily: mono,
+                fontSize: "10px",
+                color: C.warmGray,
+                textTransform: "uppercase",
+                letterSpacing: "0.06em",
+                marginBottom: "12px",
+              }}
+            >
+              Then
+            </div>
+            {[
+              "Click the Network tab at the top of the dev tools panel",
+              "Upload your file (or try a persona demo)",
+              "Watch the network log — in default mode, it stays completely empty",
+            ].map((step, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "flex",
+                  alignItems: "baseline",
+                  gap: "10px",
+                  marginBottom: i < 2 ? "10px" : 0,
+                }}
+              >
+                <div
+                  style={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: "50%",
+                    background: C.green,
+                    color: C.cream,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontFamily: mono,
+                    fontSize: "10px",
+                    fontWeight: 600,
+                    flexShrink: 0,
+                  }}
+                >
+                  {i + 1}
+                </div>
+                <span
+                  style={{
+                    fontFamily: sans,
+                    fontSize: "13px",
+                    color: C.textMuted,
+                    lineHeight: 1.5,
+                  }}
+                >
+                  {step}
+                </span>
+              </div>
+            ))}
 
-          {/* Footer */}
-          <p
-            style={{
-              margin: 0,
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: "12px",
-              fontStyle: "italic",
-              color: C.subtle,
-              lineHeight: 1.6,
-            }}
-          >
-            You should see zero network requests during parsing and analysis.
-            Everything runs in your browser.
-          </p>
+            {/* Footer note */}
+            <div
+              style={{
+                marginTop: "14px",
+                paddingTop: "12px",
+                borderTop: `1px solid ${C.borderLight}`,
+                fontFamily: sans,
+                fontSize: "12.5px",
+                color: C.warmGray,
+                fontStyle: "italic",
+                lineHeight: 1.55,
+              }}
+            >
+              If you enable AI mode, you'll see requests only to{" "}
+              <code
+                style={{
+                  fontFamily: mono,
+                  fontSize: "11px",
+                  background: C.white,
+                  padding: "1px 5px",
+                  borderRadius: "3px",
+                }}
+              >
+                api.anthropic.com
+              </code>{" "}
+              — nothing to our servers, because we don't have any.
+            </div>
+          </div>
         </div>
       )}
     </div>
