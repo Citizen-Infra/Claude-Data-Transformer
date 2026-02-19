@@ -66,9 +66,10 @@ export type SkillBuilderVariant = keyof typeof VARIANTS;
 
 interface SkillBuilderCardProps {
   variant: SkillBuilderVariant;
+  onSecondaryClick?: () => void;
 }
 
-export default function SkillBuilderCard({ variant }: SkillBuilderCardProps) {
+export default function SkillBuilderCard({ variant, onSecondaryClick }: SkillBuilderCardProps) {
   const [copied, setCopied] = useState(false);
   const content = VARIANTS[variant];
 
@@ -246,9 +247,10 @@ export default function SkillBuilderCard({ variant }: SkillBuilderCardProps) {
           {copied ? "Copied!" : content.primaryBtn}
         </button>
         <a
-          href={content.secondaryHref}
-          target="_blank"
-          rel="noopener noreferrer"
+          href={onSecondaryClick ? undefined : content.secondaryHref}
+          target={onSecondaryClick ? undefined : "_blank"}
+          rel={onSecondaryClick ? undefined : "noopener noreferrer"}
+          onClick={onSecondaryClick ? (e) => { e.preventDefault(); onSecondaryClick(); } : undefined}
           style={{
             display: "flex",
             alignItems: "center",

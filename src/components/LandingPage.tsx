@@ -9,10 +9,11 @@ import PersonaPicker from "./PersonaPicker";
 import PrivacyMonitor from "./PrivacyMonitor";
 import DevToolsPrompt from "./DevToolsPrompt";
 import SkillBuilderCard from "./SkillBuilderCard";
-import type { ParsedConversation, ClaudeConversation, UserProfile, EnrichedRecommendation, AnalysisResults } from "../lib/types";
+import type { ParsedConversation, ClaudeConversation, UserProfile, EnrichedRecommendation, AnalysisResults, AppView } from "../lib/types";
 
 interface LandingPageProps {
   onDataReady: (results: AnalysisResults) => void;
+  onNavigate: (view: AppView) => void;
 }
 
 /* ── Design tokens ── */
@@ -73,7 +74,7 @@ type UploadPhase = "upload" | "narrating" | "preview";
 type DataSource = "file" | "persona" | null;
 
 /* ── Main LandingPage ── */
-export default function LandingPage({ onDataReady }: LandingPageProps) {
+export default function LandingPage({ onDataReady, onNavigate }: LandingPageProps) {
   // Phase state machine
   const [phase, setPhase] = useState<UploadPhase>("upload");
   const [dataSource, setDataSource] = useState<DataSource>(null);
@@ -904,7 +905,7 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
           margin: "0 auto",
         }}
       >
-        <SkillBuilderCard variant="homepage" />
+        <SkillBuilderCard variant="homepage" onSecondaryClick={() => onNavigate("commons")} />
       </section>
 
       {/* ─── CTA ─── */}
