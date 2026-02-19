@@ -3,11 +3,12 @@ import { getDateRange } from "../lib/parseClaudeExport";
 import { getPersonaById } from "../data/samplePersonas";
 import { downloadPersonaExport } from "../lib/generatePersonaExport";
 import ParsingNarration from "./ParsingNarration";
+import type { NarrationResults } from "./ParsingNarration";
 import ParsedPreview from "./ParsedPreview";
 import PersonaPicker from "./PersonaPicker";
 import PrivacyMonitor from "./PrivacyMonitor";
 import DevToolsPrompt from "./DevToolsPrompt";
-import type { ParsedConversation, ClaudeConversation } from "../lib/types";
+import type { ParsedConversation, ClaudeConversation, UserProfile, EnrichedRecommendation } from "../lib/types";
 
 interface LandingPageProps {
   onDataReady: (conversations: ParsedConversation[]) => void;
@@ -93,6 +94,10 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
   } | null>(null);
   const [dateRange, setDateRange] = useState<{ earliest: string; latest: string } | null>(null);
 
+  // Analysis results (from narration modal)
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [recommendations, setRecommendations] = useState<EnrichedRecommendation[] | null>(null);
+
   const fileRef = useRef<HTMLInputElement>(null);
 
   // ── Handle real file upload ──
@@ -142,14 +147,17 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
 
   // ── Handle narration completion ──
   const handleNarrationComplete = useCallback(
-    (
-      convs: ParsedConversation[],
-      stats: { conversations: number; messages: number; withArtifacts: number }
-    ) => {
-      setUploadedConvs(convs);
-      setUploadStats(stats);
-      setDateRange(getDateRange(convs));
+    (results: NarrationResults) => {
+      setUploadedConvs(results.conversations);
+      setUploadStats(results.stats);
+      setDateRange(getDateRange(results.conversations));
+      setUserProfile(results.userProfile);
+      setRecommendations(results.recommendations);
       setPhase("preview");
+      // Scroll to upload section so the preview is centered on screen
+      setTimeout(() => {
+        document.getElementById("upload")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
     },
     []
   );
@@ -171,6 +179,8 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
     setUploadStats(null);
     setDateRange(null);
     setUploadError(null);
+    setUserProfile(null);
+    setRecommendations(null);
   }, []);
 
   // Persona info for display
@@ -636,6 +646,8 @@ export default function LandingPage({ onDataReady }: LandingPageProps) {
               dataSource={dataSource || "file"}
               personaName={persona?.name}
               personaEmoji={persona?.emoji}
+              userProfile={userProfile}
+              recommendations={recommendations}
               onAnalyze={handleAnalyze}
               onReset={handleReset}
             />

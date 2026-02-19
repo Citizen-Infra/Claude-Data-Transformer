@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { parseClaudeExport } from "../lib/parseClaudeExport";
-import type { ClaudeConversation, ParsedConversation } from "../lib/types";
+import { buildHeuristicProfile, matchSkillsHeuristic } from "../lib/heuristicAnalysis";
+import { SKILLS_CATALOG } from "../data/skillsCatalog";
+import type { ClaudeConversation, ParsedConversation, UserProfile, EnrichedRecommendation } from "../lib/types";
 
 const C = {
   green: "#1a3a2a",
@@ -19,12 +21,19 @@ interface UploadStats {
   withArtifacts: number;
 }
 
+export interface NarrationResults {
+  conversations: ParsedConversation[];
+  stats: UploadStats;
+  userProfile: UserProfile;
+  recommendations: EnrichedRecommendation[];
+}
+
 interface ParsingNarrationProps {
   rawJson: ClaudeConversation[];
   dataSource: "file" | "persona";
   personaName?: string;
   personaEmoji?: string;
-  onComplete: (conversations: ParsedConversation[], stats: UploadStats) => void;
+  onComplete: (results: NarrationResults) => void;
 }
 
 interface NarrationStep {
@@ -32,7 +41,7 @@ interface NarrationStep {
   detail: string;
 }
 
-/** Simple artifact heuristic — checks for code blocks in assistant messages */
+/** Simple artifact heuristic */
 function countArtifacts(conversations: ParsedConversation[]): number {
   return conversations.filter((c) =>
     c.messages.some(
@@ -57,68 +66,73 @@ export default function ParsingNarration({
   const [progress, setProgress] = useState(0);
   const [showTrust, setShowTrust] = useState(false);
   const [done, setDone] = useState(false);
+  const [matchSummary, setMatchSummary] = useState<{ total: number; buckets: { label: string; count: number }[] } | null>(null);
   const hasRun = useRef(false);
-  const parsedRef = useRef<ParsedConversation[] | null>(null);
-  const statsRef = useRef<UploadStats | null>(null);
+  const resultsRef = useRef<NarrationResults | null>(null);
 
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
 
   const buildSteps = useCallback((): NarrationStep[] => {
+    // Phase 1: Parse conversations
     const parsed = parseClaudeExport(rawJson);
     const totalMessages = parsed.reduce((s, c) => s + c.message_count, 0);
     const artifacts = countArtifacts(parsed);
 
-    parsedRef.current = parsed;
-    statsRef.current = {
-      conversations: parsed.length,
-      messages: totalMessages,
-      withArtifacts: artifacts,
+    // Phase 2: Build profile + match skills
+    const userProfile = buildHeuristicProfile(parsed);
+    const recommendations = matchSkillsHeuristic(userProfile, SKILLS_CATALOG);
+    const enriched = recommendations
+      .map((rec) => ({
+        ...rec,
+        skill: SKILLS_CATALOG.find((s) => s.skill_id === rec.skill_id),
+      }))
+      .filter((r) => r.skill);
+
+    // Store all results
+    resultsRef.current = {
+      conversations: parsed,
+      stats: { conversations: parsed.length, messages: totalMessages, withArtifacts: artifacts },
+      userProfile,
+      recommendations: enriched,
     };
 
-    if (dataSource === "persona") {
-      return [
-        {
-          label: `Loading ${personaName}'s conversations`,
-          detail: `${parsed.length} fictional conversations`,
-        },
-        {
-          label: "Counting messages",
-          detail: `${totalMessages} messages total`,
-        },
-        {
-          label: "Reading conversation titles",
-          detail: "Extracting metadata only",
-        },
-        {
-          label: "Building local summary",
-          detail: "Nothing has left your browser",
-        },
-      ];
-    }
+    // Build match summary buckets for display
+    const high = enriched.filter((r) => r.relevance_score >= 0.7).length;
+    const medium = enriched.filter((r) => r.relevance_score >= 0.4 && r.relevance_score < 0.7).length;
+    const lower = enriched.filter((r) => r.relevance_score > 0 && r.relevance_score < 0.4).length;
 
-    return [
-      {
-        label: "Reading file structure",
-        detail: "Validating JSON format",
-      },
-      {
-        label: "Finding conversations",
-        detail: `${parsed.length} found`,
-      },
-      {
-        label: "Counting messages",
-        detail: `${totalMessages} messages across all conversations`,
-      },
-      {
-        label: "Reading conversation titles",
-        detail: "Extracting metadata only — not message content",
-      },
-      {
-        label: "Building local summary",
-        detail: "Nothing has left your browser",
-      },
+    const buckets: { label: string; count: number }[] = [];
+    if (high > 0) buckets.push({ label: "70%+ match", count: high });
+    if (medium > 0) buckets.push({ label: "40–69%", count: medium });
+    if (lower > 0) buckets.push({ label: "under 40%", count: lower });
+
+    // Stash for later reveal
+    setTimeout(() => setMatchSummary({ total: enriched.length, buckets }), 0);
+
+    // Build step sequence
+    const parseSteps: NarrationStep[] = dataSource === "persona"
+      ? [
+          { label: `Loading ${personaName}'s conversations`, detail: `${parsed.length} fictional conversations` },
+          { label: "Counting messages", detail: `${totalMessages} messages total` },
+          { label: "Reading conversation titles", detail: "Extracting metadata only" },
+          { label: "Building local summary", detail: "Nothing has left your browser" },
+        ]
+      : [
+          { label: "Reading file structure", detail: "Validating JSON format" },
+          { label: "Finding conversations", detail: `${parsed.length} found` },
+          { label: "Counting messages", detail: `${totalMessages} messages across all conversations` },
+          { label: "Reading conversation titles", detail: "Extracting metadata only — not message content" },
+          { label: "Building local summary", detail: "Nothing has left your browser" },
+        ];
+
+    // Analysis steps
+    const analysisSteps: NarrationStep[] = [
+      { label: "Building usage profile", detail: `${userProfile.primary_domains.length} domains, ${userProfile.work_patterns.length} patterns` },
+      { label: "Matching against skills catalog", detail: `${enriched.length} skills matched` },
     ];
+
+    return [...parseSteps, ...analysisSteps];
   }, [rawJson, dataSource, personaName]);
 
   useEffect(() => {
@@ -129,32 +143,27 @@ export default function ParsingNarration({
     setSteps(builtSteps);
 
     const totalSteps = builtSteps.length;
-    const STEP_DELAY = dataSource === "persona" ? 600 : 650;
+    const STEP_DELAY = dataSource === "persona" ? 550 : 600;
 
     builtSteps.forEach((_, i) => {
       setTimeout(() => {
         setCurrentStep(i + 1);
         setProgress(Math.round(((i + 1) / totalSteps) * 100));
-
-        if (i >= 2) {
-          setShowTrust(true);
-        }
+        if (i >= 2) setShowTrust(true);
       }, (i + 1) * STEP_DELAY);
     });
 
-    // Mark as done after all steps (no auto-complete — user must click "Got it")
     setTimeout(() => {
       setDone(true);
     }, (totalSteps + 1) * STEP_DELAY);
   }, [buildSteps, dataSource]);
 
   const handleGotIt = () => {
-    if (parsedRef.current && statsRef.current) {
-      onCompleteRef.current(parsedRef.current, statsRef.current);
+    if (resultsRef.current) {
+      onCompleteRef.current(resultsRef.current);
     }
   };
 
-  // Title text
   const title =
     dataSource === "persona" && personaName
       ? `${personaEmoji || ""} Exploring ${personaName}'s history…`
@@ -179,7 +188,7 @@ export default function ParsingNarration({
         className="narration-modal"
         style={{
           width: "100%",
-          maxWidth: "520px",
+          maxWidth: "540px",
           background: C.green,
           borderRadius: "16px",
           overflow: "hidden",
@@ -214,13 +223,7 @@ export default function ParsingNarration({
           </div>
 
           {/* Steps */}
-          <div
-            style={{
-              fontFamily: mono,
-              fontSize: "12px",
-              lineHeight: 2,
-            }}
-          >
+          <div style={{ fontFamily: mono, fontSize: "12px", lineHeight: 2 }}>
             {steps.map((step, i) => {
               const isComplete = i < currentStep;
               const isCurrent = i === currentStep - 1 && currentStep <= steps.length;
@@ -238,9 +241,7 @@ export default function ParsingNarration({
                 >
                   <span
                     style={{
-                      color: isComplete
-                        ? "rgba(255,255,255,0.8)"
-                        : "rgba(255,255,255,0.4)",
+                      color: isComplete ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.4)",
                     }}
                   >
                     <span
@@ -274,8 +275,57 @@ export default function ParsingNarration({
             )}
           </div>
 
-          {/* Trust line */}
-          {showTrust && (
+          {/* Match summary (shown when done) */}
+          {done && matchSummary && matchSummary.total > 0 && (
+            <div
+              className="reveal-up"
+              style={{
+                marginTop: "16px",
+                padding: "14px 16px",
+                background: "rgba(255,255,255,0.06)",
+                border: "1px solid rgba(255,255,255,0.1)",
+                borderRadius: "10px",
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: mono,
+                  fontSize: "10px",
+                  color: "rgba(255,255,255,0.5)",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.06em",
+                  marginBottom: "10px",
+                }}
+              >
+                Skill matches found
+              </div>
+              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                {matchSummary.buckets.map((bucket, i) => (
+                  <span
+                    key={i}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      padding: "4px 12px",
+                      background: i === 0 ? "rgba(82,183,136,0.2)" : "rgba(255,255,255,0.08)",
+                      border: `1px solid ${i === 0 ? "rgba(82,183,136,0.3)" : "rgba(255,255,255,0.1)"}`,
+                      borderRadius: "6px",
+                      fontFamily: mono,
+                      fontSize: "11px",
+                      color: i === 0 ? "#88E7BB" : "rgba(255,255,255,0.6)",
+                    }}
+                  >
+                    <span style={{ fontWeight: 600, fontSize: "13px" }}>{bucket.count}</span>
+                    {bucket.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Trust line (shown during parsing, hidden when done to make room for match summary) */}
+          {showTrust && !done && (
             <div
               className="reveal-up"
               style={{
