@@ -436,12 +436,11 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
 
           {/* Export steps */}
           <div style={{
-            fontFamily: mono,
-            fontSize: "10px",
-            letterSpacing: "0.1em",
-            textTransform: "uppercase" as const,
-            color: "#9C9C8A",
-            marginBottom: "20px",
+            fontFamily: sans,
+            fontSize: "16px",
+            fontWeight: 600,
+            color: "#2D4A3E",
+            marginBottom: "16px",
           }}>
             How to export your Claude data
           </div>
