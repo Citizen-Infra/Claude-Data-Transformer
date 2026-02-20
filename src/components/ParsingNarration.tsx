@@ -175,31 +175,40 @@ export default function ParsingNarration({
   const renderMatchSentence = () => {
     if (!matchSummary || matchSummary.total === 0) return null;
 
-    const parts: React.ReactNode[] = [];
+    // Always show both strong and partial buckets
+    const segments: React.ReactNode[] = [];
 
-    if (matchSummary.high > 0 && matchSummary.medium > 0) {
-      parts.push(
-        <span key="strong" style={{ color: C.sageBright, fontWeight: 600 }}>
-          {matchSummary.high} strong
-        </span>,
-        " (70%+) and ",
-        `${matchSummary.medium} partial (40–69%)`,
+    if (matchSummary.high > 0) {
+      segments.push(
+        <span key="strong">
+          <span style={{ color: C.sageBright, fontWeight: 600 }}>
+            {matchSummary.high} strong
+          </span>
+          {" (70%+)"}
+        </span>
       );
-    } else if (matchSummary.high > 0) {
-      parts.push(
-        <span key="strong" style={{ color: C.sageBright, fontWeight: 600 }}>
-          {matchSummary.high} strong
-        </span>,
-        " (70%+)",
+    }
+
+    if (matchSummary.medium > 0) {
+      segments.push(
+        <span key="partial">{matchSummary.medium} partial (40–69%)</span>
       );
-    } else if (matchSummary.medium > 0) {
-      parts.push(`${matchSummary.medium} partial (40–69%)`);
     }
 
     if (matchSummary.lower > 0) {
-      if (parts.length > 0) parts.push(` and ${matchSummary.lower} exploratory`);
-      else parts.push(`${matchSummary.lower} exploratory`);
+      segments.push(
+        <span key="exploratory">{matchSummary.lower} exploratory</span>
+      );
     }
+
+    // Join with " and " between last two, ", " between others
+    const joined: React.ReactNode[] = [];
+    segments.forEach((seg, i) => {
+      if (i > 0) {
+        joined.push(i === segments.length - 1 ? " and " : ", ");
+      }
+      joined.push(seg);
+    });
 
     return (
       <div
@@ -213,7 +222,7 @@ export default function ParsingNarration({
           {matchSummary.total} skills
         </strong>
         {" matched your usage — "}
-        {parts}
+        {joined}
       </div>
     );
   };
