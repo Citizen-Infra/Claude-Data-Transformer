@@ -78,7 +78,7 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
         }}
       >
         <div style={{ ...sectionLabel, color: C.mid, marginBottom: "16px" }}>
-          Your results
+          Results
         </div>
         <h1
           style={{
@@ -91,19 +91,40 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
         >
           Claude convos, decoded.
         </h1>
-        <p
-          style={{
-            fontSize: "16px",
-            lineHeight: 1.7,
-            color: C.body,
-            maxWidth: "520px",
-            margin: "0 auto",
-            fontFamily: "'DM Sans', sans-serif",
-          }}
-        >
-          Based on your conversation history, here's your usage breakdown
-          and skill recommendations ranked by fit.
-        </p>
+
+        {/* ── Your gaps (inline under headline) ── */}
+        {(userProfile.skill_gaps?.length ?? 0) > 0 && (
+          <div style={{ maxWidth: "640px", margin: "0 auto", textAlign: "left" }}>
+            <div style={{ ...sectionLabel, marginBottom: "12px", marginTop: "8px" }}>
+              Where skills can help
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                gap: "12px",
+              }}
+            >
+              {userProfile.skill_gaps.map((gap, i) => (
+                <div
+                  key={i}
+                  style={{
+                    padding: "16px 20px",
+                    background: C.cream,
+                    border: `1px solid ${C.border}`,
+                    borderRadius: "12px",
+                    fontSize: "14px",
+                    lineHeight: 1.7,
+                    color: C.body,
+                    fontFamily: "'DM Sans', sans-serif",
+                  }}
+                >
+                  {gap}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </section>
 
       {/* ─── Stats banner (overlapping hero) ─── */}
