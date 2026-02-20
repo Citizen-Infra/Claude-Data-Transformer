@@ -383,93 +383,138 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
         </div>
       </section>
 
-      {/* ─── Before you upload (export steps) ─── */}
+      {/* ─── Why upload your data ─── */}
       <section
         id="how-it-works"
         style={{ padding: "0 24px 72px", maxWidth: "800px", margin: "0 auto", scrollMarginTop: "120px" }}
       >
-        <div style={sectionLabel}>Before you upload</div>
-        <h2 style={{ ...headline, fontSize: "32px", marginBottom: "12px" }}>
-          First, download your data from Claude.
+        <div style={sectionLabel}>Why upload your data</div>
+        <h2 style={{
+          fontFamily: sans,
+          fontSize: "26px",
+          fontWeight: 700,
+          lineHeight: 1.3,
+          color: C.ink,
+          marginBottom: "14px",
+          maxWidth: "540px",
+        }}>
+          Your conversation history is the best guide to what you actually need.
         </h2>
-        <p style={{ ...bodyText, marginBottom: "36px" }}>
-          It can take up to 24 hours for Claude to prepare your export. We'll be
-          here when you're ready.
+        <p style={{
+          fontFamily: sans,
+          fontSize: "15px",
+          color: C.warmGray,
+          lineHeight: 1.7,
+          maxWidth: "540px",
+          marginBottom: "32px",
+        }}>
+          You've had hundreds of conversations with Claude. Those patterns — the
+          tasks you repeat, the topics you revisit, the workflows you reach for —
+          tell us exactly which Skills will save you the most time.{" "}
+          <strong style={{ color: C.ink, fontWeight: 600 }}>
+            Instead of browsing a catalog and guessing, we match Skills to how you already work.
+          </strong>
         </p>
 
+        {/* Export steps box */}
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-            gap: "16px",
-            marginBottom: "36px",
+            background: C.surface,
+            border: `1px solid ${C.border}`,
+            borderRadius: "10px",
+            padding: "24px 28px",
+            marginBottom: "20px",
           }}
         >
-          {[
-            { step: "1", title: "Open Claude Settings", desc: "Go to claude.ai, click your initials, then Settings." },
-            { step: "2", title: "Find Privacy", desc: "Navigate to the Privacy tab." },
-            { step: "3", title: "Export Data", desc: 'Click "Export data." Claude emails you a download link.' },
-            { step: "4", title: "Find conversations.json", desc: "Download the ZIP, extract it, and find conversations.json inside." },
-          ].map((item) => (
-            <div
-              key={item.step}
-              style={{
-                padding: "20px",
-                border: `1px solid ${C.border}`,
-                background: C.surface,
-                borderRadius: "12px",
-              }}
-            >
+          <div style={{
+            fontFamily: mono,
+            fontSize: "10px",
+            letterSpacing: "0.1em",
+            textTransform: "uppercase" as const,
+            color: C.warmGray,
+            marginBottom: "16px",
+          }}>
+            How to export your Claude data
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap" as const, gap: "16px" }}>
+            {[
+              { num: "1", title: "Settings", desc: "Click your initials on claude.ai" },
+              { num: "2", title: "Privacy", desc: "Navigate to the Privacy tab" },
+              { num: "3", title: "Export", desc: 'Click "Export data" — you\'ll get an email' },
+              { num: "4", title: "Upload", desc: "Unzip and drop conversations.json here" },
+            ].map((step) => (
               <div
+                key={step.num}
                 style={{
-                  width: "32px",
-                  height: "32px",
-                  borderRadius: "8px",
-                  background: C.green,
-                  color: "#fff",
+                  flex: "1 1 160px",
+                  minWidth: "160px",
                   display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: "13px",
-                  fontWeight: 600,
-                  marginBottom: "12px",
+                  alignItems: "flex-start",
+                  gap: "10px",
                 }}
               >
-                {item.step}
+                <div
+                  style={{
+                    width: "24px",
+                    height: "24px",
+                    background: C.green,
+                    color: C.cream,
+                    borderRadius: "6px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "12px",
+                    fontWeight: 600,
+                    flexShrink: 0,
+                  }}
+                >
+                  {step.num}
+                </div>
+                <div style={{ fontSize: "13px", color: C.warmGray, lineHeight: 1.5 }}>
+                  <strong style={{ color: C.ink, fontWeight: 600, display: "block" }}>
+                    {step.title}
+                  </strong>
+                  {step.desc}
+                </div>
               </div>
-              <div
-                style={{
-                  fontFamily: "'DM Sans', sans-serif",
-                  fontSize: "14px",
-                  fontWeight: 600,
-                  color: C.ink,
-                  marginBottom: "6px",
-                }}
-              >
-                {item.title}
-              </div>
-              <div style={{ fontSize: "14px", lineHeight: 1.6, color: C.body }}>
-                {item.desc}
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
+        {/* Privacy link */}
         <a
-          href="https://claude.ai/settings"
-          target="_blank"
-          rel="noopener noreferrer"
+          href="#how-we-keep-it-private"
           style={{
-            fontFamily: "'DM Sans', sans-serif",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "8px",
             fontSize: "14px",
-            fontWeight: 600,
-            color: C.greenMuted,
-            textDecoration: "underline",
-            textUnderlineOffset: "3px",
+            fontWeight: 500,
+            color: C.ink,
+            textDecoration: "none",
+            cursor: "pointer",
           }}
         >
-          Open Claude Settings ↗
+          <div
+            style={{
+              width: "22px",
+              height: "22px",
+              background: C.green,
+              borderRadius: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+              <path d="M8 1L2 4v4c0 3.5 2.5 6.5 6 7.5 3.5-1 6-4 6-7.5V4L8 1z" stroke="#FDF6EC" strokeWidth="1.5" />
+              <path d="M5.5 8L7 9.5 10.5 6" stroke="#FDF6EC" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+          <span style={{ textDecoration: "underline", textUnderlineOffset: "3px" }}>
+            Worried about your privacy? See how we protect your data ↓
+          </span>
         </a>
       </section>
 
