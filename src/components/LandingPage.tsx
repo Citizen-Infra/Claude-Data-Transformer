@@ -436,13 +436,23 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
 
           {/* Export steps */}
           <div style={{
+            fontFamily: mono,
+            fontSize: "10px",
+            letterSpacing: "0.14em",
+            textTransform: "uppercase" as const,
+            color: "#9C9C8A",
+            marginBottom: "6px",
+          }}>
+            Step 1
+          </div>
+          <div style={{
             fontFamily: sans,
             fontSize: "16px",
             fontWeight: 600,
             color: "#2D4A3E",
             marginBottom: "16px",
           }}>
-            How to export your Claude data
+            Export your Claude data
           </div>
 
           <div className="export-steps-grid" style={{
