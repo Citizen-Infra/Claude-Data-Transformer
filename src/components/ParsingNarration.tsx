@@ -674,6 +674,36 @@ export default function ParsingNarration({
           />
         </div>
 
+        {/* Close X button */}
+        <button
+          onClick={onReset}
+          style={{
+            position: "absolute",
+            top: "12px",
+            right: "12px",
+            width: "32px",
+            height: "32px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "rgba(255,255,255,0.06)",
+            border: "none",
+            borderRadius: "8px",
+            cursor: "pointer",
+            color: C.sage,
+            transition: "background 0.15s, color 0.15s",
+            zIndex: 2,
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.12)"; e.currentTarget.style.color = C.cream; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; e.currentTarget.style.color = C.sage; }}
+          aria-label="Close"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+
         {/* View content */}
         {modalView === "steps" ? renderStepsView() : renderTableView()}
       </div>
