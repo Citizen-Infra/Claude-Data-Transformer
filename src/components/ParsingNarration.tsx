@@ -416,20 +416,11 @@ export default function ParsingNarration({
     </div>
   );
 
-  /* ── Render View 2: Full-screen conversations table ── */
+  /* ── Render View 2: Expanded dark modal with conversations table ── */
   const renderTableView = () => (
-    <div
-      key="table"
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 1001,
-        background: "#faf9f6",
-        overflowY: "auto",
-        animation: "viewFadeIn 0.25s ease",
-      }}
-    >
-      <div style={{ maxWidth: "800px", width: "100%", margin: "0 auto", padding: "40px 24px" }}>
+    <div key="table" style={{ animation: "viewFadeIn 0.25s ease", display: "flex", flexDirection: "column", height: "100%" }}>
+      {/* Scrollable content area */}
+      <div style={{ flex: 1, overflowY: "auto", padding: "28px 24px 0" }}>
         {/* Back button */}
         <button
           onClick={handleBack}
@@ -439,19 +430,29 @@ export default function ParsingNarration({
             cursor: "pointer",
             fontFamily: sans,
             fontSize: "13px",
-            color: "#666",
+            color: C.sage,
             padding: "0",
-            marginBottom: "24px",
+            marginBottom: "16px",
             display: "flex",
             alignItems: "center",
             gap: "4px",
           }}
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.sage} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6" />
           </svg>
           Back to summary
         </button>
+
+        {/* Title row */}
+        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: "16px" }}>
+          <div style={{ fontFamily: sans, fontSize: "20px", fontWeight: 600, color: C.cream }}>
+            Conversations Analyzed
+          </div>
+          <span style={{ fontFamily: mono, fontSize: "11px", color: C.sage }}>
+            {conversations.length} total
+          </span>
+        </div>
 
         {/* Sample badge */}
         {isSample && personaName && (
@@ -461,13 +462,13 @@ export default function ParsingNarration({
               alignItems: "center",
               gap: "4px",
               padding: "3px 10px",
-              background: "rgba(0,0,0,0.04)",
-              border: "1px solid #e5e5e0",
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(253,246,236,0.1)",
               borderRadius: "100px",
               fontFamily: mono,
               fontSize: "10px",
               fontWeight: 500,
-              color: "#666",
+              color: C.sage,
               textTransform: "uppercase",
               letterSpacing: "0.5px",
               marginBottom: "16px",
@@ -477,107 +478,146 @@ export default function ParsingNarration({
           </span>
         )}
 
-        {/* Title row */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "16px", padding: "0 4px" }}>
-          <h3 style={{ fontFamily: mono, fontSize: "11px", fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase", color: "#666", margin: 0 }}>
-            Conversations Analyzed
-          </h3>
-          <span style={{ fontFamily: mono, fontSize: "11px", fontWeight: 400, color: "#999" }}>
-            {conversations.length} total
-          </span>
-        </div>
-
         {/* Table */}
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr>
-              <th style={{ fontFamily: mono, fontSize: "10px", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "#999", textAlign: "left", padding: "8px 4px 10px", borderBottom: "1px solid #e5e5e0" }}>Title</th>
-              <th style={{ fontFamily: mono, fontSize: "10px", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "#999", textAlign: "center", padding: "8px 4px 10px", borderBottom: "1px solid #e5e5e0", width: "60px" }}>Msgs</th>
-              <th style={{ fontFamily: mono, fontSize: "10px", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "#999", textAlign: "right", padding: "8px 4px 10px", borderBottom: "1px solid #e5e5e0", width: "100px" }}>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {conversations.map((conv) => (
-              <tr
-                key={conv.id}
-                style={{ borderBottom: "1px solid #f0efeb", transition: "background 0.15s ease" }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#f5f4f0"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
-              >
-                <td style={{ padding: "14px 4px", fontSize: "15px", color: "#1a1a1a", fontWeight: 400, lineHeight: 1.3 }}>
-                  {conv.title}
-                </td>
-                <td style={{ padding: "14px 4px", textAlign: "center", fontFamily: mono, fontSize: "13px", color: "#666" }}>
-                  {conv.message_count}
-                </td>
-                <td style={{ padding: "14px 4px", textAlign: "right", fontFamily: mono, fontSize: "12px", color: "#999", whiteSpace: "nowrap" }}>
-                  {formatRelativeDate(conv.created_at)}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        {/* Footer — action buttons */}
         <div
           style={{
-            marginTop: "32px",
-            display: "flex",
-            gap: "12px",
-            alignItems: "center",
+            border: "1px solid rgba(253,246,236,0.1)",
+            borderRadius: "10px",
+            overflow: "hidden",
           }}
         >
-          <button
-            onClick={onReset}
+          {/* Column headers */}
+          <div
             style={{
-              padding: "12px 16px",
-              background: "none",
-              color: "#666",
-              border: "1px solid #e5e5e0",
-              borderRadius: "10px",
-              fontFamily: sans,
-              fontSize: "13px",
+              display: "grid",
+              gridTemplateColumns: "1fr 44px 56px",
+              gap: "6px",
+              padding: "10px 14px",
+              borderBottom: "1px solid rgba(253,246,236,0.08)",
+              fontFamily: mono,
+              fontSize: "10px",
               fontWeight: 500,
-              cursor: "pointer",
-              transition: "border-color 0.15s",
-              whiteSpace: "nowrap",
+              letterSpacing: "1px",
+              textTransform: "uppercase",
+              color: C.sage,
             }}
           >
-            {isSample ? "\u2190 Different persona" : "Remove file"}
-          </button>
+            <span>Title</span>
+            <span style={{ textAlign: "center" }}>Msgs</span>
+            <span style={{ textAlign: "right" }}>Date</span>
+          </div>
 
-          <button
-            onClick={handleProceed}
-            style={{
-              flex: 1,
-              padding: "14px 24px",
-              background: `linear-gradient(135deg, ${C.green}, #3d7a56)`,
-              color: "#fff",
-              border: "none",
-              borderRadius: "10px",
-              fontFamily: sans,
-              fontSize: "15px",
-              fontWeight: 700,
-              cursor: "pointer",
-              transition: "opacity 0.15s",
-              letterSpacing: "-0.2px",
-            }}
-          >
-            {isSample
-              ? `See ${personaName}'s suggested skills \u2192`
-              : "See suggested skills \u2192"}
-          </button>
+          {/* Rows */}
+          {conversations.map((conv, i) => (
+            <div
+              key={conv.id}
+              className="reveal-up"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 44px 56px",
+                gap: "6px",
+                padding: "10px 14px",
+                borderBottom:
+                  i < conversations.length - 1
+                    ? "1px solid rgba(253,246,236,0.06)"
+                    : "none",
+                animationDelay: `${Math.min(i * 30, 600)}ms`,
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: sans,
+                  fontSize: "13px",
+                  color: C.cream,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {conv.title}
+              </span>
+              <span
+                style={{
+                  fontFamily: mono,
+                  fontSize: "12px",
+                  color: C.sage,
+                  textAlign: "center",
+                }}
+              >
+                {conv.message_count}
+              </span>
+              <span
+                style={{
+                  fontFamily: mono,
+                  fontSize: "11px",
+                  color: C.sage,
+                  textAlign: "right",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {formatRelativeDate(conv.created_at)}
+              </span>
+            </div>
+          ))}
         </div>
+      </div>
+
+      {/* Sticky footer — action buttons */}
+      <div
+        style={{
+          flexShrink: 0,
+          padding: "16px 24px 24px",
+          background: C.greenDeep,
+          borderTop: "1px solid rgba(253,246,236,0.08)",
+          display: "flex",
+          gap: "12px",
+          alignItems: "center",
+        }}
+      >
+        <button
+          onClick={onReset}
+          style={{
+            padding: "12px 16px",
+            background: "none",
+            color: C.sage,
+            border: "1px solid rgba(253,246,236,0.12)",
+            borderRadius: "10px",
+            fontFamily: sans,
+            fontSize: "13px",
+            fontWeight: 500,
+            cursor: "pointer",
+            transition: "border-color 0.15s",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {isSample ? "\u2190 Different persona" : "Remove file"}
+        </button>
+
+        <button
+          onClick={handleProceed}
+          style={{
+            flex: 1,
+            padding: "14px 24px",
+            background: `linear-gradient(135deg, ${C.green}, #3d7a56)`,
+            color: "#fff",
+            border: "none",
+            borderRadius: "10px",
+            fontFamily: sans,
+            fontSize: "15px",
+            fontWeight: 700,
+            cursor: "pointer",
+            transition: "opacity 0.15s",
+            letterSpacing: "-0.2px",
+          }}
+        >
+          {isSample
+            ? `See ${personaName}'s suggested skills \u2192`
+            : "See suggested skills \u2192"}
+        </button>
       </div>
     </div>
   );
 
-  /* ── If table view, render full-screen light page ── */
-  if (modalView === "table") {
-    return renderTableView();
-  }
-
-  /* ── Otherwise, render the dark parsing-steps modal ── */
   return (
     <div
       className="narration-modal-backdrop"
@@ -588,7 +628,7 @@ export default function ParsingNarration({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "16px",
+        padding: modalView === "table" ? "8px" : "16px",
         animation: "fadeIn 0.25s ease",
       }}
     >
@@ -603,21 +643,23 @@ export default function ParsingNarration({
         }}
       />
 
-      {/* Modal — scrollable container */}
+      {/* Modal — grows edge-to-edge for table view */}
       <div
         className="narration-modal"
         style={{
           position: "relative",
           width: "100%",
-          maxWidth: "460px",
-          maxHeight: "520px",
-          overflowY: "auto",
+          maxWidth: modalView === "table" ? "100%" : "460px",
+          height: modalView === "table" ? "100%" : "auto",
+          maxHeight: modalView === "table" ? "100%" : "520px",
+          overflowY: modalView === "table" ? "hidden" : "auto",
           background: C.greenDeep,
-          borderRadius: "16px",
+          borderRadius: modalView === "table" ? "12px" : "16px",
           boxShadow: "0 24px 48px rgba(0,0,0,0.3)",
           display: "flex",
           flexDirection: "column",
           animation: "modalSlideUp 0.3s ease",
+          transition: "max-width 0.3s ease, max-height 0.3s ease, border-radius 0.3s ease",
         }}
       >
         {/* Progress bar */}
@@ -632,8 +674,8 @@ export default function ParsingNarration({
           />
         </div>
 
-        {/* Steps view content */}
-        {renderStepsView()}
+        {/* View content */}
+        {modalView === "steps" ? renderStepsView() : renderTableView()}
       </div>
     </div>
   );
