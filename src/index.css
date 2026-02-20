@@ -294,6 +294,12 @@ body {
     padding: 16px 10px 14px !important;
   }
 
+  .privacy-pill {
+    max-width: 100% !important;
+    padding: 12px 16px !important;
+    text-align: left !important;
+  }
+
   /* ── Footer: stack vertically ── */
   .site-footer {
     flex-direction: column !important;

@@ -253,35 +253,40 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
           href="#how-we-keep-it-private"
           onMouseEnter={() => setHoverPrivacyLink(true)}
           onMouseLeave={() => setHoverPrivacyLink(false)}
+          className="privacy-pill"
           style={{
             display: "inline-flex",
             alignItems: "center",
-            gap: "8px",
+            justifyContent: "center",
+            flexWrap: "wrap" as const,
+            gap: "6px 10px",
             marginTop: "20px",
-            padding: "10px 20px",
+            padding: "12px 22px",
             background: hoverPrivacyLink
               ? "rgba(125, 186, 150, 0.2)"
               : "rgba(125, 186, 150, 0.12)",
             border: hoverPrivacyLink
               ? "1px solid rgba(125, 186, 150, 0.4)"
               : "1px solid rgba(125, 186, 150, 0.25)",
-            borderRadius: "8px",
+            borderRadius: "10px",
             textDecoration: "none",
             cursor: "pointer",
             transition: "all 0.2s ease",
+            maxWidth: "420px",
           }}
         >
-          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
             <path d="M8 1L2 4.5V8c0 3.5 2.5 6.5 6 7.5 3.5-1 6-4 6-7.5V4.5L8 1z" stroke="#7dba96" strokeWidth="1.3" fill="none"/>
             <path d="M5.5 8L7 9.5L10.5 6" stroke="#7dba96" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
           <span style={{
             fontFamily: sans,
-            fontSize: "14.5px",
+            fontSize: "14px",
             fontWeight: 500,
             color: C.cream,
+            lineHeight: 1.4,
           }}>
-            Everything runs in your browser.
+            Your data never leaves your device — no server, no account needed.
           </span>
           <span style={{
             fontFamily: sans,
@@ -290,8 +295,9 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
             textDecoration: "underline",
             textUnderlineOffset: "3px",
             textDecorationColor: "rgba(125, 186, 150, 0.4)",
+            whiteSpace: "nowrap" as const,
           }}>
-            Learn how ↓
+            See how ↓
           </span>
         </a>
 
