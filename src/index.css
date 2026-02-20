@@ -240,6 +240,17 @@ body {
     display: none !important;
   }
 
+  .compact-logo,
+  .scroll-top-btn {
+    display: none !important;
+  }
+
+  /* Keep primary nav visible on mobile (no collapse) */
+  .primary-nav {
+    height: 56px !important;
+    border-bottom: 1px solid #E8DCCA !important;
+  }
+
   .stats-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     padding: 20px !important;
