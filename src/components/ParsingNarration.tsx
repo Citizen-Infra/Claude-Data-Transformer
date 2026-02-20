@@ -9,8 +9,6 @@ const C = {
   greenDeep: "#1a2f26",
   green: "#2D4A3E",
   cream: "#FDF6EC",
-  creamMuted: "rgba(253,246,236,0.7)",
-  creamDim: "rgba(253,246,236,0.35)",
   sageBright: "#6DBF73",
   sage: "#8BA898",
 };
@@ -41,7 +39,6 @@ interface ParsingNarrationProps {
 
 interface NarrationStep {
   label: string;
-  detail: string;
 }
 
 /** Simple artifact heuristic */
@@ -115,23 +112,23 @@ export default function ParsingNarration({
     // Build step sequence
     const parseSteps: NarrationStep[] = dataSource === "persona"
       ? [
-          { label: `Loading ${personaName}'s conversations`, detail: `${parsed.length} fictional conversations` },
-          { label: "Counting messages", detail: `${totalMessages} messages total` },
-          { label: "Reading conversation titles", detail: "Extracting metadata only" },
-          { label: "Building local summary", detail: "Nothing has left your browser" },
+          { label: `Loading ${personaName}'s conversations` },
+          { label: "Counting messages" },
+          { label: "Reading conversation titles" },
+          { label: "Building local summary" },
         ]
       : [
-          { label: "Reading file structure", detail: "Validating JSON format" },
-          { label: "Finding conversations", detail: `${parsed.length} found` },
-          { label: "Counting messages", detail: `${totalMessages} messages across all conversations` },
-          { label: "Reading conversation titles", detail: "Extracting metadata only — not message content" },
-          { label: "Building local summary", detail: "Nothing has left your browser" },
+          { label: "Reading file structure" },
+          { label: "Finding conversations" },
+          { label: "Counting messages" },
+          { label: "Reading conversation titles" },
+          { label: "Building local summary" },
         ];
 
     // Analysis steps
     const analysisSteps: NarrationStep[] = [
-      { label: "Building usage profile", detail: `${userProfile.primary_domains.length} domains, ${userProfile.work_patterns.length} patterns` },
-      { label: "Matching against skills catalog", detail: `${enriched.length} skills matched` },
+      { label: "Building usage profile" },
+      { label: "Matching against skills catalog" },
     ];
 
     return [...parseSteps, ...analysisSteps];
@@ -214,7 +211,7 @@ export default function ParsingNarration({
       <div
         style={{
           fontSize: "15px",
-          color: "rgba(253,246,236,0.55)",
+          color: "#c8d8cf",
           lineHeight: 1.6,
         }}
       >
@@ -252,22 +249,25 @@ export default function ParsingNarration({
         }}
       />
 
-      {/* Modal */}
+      {/* Modal — scrollable container */}
       <div
         className="narration-modal"
         style={{
           position: "relative",
           width: "100%",
-          maxWidth: "480px",
+          maxWidth: "460px",
+          maxHeight: "520px",
+          overflowY: "auto",
           background: C.greenDeep,
           borderRadius: "16px",
           boxShadow: "0 24px 48px rgba(0,0,0,0.3)",
-          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
           animation: "modalSlideUp 0.3s ease",
         }}
       >
         {/* Progress bar */}
-        <div style={{ height: "3px", background: "rgba(255,255,255,0.06)" }}>
+        <div style={{ height: "3px", background: "rgba(255,255,255,0.06)", flexShrink: 0 }}>
           <div
             style={{
               height: "100%",
@@ -278,7 +278,8 @@ export default function ParsingNarration({
           />
         </div>
 
-        <div style={{ padding: "32px 32px 28px" }}>
+        {/* Modal body */}
+        <div style={{ padding: "36px 32px 32px" }}>
           {/* Title */}
           <div
             style={{
@@ -287,14 +288,14 @@ export default function ParsingNarration({
               fontWeight: 600,
               color: C.cream,
               textAlign: "center",
-              marginBottom: "24px",
+              marginBottom: "28px",
             }}
           >
             {title}
           </div>
 
           {/* Steps */}
-          <div style={{ fontFamily: sans, fontSize: "14px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "14px", marginBottom: "24px" }}>
             {steps.map((step, i) => {
               const isComplete = i < currentStep;
               const isCurrent = i === currentStep - 1 && currentStep <= steps.length;
@@ -305,64 +306,36 @@ export default function ParsingNarration({
                   className="reveal-up narration-step"
                   style={{
                     display: i < currentStep ? "flex" : "none",
-                    justifyContent: "space-between",
-                    alignItems: "baseline",
-                    gap: "8px",
-                    padding: "6px 0",
+                    alignItems: "center",
+                    gap: "10px",
+                    fontFamily: sans,
+                    fontSize: "14px",
+                    color: "#d4e4d9",
                     animationDelay: `${i * 50}ms`,
-                    flexWrap: "wrap",
                   }}
                 >
-                  <span
-                    style={{
-                      display: "flex",
-                      alignItems: "baseline",
-                      gap: "8px",
-                      color: C.creamMuted,
-                      minWidth: 0,
-                    }}
-                  >
-                    <span style={{ flexShrink: 0 }}>
-                      {isComplete && !isCurrent ? (
-                        <span style={{ color: C.sageBright }}>✓</span>
-                      ) : (
-                        <span
-                          style={{
-                            display: "inline-block",
-                            width: "6px",
-                            height: "6px",
-                            background: C.sageBright,
-                            borderRadius: "50%",
-                            position: "relative",
-                            top: "-1px",
-                          }}
-                        />
-                      )}
-                    </span>
-                    <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
-                      {step.label}{isComplete && !isCurrent ? "" : "…"}
-                    </span>
-                  </span>
-                  <span
-                    className="narration-step-detail"
-                    style={{
-                      fontFamily: mono,
-                      fontSize: "12px",
-                      color: C.creamDim,
-                      textAlign: "right",
-                      flexShrink: 0,
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {step.detail}
-                  </span>
+                  {isComplete && !isCurrent ? (
+                    <span style={{ color: C.sageBright, fontSize: "14px", flexShrink: 0, width: "16px", textAlign: "center" as const }}>✓</span>
+                  ) : (
+                    <span
+                      style={{
+                        width: "7px",
+                        height: "7px",
+                        background: C.sageBright,
+                        borderRadius: "50%",
+                        flexShrink: 0,
+                        margin: "0 4.5px",
+                      }}
+                    />
+                  )}
+                  <span>{step.label}{isComplete && !isCurrent ? "" : "..."}</span>
                 </div>
               );
             })}
 
             {/* Blinking cursor while in progress */}
             {!done && currentStep > 0 && (
-              <div style={{ color: "rgba(255,255,255,0.3)", padding: "2px 0" }}>
+              <div style={{ color: "rgba(255,255,255,0.3)", paddingLeft: "26px" }}>
                 <span className="blink">▊</span>
               </div>
             )}
@@ -373,9 +346,9 @@ export default function ParsingNarration({
             <div
               className="reveal-up"
               style={{
-                marginTop: "20px",
-                paddingTop: "16px",
-                borderTop: "1px solid rgba(255,255,255,0.06)",
+                borderTop: "1px solid rgba(253,246,236,0.08)",
+                paddingTop: "20px",
+                marginBottom: "4px",
               }}
             >
               <div
@@ -384,8 +357,8 @@ export default function ParsingNarration({
                   fontSize: "10px",
                   letterSpacing: "0.12em",
                   textTransform: "uppercase",
-                  color: "rgba(253,246,236,0.3)",
-                  marginBottom: "12px",
+                  color: C.sage,
+                  marginBottom: "10px",
                 }}
               >
                 Skill Matches Found
@@ -399,9 +372,8 @@ export default function ParsingNarration({
             <div
               className="reveal-up"
               style={{
-                marginTop: "16px",
                 paddingTop: "12px",
-                borderTop: "1px solid rgba(255,255,255,0.06)",
+                borderTop: "1px solid rgba(253,246,236,0.08)",
                 fontFamily: sans,
                 fontSize: "12px",
                 color: "rgba(255,255,255,0.5)",
@@ -427,32 +399,34 @@ export default function ParsingNarration({
                 : "All parsing happens in your browser. No network requests."}
             </div>
           )}
+        </div>
 
-          {/* "Got it" button */}
-          <div style={{ marginTop: "24px", textAlign: "center" }}>
-            <button
-              onClick={handleGotIt}
-              disabled={!done}
-              style={{
-                width: "200px",
-                padding: "12px 0",
-                background: done ? C.green : "rgba(255,255,255,0.06)",
-                color: done ? C.cream : "rgba(253,246,236,0.3)",
-                border: done
-                  ? "1px solid rgba(255,255,255,0.1)"
-                  : "1px solid rgba(255,255,255,0.06)",
-                borderRadius: "10px",
-                fontFamily: sans,
-                fontSize: "15px",
-                fontWeight: 600,
-                cursor: done ? "pointer" : "default",
-                transition: "all 0.3s ease",
-                opacity: done ? 1 : 0.6,
-              }}
-            >
-              Got it
-            </button>
-          </div>
+        {/* Modal footer — full-width button */}
+        <div style={{ padding: "0 32px 32px" }}>
+          <button
+            onClick={handleGotIt}
+            disabled={!done}
+            style={{
+              display: "block",
+              width: "100%",
+              padding: "14px 0",
+              background: done ? C.green : "rgba(255,255,255,0.06)",
+              color: done ? C.cream : "rgba(253,246,236,0.3)",
+              border: done
+                ? "1px solid rgba(253,246,236,0.1)"
+                : "1px solid rgba(255,255,255,0.06)",
+              borderRadius: "10px",
+              fontFamily: sans,
+              fontSize: "15px",
+              fontWeight: 600,
+              textAlign: "center" as const,
+              cursor: done ? "pointer" : "default",
+              transition: "all 0.3s ease",
+              opacity: done ? 1 : 0.6,
+            }}
+          >
+            Got it
+          </button>
         </div>
       </div>
     </div>
