@@ -9,7 +9,7 @@ export default function BarChart({ data }: BarChartProps) {
 
   return (
     <div>
-      {data.slice(0, 7).map((b, i) => (
+      {data.slice(0, 3).map((b, i) => (
         <div
           key={i}
           className="bar-chart-row"

@@ -72,19 +72,19 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
       <section
         id="results-overview"
         style={{
-          background: `linear-gradient(135deg, ${C.dark} 0%, ${C.mid} 100%)`,
+          background: "#fff",
           padding: "64px 24px 80px",
           textAlign: "center",
         }}
       >
-        <div style={{ ...sectionLabel, color: C.mint, marginBottom: "16px" }}>
+        <div style={{ ...sectionLabel, color: C.mid, marginBottom: "16px" }}>
           Your results
         </div>
         <h1
           style={{
             ...headline,
             fontSize: "clamp(30px, 5vw, 46px)",
-            color: "#fff",
+            color: C.ink,
             maxWidth: "600px",
             margin: "0 auto 16px",
           }}
@@ -95,14 +95,14 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
           style={{
             fontSize: "16px",
             lineHeight: 1.7,
-            color: "rgba(255,255,255,0.75)",
+            color: C.body,
             maxWidth: "520px",
             margin: "0 auto",
             fontFamily: "'DM Sans', sans-serif",
           }}
         >
-          Based on your conversation history, here's your usage breakdown,
-          skill recommendations ranked by fit, and gaps worth building.
+          Based on your conversation history, here's your usage breakdown
+          and skill recommendations ranked by fit.
         </p>
       </section>
 
@@ -119,7 +119,8 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
           style={{
             background: "#fff",
             borderRadius: "16px",
-            boxShadow: "0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04)",
+            border: `1px solid ${C.border}`,
+            boxShadow: "0 4px 16px rgba(0,0,0,0.05)",
             padding: "32px",
             display: "grid",
             gridTemplateColumns: "repeat(4, 1fr)",
@@ -228,51 +229,6 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
           </div>
         </div>
       </section>
-
-      {/* ─── Skill gaps ─── */}
-      {(userProfile.skill_gaps?.length ?? 0) > 0 && (
-        <section
-          style={{
-            padding: "48px 24px",
-            background: C.cream,
-            borderTop: `1px solid ${C.border}`,
-            borderBottom: `1px solid ${C.border}`,
-          }}
-        >
-          <div style={{ maxWidth: "800px", margin: "0 auto" }}>
-            <div style={sectionLabel}>Where skills can help</div>
-            <h2
-              style={{ ...headline, fontSize: "26px", marginBottom: "20px" }}
-            >
-              Gaps we identified
-            </h2>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-                gap: "12px",
-              }}
-            >
-              {userProfile.skill_gaps.map((gap, i) => (
-                <div
-                  key={i}
-                  style={{
-                    padding: "16px 20px",
-                    background: C.surface,
-                    border: `1px solid ${C.border}`,
-                    borderRadius: "12px",
-                    fontSize: "14px",
-                    lineHeight: 1.7,
-                    color: C.body,
-                  }}
-                >
-                  {gap}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* ─── Recommendations ─── */}
       <section
