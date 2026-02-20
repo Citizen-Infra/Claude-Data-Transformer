@@ -741,11 +741,6 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
             />
           )}
 
-          {/* ── Dev tools prompt (always visible) ── */}
-          <DevToolsPrompt />
-
-          {/* ── Privacy monitor (always visible) ── */}
-          <PrivacyMonitor phase={phase} dataSource={dataSource} />
         </div>
       </section>
 
@@ -927,6 +922,16 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
             <path d="M7 17L17 7M17 7H7M17 7v10" />
           </svg>
         </a>
+
+        {/* ── Dev tools prompt ── */}
+        <div style={{ marginTop: "28px" }}>
+          <DevToolsPrompt />
+        </div>
+
+        {/* ── Privacy monitor ── */}
+        <div style={{ marginTop: "20px" }}>
+          <PrivacyMonitor phase={phase} dataSource={dataSource} />
+        </div>
       </section>
 
       {/* ─── Skills Commons / Build a Skill ─── */}
