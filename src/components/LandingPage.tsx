@@ -6,7 +6,6 @@ import ParsingNarration from "./ParsingNarration";
 import type { NarrationResults } from "./ParsingNarration";
 import ParsedPreview from "./ParsedPreview";
 import PersonaPicker from "./PersonaPicker";
-import PrivacyMonitor from "./PrivacyMonitor";
 import DevToolsPrompt from "./DevToolsPrompt";
 import SkillBuilderCard from "./SkillBuilderCard";
 import type { ParsedConversation, ClaudeConversation, UserProfile, EnrichedRecommendation, AnalysisResults, AppView } from "../lib/types";
@@ -932,11 +931,6 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
         {/* ── Dev tools prompt ── */}
         <div style={{ marginTop: "28px" }}>
           <DevToolsPrompt />
-        </div>
-
-        {/* ── Privacy monitor ── */}
-        <div style={{ marginTop: "20px" }}>
-          <PrivacyMonitor phase={phase} dataSource={dataSource} />
         </div>
       </section>
 
