@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import type { AppView } from "../lib/types";
 import logoLight from "../assets/logo-light.svg";
+import logoDark from "../assets/logo-dark.svg";
 
 interface HeaderProps {
   view: AppView;
@@ -46,9 +47,13 @@ const COLORS = {
   sageLight: "#c8d8cf",
 };
 
+/* Scroll threshold: how far down before collapsing to compact mode */
+const SCROLL_THRESHOLD = 80;
+
 export default function Header({ view, hasResults, onLogoClick, onNavigate }: HeaderProps) {
   const [activeSection, setActiveSection] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Close menu when clicking outside
@@ -68,7 +73,7 @@ export default function Header({ view, hasResults, onLogoClick, onNavigate }: He
     setMenuOpen(false);
   }, [view]);
 
-  // Scroll-based section highlighting
+  // Track scroll position for compact header + section highlighting
   useEffect(() => {
     const sections =
       view === "results"
@@ -78,12 +83,17 @@ export default function Header({ view, hasResults, onLogoClick, onNavigate }: He
         : view === "landing"
         ? LANDING_NAV
         : [];
-    if (sections.length === 0) {
-      setActiveSection("");
-      return;
-    }
 
     const handleScroll = () => {
+      // Compact header state
+      setScrolled(window.scrollY > SCROLL_THRESHOLD);
+
+      // Section highlighting
+      if (sections.length === 0) {
+        setActiveSection("");
+        return;
+      }
+
       const offsets = sections.map(({ id }) => {
         const el = document.getElementById(id);
         if (!el) return { id, top: Infinity };
@@ -105,9 +115,13 @@ export default function Header({ view, hasResults, onLogoClick, onNavigate }: He
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
-      const y = el.getBoundingClientRect().top + window.scrollY - 110;
+      const y = el.getBoundingClientRect().top + window.scrollY - 60;
       window.scrollTo({ top: y, behavior: "smooth" });
     }
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   /* ── Section scroll items for current view ── */
@@ -132,6 +146,7 @@ export default function Header({ view, hasResults, onLogoClick, onNavigate }: He
     >
       {/* ══════════════════════════════════════════════
           PRIMARY NAV — white bar, logo + page tabs
+          Collapses when scrolled (desktop only via CSS)
           ══════════════════════════════════════════════ */}
       <div
         className="primary-nav"
@@ -141,8 +156,10 @@ export default function Header({ view, hasResults, onLogoClick, onNavigate }: He
           alignItems: "center",
           justifyContent: "space-between",
           padding: "0 28px",
-          height: "56px",
-          borderBottom: `1px solid ${COLORS.creamBorder}`,
+          height: scrolled && showSubNav ? "0px" : "56px",
+          overflow: "hidden",
+          borderBottom: scrolled && showSubNav ? "none" : `1px solid ${COLORS.creamBorder}`,
+          transition: "height 0.25s ease, border-bottom 0.25s ease",
         }}
       >
         {/* Logo */}
@@ -449,6 +466,7 @@ export default function Header({ view, hasResults, onLogoClick, onNavigate }: He
 
       {/* ══════════════════════════════════════════════
           SECONDARY NAV — dark green bar, section scroll
+          When scrolled: shows logo (left) + sections (center) + ↑ button (right)
           ══════════════════════════════════════════════ */}
       {showSubNav && (
         <div
@@ -457,9 +475,9 @@ export default function Header({ view, hasResults, onLogoClick, onNavigate }: He
             background: COLORS.green,
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
             height: "42px",
             position: "relative",
+            padding: "0 16px",
           }}
         >
           {/* Bottom accent line */}
@@ -472,12 +490,41 @@ export default function Header({ view, hasResults, onLogoClick, onNavigate }: He
             background: COLORS.greenMid,
           }} />
 
+          {/* Compact logo — only visible when scrolled */}
+          <button
+            onClick={onLogoClick}
+            className="compact-logo"
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              padding: 0,
+              flexShrink: 0,
+              opacity: scrolled ? 1 : 0,
+              width: scrolled ? "auto" : "0px",
+              overflow: "hidden",
+              transition: "opacity 0.25s ease, width 0.25s ease",
+              marginRight: scrolled ? "12px" : "0px",
+            }}
+          >
+            <img
+              src={logoDark}
+              alt="claude.pdt"
+              style={{ height: "28px", width: "auto" }}
+            />
+          </button>
+
+          {/* Section nav links — centered */}
           <nav
             className="nav-results-scroll"
             style={{
               display: "flex",
               alignItems: "center",
               gap: 0,
+              flex: 1,
+              justifyContent: "center",
               overflowX: "auto",
               WebkitOverflowScrolling: "touch",
               msOverflowStyle: "none",
@@ -526,6 +573,42 @@ export default function Header({ view, hasResults, onLogoClick, onNavigate }: He
               );
             })}
           </nav>
+
+          {/* Scroll-to-top button — only visible when scrolled */}
+          <button
+            onClick={scrollToTop}
+            className="scroll-top-btn"
+            aria-label="Scroll to top"
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "4px",
+              flexShrink: 0,
+              opacity: scrolled ? 1 : 0,
+              width: scrolled ? "28px" : "0px",
+              overflow: "hidden",
+              transition: "opacity 0.25s ease, width 0.25s ease",
+              marginLeft: scrolled ? "8px" : "0px",
+            }}
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke={COLORS.cream}
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ opacity: 0.7 }}
+            >
+              <polyline points="18 15 12 9 6 15" />
+            </svg>
+          </button>
         </div>
       )}
     </header>
