@@ -389,66 +389,69 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
       {/* ─── Why upload your data ─── */}
       <section
         id="how-it-works"
-        style={{ padding: "0 24px 72px", maxWidth: "780px", margin: "0 auto", scrollMarginTop: "120px" }}
+        style={{
+          padding: "72px 24px",
+          background: "#FDF6EC",
+          borderTop: "1px solid #E8DCCA",
+          borderBottom: "1px solid #E8DCCA",
+          scrollMarginTop: "120px",
+        }}
       >
-        <div style={{
-          fontFamily: mono,
-          fontSize: "10px",
-          letterSpacing: "0.14em",
-          textTransform: "uppercase" as const,
-          color: "#9C9C8A",
-          marginBottom: "12px",
-        }}>
-          Why upload your data
-        </div>
-        <h2 style={{
-          fontFamily: sans,
-          fontSize: "26px",
-          fontWeight: 700,
-          lineHeight: 1.3,
-          color: "#2D4A3E",
-          marginBottom: "14px",
-          maxWidth: "540px",
-        }}>
-          Your conversation history is the best guide to what you actually need.
-        </h2>
-        <p style={{
-          fontFamily: sans,
-          fontSize: "15px",
-          color: "#7A7A6C",
-          lineHeight: 1.7,
-          maxWidth: "540px",
-          marginBottom: "32px",
-        }}>
-          You've had hundreds of conversations with Claude. Those patterns — the
-          tasks you repeat, the topics you revisit, the workflows you reach for —
-          tell us exactly which Skills will save you the most time.{" "}
-          <strong style={{ color: "#2D4A3E", fontWeight: 600 }}>
-            Instead of browsing a catalog and guessing, we match Skills to how you already work.
-          </strong>
-        </p>
+        <div style={{ maxWidth: "780px", margin: "0 auto" }}>
+          <div style={{
+            fontFamily: mono,
+            fontSize: "10px",
+            letterSpacing: "0.14em",
+            textTransform: "uppercase" as const,
+            color: "#9C9C8A",
+            marginBottom: "12px",
+          }}>
+            Why upload your data
+          </div>
+          <h2 style={{
+            fontFamily: sans,
+            fontSize: "26px",
+            fontWeight: 700,
+            lineHeight: 1.3,
+            color: "#2D4A3E",
+            marginBottom: "14px",
+            maxWidth: "540px",
+          }}>
+            Your conversation history is the best guide to what you actually need.
+          </h2>
+          <p style={{
+            fontFamily: sans,
+            fontSize: "15px",
+            color: "#7A7A6C",
+            lineHeight: 1.7,
+            maxWidth: "540px",
+            marginBottom: "36px",
+          }}>
+            Your patterns — the tasks you repeat, the topics you revisit, the workflows you
+            reach for — tell us exactly which Skills will save you the most time.{" "}
+            <strong style={{ color: "#2D4A3E", fontWeight: 600 }}>
+              We match Skills to how you already work.
+            </strong>
+          </p>
 
-        {/* Export steps box */}
-        <div
-          style={{
-            background: "#FFFFFF",
-            border: "1px solid #E8DCCA",
-            borderRadius: "10px",
-            padding: "24px 28px",
-            marginBottom: "20px",
-          }}
-        >
+          {/* Export steps */}
           <div style={{
             fontFamily: mono,
             fontSize: "10px",
             letterSpacing: "0.1em",
             textTransform: "uppercase" as const,
             color: "#9C9C8A",
-            marginBottom: "16px",
+            marginBottom: "20px",
           }}>
-            Step 1: download your Claude data
+            How to export your Claude data
           </div>
-          <div style={{ display: "flex", flexWrap: "wrap" as const, gap: "16px" }}>
+
+          <div className="export-steps-grid" style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+            gap: "16px",
+            marginBottom: "28px",
+          }}>
             {[
               { num: "1", title: "Settings", desc: "Click your initials on claude.ai" },
               { num: "2", title: "Privacy", desc: "Navigate to the Privacy tab" },
@@ -458,57 +461,68 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
               <div
                 key={step.num}
                 style={{
-                  flex: "1 1 160px",
-                  minWidth: "160px",
-                  display: "flex",
-                  alignItems: "flex-start",
-                  gap: "10px",
+                  background: "#FFFFFF",
+                  border: "1px solid #E8DCCA",
+                  borderRadius: "10px",
+                  padding: "20px 16px",
                 }}
               >
                 <div
                   style={{
-                    width: "24px",
-                    height: "24px",
+                    width: "28px",
+                    height: "28px",
                     background: "#2D4A3E",
                     color: "#FDF6EC",
-                    borderRadius: "6px",
+                    borderRadius: "7px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: "12px",
+                    fontSize: "13px",
+                    fontFamily: mono,
                     fontWeight: 600,
-                    flexShrink: 0,
+                    marginBottom: "12px",
                   }}
                 >
                   {step.num}
                 </div>
-                <div style={{ fontSize: "13px", color: "#7A7A6C", lineHeight: 1.5 }}>
-                  <strong style={{ color: "#2D4A3E", fontWeight: 600, display: "block" }}>
-                    {step.title}
-                  </strong>
+                <div style={{
+                  fontFamily: sans,
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  color: "#2D4A3E",
+                  marginBottom: "4px",
+                }}>
+                  {step.title}
+                </div>
+                <div style={{
+                  fontFamily: sans,
+                  fontSize: "13px",
+                  color: "#7A7A6C",
+                  lineHeight: 1.5,
+                }}>
                   {step.desc}
                 </div>
               </div>
             ))}
           </div>
-        </div>
 
-        {/* Settings link */}
-        <a
-          href="https://claude.ai/settings"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            fontFamily: sans,
-            fontSize: "14px",
-            fontWeight: 500,
-            color: "#2D4A3E",
-            textDecoration: "underline",
-            textUnderlineOffset: "3px",
-          }}
-        >
-          Open Claude Settings ↗
-        </a>
+          {/* Settings link */}
+          <a
+            href="https://claude.ai/settings"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              fontFamily: sans,
+              fontSize: "14px",
+              fontWeight: 500,
+              color: "#2D4A3E",
+              textDecoration: "underline",
+              textUnderlineOffset: "3px",
+            }}
+          >
+            Open Claude Settings ↗
+          </a>
+        </div>
       </section>
 
       {/* ─── Upload section (phase-driven) ─── */}
