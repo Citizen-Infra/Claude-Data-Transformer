@@ -683,10 +683,12 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
+                  justifyContent: "center",
                   gap: "10px",
                   marginTop: "18px",
                   textDecoration: "none",
                   cursor: "pointer",
+                  width: "100%",
                 }}
               >
                 <div
@@ -716,6 +718,30 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
                   Worried about your privacy? See how we protect your data ↓
                 </span>
               </a>
+
+              {/* ── Or divider ── */}
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "16px",
+                margin: "28px 0 24px",
+              }}>
+                <div style={{ flex: 1, height: "1px", background: "#E8DCCA" }} />
+                <span style={{
+                  fontFamily: mono,
+                  fontSize: "11px",
+                  color: "#9C9C8A",
+                  textTransform: "uppercase" as const,
+                  letterSpacing: "0.08em",
+                }}>or</span>
+                <div style={{ flex: 1, height: "1px", background: "#E8DCCA" }} />
+              </div>
+
+              {/* ── Persona picker ── */}
+              <PersonaPicker
+                onTryDemo={handleTryDemo}
+                onDownload={handleDownload}
+              />
             </div>
           )}
 
@@ -748,24 +774,6 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
 
         </div>
       </section>
-
-      {/* ─── Persona demos (own section) ─── */}
-      {phase === "upload" && (
-        <section
-          id="try-demo"
-          style={{
-            padding: "48px 24px 64px",
-            maxWidth: "780px",
-            margin: "0 auto",
-            scrollMarginTop: "120px",
-          }}
-        >
-          <PersonaPicker
-            onTryDemo={handleTryDemo}
-            onDownload={handleDownload}
-          />
-        </section>
-      )}
 
       {/* ─── Privacy section ─── */}
       <section
