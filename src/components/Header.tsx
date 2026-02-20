@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import type { AppView } from "../lib/types";
 import logoLight from "../assets/logo-light.svg";
-import logoDark from "../assets/logo-dark.svg";
+import logoCompact from "../assets/logo-compact.svg";
 
 interface HeaderProps {
   view: AppView;
@@ -54,7 +54,9 @@ export default function Header({ view, hasResults, onLogoClick, onNavigate }: He
   const [activeSection, setActiveSection] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [forceShowPrimary, setForceShowPrimary] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const lastScrollY = useRef(0);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -85,8 +87,17 @@ export default function Header({ view, hasResults, onLogoClick, onNavigate }: He
         : [];
 
     const handleScroll = () => {
+      const currentY = window.scrollY;
+      const isScrolled = currentY > SCROLL_THRESHOLD;
+
       // Compact header state
-      setScrolled(window.scrollY > SCROLL_THRESHOLD);
+      setScrolled(isScrolled);
+
+      // If user scrolls after manually opening the primary nav, collapse it again
+      if (Math.abs(currentY - lastScrollY.current) > 5) {
+        setForceShowPrimary(false);
+      }
+      lastScrollY.current = currentY;
 
       // Section highlighting
       if (sections.length === 0) {
@@ -118,10 +129,6 @@ export default function Header({ view, hasResults, onLogoClick, onNavigate }: He
       const y = el.getBoundingClientRect().top + window.scrollY - 60;
       window.scrollTo({ top: y, behavior: "smooth" });
     }
-  };
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   /* ── Section scroll items for current view ── */
@@ -156,9 +163,9 @@ export default function Header({ view, hasResults, onLogoClick, onNavigate }: He
           alignItems: "center",
           justifyContent: "space-between",
           padding: "0 28px",
-          height: scrolled && showSubNav ? "0px" : "56px",
+          height: scrolled && showSubNav && !forceShowPrimary ? "0px" : "56px",
           overflow: "hidden",
-          borderBottom: scrolled && showSubNav ? "none" : `1px solid ${COLORS.creamBorder}`,
+          borderBottom: scrolled && showSubNav && !forceShowPrimary ? "none" : `1px solid ${COLORS.creamBorder}`,
           transition: "height 0.25s ease, border-bottom 0.25s ease",
         }}
       >
@@ -510,9 +517,9 @@ export default function Header({ view, hasResults, onLogoClick, onNavigate }: He
             }}
           >
             <img
-              src={logoDark}
+              src={logoCompact}
               alt="claude.pdt"
-              style={{ height: "28px", width: "auto" }}
+              style={{ height: "22px", width: "auto" }}
             />
           </button>
 
@@ -574,11 +581,11 @@ export default function Header({ view, hasResults, onLogoClick, onNavigate }: He
             })}
           </nav>
 
-          {/* Scroll-to-top button — only visible when scrolled */}
+          {/* Hamburger menu button — only visible when scrolled (toggles primary nav) */}
           <button
-            onClick={scrollToTop}
+            onClick={() => setForceShowPrimary((v) => !v)}
             className="scroll-top-btn"
-            aria-label="Scroll to top"
+            aria-label="Toggle navigation"
             style={{
               background: "none",
               border: "none",
@@ -606,7 +613,18 @@ export default function Header({ view, hasResults, onLogoClick, onNavigate }: He
               strokeLinejoin="round"
               style={{ opacity: 0.7 }}
             >
-              <polyline points="18 15 12 9 6 15" />
+              {forceShowPrimary ? (
+                <>
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </>
+              ) : (
+                <>
+                  <line x1="4" y1="6" x2="20" y2="6" />
+                  <line x1="4" y1="12" x2="20" y2="12" />
+                  <line x1="4" y1="18" x2="20" y2="18" />
+                </>
+              )}
             </svg>
           </button>
         </div>
