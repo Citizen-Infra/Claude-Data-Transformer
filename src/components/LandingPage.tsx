@@ -555,9 +555,19 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
                 letterSpacing: "0.14em",
                 textTransform: "uppercase" as const,
                 color: "#9C9C8A",
+                marginBottom: "6px",
+              }}>
+                Step 2
+              </div>
+              {/* Subheading */}
+              <div style={{
+                fontFamily: sans,
+                fontSize: "16px",
+                fontWeight: 600,
+                color: "#2D4A3E",
                 marginBottom: "14px",
               }}>
-                Step 2: Upload your data
+                Upload your data
               </div>
 
               {/* Hint */}
