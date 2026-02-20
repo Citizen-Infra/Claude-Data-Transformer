@@ -57,6 +57,7 @@ export default function Header({ view, hasResults, onLogoClick, onNavigate }: He
   const [forceShowPrimary, setForceShowPrimary] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const lastScrollY = useRef(0);
+  const forceShowScrollY = useRef(0);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -93,8 +94,8 @@ export default function Header({ view, hasResults, onLogoClick, onNavigate }: He
       // Compact header state
       setScrolled(isScrolled);
 
-      // If user scrolls after manually opening the primary nav, collapse it again
-      if (Math.abs(currentY - lastScrollY.current) > 5) {
+      // If user scrolls 100px+ down from where they opened the menu, collapse it
+      if (forceShowPrimary && currentY - forceShowScrollY.current > 100) {
         setForceShowPrimary(false);
       }
       lastScrollY.current = currentY;
@@ -121,7 +122,7 @@ export default function Header({ view, hasResults, onLogoClick, onNavigate }: He
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [view]);
+  }, [view, forceShowPrimary]);
 
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
@@ -583,7 +584,12 @@ export default function Header({ view, hasResults, onLogoClick, onNavigate }: He
 
           {/* Hamburger menu button — only visible when scrolled (toggles primary nav) */}
           <button
-            onClick={() => setForceShowPrimary((v) => !v)}
+            onClick={() => {
+              setForceShowPrimary((v) => {
+                if (!v) forceShowScrollY.current = window.scrollY;
+                return !v;
+              });
+            }}
             className="scroll-top-btn"
             aria-label="Toggle navigation"
             style={{
