@@ -322,18 +322,42 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
       <section
         style={{
           padding: "72px 24px",
-          maxWidth: "800px",
+          maxWidth: "780px",
           margin: "0 auto",
         }}
       >
-        <div style={sectionLabel}>Why Skills matter</div>
-        <h2 style={{ ...headline, fontSize: "32px", marginBottom: "12px" }}>
+        <div style={{
+          fontFamily: mono,
+          fontSize: "10px",
+          letterSpacing: "0.14em",
+          textTransform: "uppercase" as const,
+          color: "#9C9C8A",
+          marginBottom: "12px",
+        }}>
+          Why Skills matter
+        </div>
+        <h2 style={{
+          fontFamily: sans,
+          fontSize: "26px",
+          fontWeight: 700,
+          lineHeight: 1.3,
+          color: "#2D4A3E",
+          marginBottom: "14px",
+          maxWidth: "540px",
+        }}>
           Claude has built-in Skills, but they only cover the basics.
         </h2>
-        <p style={{ ...bodyText, marginBottom: "32px" }}>
-          The real power comes from <strong style={{ color: C.ink, fontWeight: 600 }}>community-published Skills</strong> — purpose-built
+        <p style={{
+          fontFamily: sans,
+          fontSize: "15px",
+          color: "#7A7A6C",
+          lineHeight: 1.7,
+          maxWidth: "540px",
+          marginBottom: "32px",
+        }}>
+          The real power comes from <strong style={{ color: "#2D4A3E", fontWeight: 600 }}>community-published Skills</strong> — purpose-built
           instructions that teach Claude how to handle specific workflows, domains, and tools.
-          This site analyzes your Claude history and <strong style={{ color: C.ink, fontWeight: 600 }}>recommends the Skills
+          This site analyzes your Claude history and <strong style={{ color: "#2D4A3E", fontWeight: 600 }}>recommends the Skills
           that match how you actually work</strong>.
         </p>
 
@@ -346,8 +370,8 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
               alignItems: "center",
               gap: "6px",
               padding: "12px 24px",
-              background: C.green,
-              color: C.cream,
+              background: "#2D4A3E",
+              color: "#FDF6EC",
               borderRadius: "8px",
               fontFamily: sans,
               fontSize: "14px",
@@ -367,8 +391,8 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
               gap: "6px",
               padding: "12px 24px",
               background: "transparent",
-              color: C.green,
-              border: `1px solid ${C.border}`,
+              color: "#2D4A3E",
+              border: "1px solid #E8DCCA",
               borderRadius: "8px",
               fontFamily: sans,
               fontSize: "14px",
@@ -386,15 +410,24 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
       {/* ─── Why upload your data ─── */}
       <section
         id="how-it-works"
-        style={{ padding: "0 24px 72px", maxWidth: "800px", margin: "0 auto", scrollMarginTop: "120px" }}
+        style={{ padding: "0 24px 72px", maxWidth: "780px", margin: "0 auto", scrollMarginTop: "120px" }}
       >
-        <div style={sectionLabel}>Why upload your data</div>
+        <div style={{
+          fontFamily: mono,
+          fontSize: "10px",
+          letterSpacing: "0.14em",
+          textTransform: "uppercase" as const,
+          color: "#9C9C8A",
+          marginBottom: "12px",
+        }}>
+          Why upload your data
+        </div>
         <h2 style={{
           fontFamily: sans,
           fontSize: "26px",
           fontWeight: 700,
           lineHeight: 1.3,
-          color: C.ink,
+          color: "#2D4A3E",
           marginBottom: "14px",
           maxWidth: "540px",
         }}>
@@ -403,7 +436,7 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
         <p style={{
           fontFamily: sans,
           fontSize: "15px",
-          color: C.warmGray,
+          color: "#7A7A6C",
           lineHeight: 1.7,
           maxWidth: "540px",
           marginBottom: "32px",
@@ -411,7 +444,7 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
           You've had hundreds of conversations with Claude. Those patterns — the
           tasks you repeat, the topics you revisit, the workflows you reach for —
           tell us exactly which Skills will save you the most time.{" "}
-          <strong style={{ color: C.ink, fontWeight: 600 }}>
+          <strong style={{ color: "#2D4A3E", fontWeight: 600 }}>
             Instead of browsing a catalog and guessing, we match Skills to how you already work.
           </strong>
         </p>
@@ -419,8 +452,8 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
         {/* Export steps box */}
         <div
           style={{
-            background: C.surface,
-            border: `1px solid ${C.border}`,
+            background: "#FFFFFF",
+            border: "1px solid #E8DCCA",
             borderRadius: "10px",
             padding: "24px 28px",
             marginBottom: "20px",
@@ -431,7 +464,7 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
             fontSize: "10px",
             letterSpacing: "0.1em",
             textTransform: "uppercase" as const,
-            color: C.warmGray,
+            color: "#9C9C8A",
             marginBottom: "16px",
           }}>
             Step 1: download your Claude data
@@ -457,8 +490,8 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
                   style={{
                     width: "24px",
                     height: "24px",
-                    background: C.green,
-                    color: C.cream,
+                    background: "#2D4A3E",
+                    color: "#FDF6EC",
                     borderRadius: "6px",
                     display: "flex",
                     alignItems: "center",
@@ -470,8 +503,8 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
                 >
                   {step.num}
                 </div>
-                <div style={{ fontSize: "13px", color: C.warmGray, lineHeight: 1.5 }}>
-                  <strong style={{ color: C.ink, fontWeight: 600, display: "block" }}>
+                <div style={{ fontSize: "13px", color: "#7A7A6C", lineHeight: 1.5 }}>
+                  <strong style={{ color: "#2D4A3E", fontWeight: 600, display: "block" }}>
                     {step.title}
                   </strong>
                   {step.desc}
@@ -489,8 +522,8 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
           style={{
             fontFamily: sans,
             fontSize: "14px",
-            fontWeight: 600,
-            color: C.greenMuted,
+            fontWeight: 500,
+            color: "#2D4A3E",
             textDecoration: "underline",
             textUnderlineOffset: "3px",
           }}
