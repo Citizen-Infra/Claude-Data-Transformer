@@ -5,7 +5,7 @@ import { downloadPersonaExport } from "../lib/generatePersonaExport";
 import ParsingNarration from "./ParsingNarration";
 import type { NarrationResults } from "./ParsingNarration";
 import PersonaPicker from "./PersonaPicker";
-import DevToolsPrompt from "./DevToolsPrompt";
+// DevToolsPrompt replaced by inline "Prove it" panel in privacy section
 import SkillBuilderCard from "./SkillBuilderCard";
 import type { ClaudeConversation, AnalysisResults, AppView } from "../lib/types";
 
@@ -730,167 +730,233 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
       {/* ─── Privacy section ─── */}
       <section
         id="how-we-keep-it-private"
-        style={{ padding: "72px 24px", maxWidth: "800px", margin: "0 auto", scrollMarginTop: "120px" }}
+        style={{ padding: "72px 24px", maxWidth: "880px", margin: "0 auto", scrollMarginTop: "120px" }}
       >
         <div style={sectionLabel}>How privacy works here</div>
-        <h2 style={{ ...headline, fontSize: "32px", marginBottom: "12px" }}>
-          Built for you to own your data, not for us to see it.
+        <h2 style={{ ...headline, fontSize: "clamp(28px, 4vw, 38px)", marginBottom: "16px" }}>
+          Your data never touches our hands.
         </h2>
-        <p style={{ ...bodyText, marginBottom: "40px" }}>
-          We designed this tool so your data never touches our hands. Everything
-          runs client-side, directly in your browser.
+        <p style={{ ...bodyText, marginBottom: "48px", maxWidth: "540px" }}>
+          Everything runs client-side, directly in your browser. We can't see your data because we're never in the data path.
         </p>
 
+        {/* ── Trust strip ── */}
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-            gap: "20px",
+            display: "flex",
+            marginBottom: "40px",
+            borderRadius: "14px",
+            overflow: "hidden",
+            border: `1px solid ${C.border}`,
+            background: C.surface,
           }}
         >
           {[
-            {
-              icon: "🔒",
-              title: "Nothing leaves your browser",
-              desc: "Your file is parsed and analyzed entirely using client-side JavaScript. There is no server, no upload, no account.",
-            },
-            {
-              icon: "🛡️",
-              title: "No network requests",
-              desc: "Zero outgoing API calls. Your data is processed locally with pattern-matching heuristics — nothing is sent anywhere.",
-            },
-            {
-              icon: "🗑️",
-              title: "Nothing is stored",
-              desc: "There is no database, no cookies, no local storage. Close the tab and everything is gone. We never see your data.",
-            },
-            {
-              icon: "📊",
-              title: "Privacy-preserving analytics only",
-              desc: "We use fence analytics for simple page-view counts. No cookies, no fingerprinting, no behavioral tracking.",
-            },
-          ].map((item, i) => (
+            { icon: "\u{1F510}", label: "Browser only", detail: "Client-side JavaScript" },
+            { icon: "\u{1F310}", label: "Zero network calls", detail: "No outgoing API requests" },
+            { icon: "\u{1F5D1}\uFE0F", label: "Nothing stored", detail: "Close the tab, it\u2019s gone" },
+            { icon: "\u{1F4CA}", label: "No tracking", detail: "Fence analytics, page views only" },
+          ].map((item, i, arr) => (
             <div
               key={i}
               style={{
-                padding: "24px",
-                background: C.surface,
-                border: `1px solid ${C.border}`,
-                borderRadius: "12px",
-                transition: "box-shadow 0.2s, transform 0.2s",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.06)";
-                e.currentTarget.style.transform = "translateY(-2px)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = "none";
-                e.currentTarget.style.transform = "none";
+                flex: 1,
+                padding: "24px 20px",
+                textAlign: "center",
+                position: "relative",
               }}
             >
-              <div style={{ fontSize: "24px", marginBottom: "12px" }}>
-                {item.icon}
-              </div>
-              <div
-                style={{
-                  fontFamily: "'DM Sans', sans-serif",
-                  fontSize: "15px",
-                  fontWeight: 600,
-                  color: C.ink,
-                  marginBottom: "8px",
-                }}
-              >
-                {item.title}
-              </div>
-              <div
-                style={{ fontSize: "14px", lineHeight: 1.65, color: C.body }}
-              >
-                {item.desc}
-              </div>
+              {i < arr.length - 1 && (
+                <div style={{
+                  position: "absolute",
+                  right: 0,
+                  top: "20%",
+                  height: "60%",
+                  width: "1px",
+                  background: C.border,
+                }} />
+              )}
+              <span style={{ fontSize: "20px", display: "block", marginBottom: "8px" }}>{item.icon}</span>
+              <div style={{ fontFamily: sans, fontSize: "13px", fontWeight: 600, color: C.ink, lineHeight: 1.35 }}>{item.label}</div>
+              <div style={{ fontSize: "12px", color: C.subtle, marginTop: "4px", lineHeight: 1.4 }}>{item.detail}</div>
             </div>
           ))}
         </div>
 
-        {/* ── GitHub repo preview ── */}
-        <a
-          href="https://github.com/Citizen-Infra/Claude-Data-Transformer"
-          target="_blank"
-          rel="noopener noreferrer"
+        {/* ── Prove it — hero card ── */}
+        <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "16px",
-            marginTop: "28px",
-            padding: "20px 24px",
-            background: C.surface,
-            border: `1px solid ${C.border}`,
-            borderRadius: "12px",
-            textDecoration: "none",
-            transition: "box-shadow 0.2s, transform 0.2s, border-color 0.2s",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.06)";
-            e.currentTarget.style.transform = "translateY(-1px)";
-            e.currentTarget.style.borderColor = C.cardBorder;
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.boxShadow = "none";
-            e.currentTarget.style.transform = "none";
-            e.currentTarget.style.borderColor = C.border;
+            background: C.ink,
+            borderRadius: "16px",
+            overflow: "hidden",
+            marginBottom: "20px",
           }}
         >
-          <svg
-            width="32"
-            height="32"
-            viewBox="0 0 24 24"
-            fill={C.ink}
-            style={{ flexShrink: 0 }}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              minHeight: "280px",
+            }}
           >
-            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-          </svg>
-          <div style={{ minWidth: 0 }}>
-            <div
-              style={{
-                fontFamily: "'DM Sans', sans-serif",
-                fontSize: "15px",
+            {/* Left: copy + steps */}
+            <div style={{ padding: "40px 36px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+              <div style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                fontFamily: sans,
+                fontSize: "11px",
                 fontWeight: 600,
-                color: C.ink,
-                marginBottom: "2px",
-              }}
-            >
-              Don't trust us — read the code.
+                letterSpacing: "0.08em",
+                textTransform: "uppercase" as const,
+                color: "#C2DFD0",
+                marginBottom: "16px",
+              }}>
+                <span className="privacy-dot" style={{ width: "6px", height: "6px", background: "#4ADE80", borderRadius: "50%" }} />
+                Verifiable
+              </div>
+              <h3 style={{
+                fontFamily: "'DM Serif Display', Georgia, serif",
+                fontSize: "clamp(22px, 3vw, 28px)",
+                fontWeight: 400,
+                color: "#FFFFFF",
+                lineHeight: 1.25,
+                marginBottom: "12px",
+              }}>
+                Don't trust us.<br />Prove it yourself.
+              </h3>
+              <p style={{ fontFamily: sans, fontSize: "14px", color: "#9CA8A0", lineHeight: 1.6, marginBottom: "24px", maxWidth: "340px" }}>
+                Open your browser's developer tools and watch the Network tab while you use the app. You'll see nothing leave.
+              </p>
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                {[
+                  <>Press <kbd style={{ fontFamily: mono, fontSize: "11px", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "4px", padding: "1px 6px", color: "#E4F2EB" }}>F12</kbd> or <kbd style={{ fontFamily: mono, fontSize: "11px", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "4px", padding: "1px 6px", color: "#E4F2EB" }}>{"\u2318\u2325I"}</kbd></>,
+                  "Click the Network tab",
+                  "Upload your file and watch",
+                ].map((step, si) => (
+                  <div key={si} style={{ display: "flex", alignItems: "center", gap: "10px", fontFamily: sans, fontSize: "13px", color: "#C8D5CC" }}>
+                    <span style={{
+                      width: "22px",
+                      height: "22px",
+                      borderRadius: "50%",
+                      background: "rgba(255,255,255,0.08)",
+                      border: "1px solid rgba(255,255,255,0.12)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "11px",
+                      fontWeight: 600,
+                      color: "#C2DFD0",
+                      flexShrink: 0,
+                    }}>{si + 1}</span>
+                    {step}
+                  </div>
+                ))}
+              </div>
             </div>
-            <div
-              style={{
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: "12px",
-                color: C.subtle,
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }}
-            >
-              github.com/Citizen-Infra/Claude-Data-Transformer
+
+            {/* Right: fake network tab */}
+            <div style={{
+              background: "#141A16",
+              display: "flex",
+              flexDirection: "column",
+              overflow: "hidden",
+              borderLeft: "1px solid rgba(255,255,255,0.06)",
+            }}>
+              {/* DevTools tab bar */}
+              <div style={{ display: "flex", gap: 0, borderBottom: "1px solid rgba(255,255,255,0.08)", padding: "0 16px", background: "rgba(255,255,255,0.02)" }}>
+                {["Elements", "Console", "Network", "Sources"].map((tab) => (
+                  <span key={tab} style={{
+                    fontFamily: mono,
+                    fontSize: "11px",
+                    color: tab === "Network" ? "#C2DFD0" : "#5A6B60",
+                    padding: "10px 14px",
+                    borderBottom: tab === "Network" ? "2px solid #C2DFD0" : "2px solid transparent",
+                  }}>{tab}</span>
+                ))}
+              </div>
+
+              {/* Column headers */}
+              <div style={{ display: "grid", gridTemplateColumns: "2.5fr 1fr 1fr 0.8fr", gap: "8px", padding: "12px 16px 8px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                {["Name", "Status", "Type", "Size"].map((h) => (
+                  <span key={h} style={{ fontFamily: mono, fontSize: "10px", color: "#4A5A50", fontWeight: 500 }}>{h}</span>
+                ))}
+              </div>
+
+              {/* Network rows */}
+              <div style={{ flex: 1, padding: "8px 16px", display: "flex", flexDirection: "column", gap: "6px" }}>
+                {[
+                  { name: "index.html", status: "200", type: "document", size: "14.2 kB" },
+                  { name: "app.js", status: "200", type: "script", size: "38.7 kB" },
+                  { name: "styles.css", status: "200", type: "stylesheet", size: "8.1 kB" },
+                ].map((row, ri) => (
+                  <div key={ri} style={{
+                    display: "grid",
+                    gridTemplateColumns: "2.5fr 1fr 1fr 0.8fr",
+                    gap: "8px",
+                    padding: "4px 0",
+                    animation: `rowAppear 0.3s ease ${0.8 + ri * 0.6}s forwards`,
+                    opacity: 0,
+                  }}>
+                    <span style={{ fontFamily: mono, fontSize: "10.5px", color: "#A8C4B0", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{row.name}</span>
+                    <span style={{ fontFamily: mono, fontSize: "10.5px", color: "#4ADE80" }}>{row.status}</span>
+                    <span style={{ fontFamily: mono, fontSize: "10.5px", color: "#8B9E92" }}>{row.type}</span>
+                    <span style={{ fontFamily: mono, fontSize: "10.5px", color: "#7A8B80" }}>{row.size}</span>
+                  </div>
+                ))}
+
+                {/* Empty state */}
+                <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "8px", paddingTop: "28px" }}>
+                  <div style={{
+                    width: "36px",
+                    height: "36px",
+                    borderRadius: "50%",
+                    border: "1.5px dashed rgba(255,255,255,0.12)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4A5A50" strokeWidth="1.5" strokeLinecap="round">
+                      <path d="M12 8v4m0 4h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z" />
+                    </svg>
+                  </div>
+                  <span style={{ fontFamily: mono, fontSize: "11px", color: "#4A5A50", textAlign: "center", lineHeight: 1.5 }}>
+                    Upload a file.<br />
+                    <span style={{ color: "#4ADE80", fontWeight: 500 }}>Nothing else will appear.</span>
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke={C.subtle}
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{ flexShrink: 0, marginLeft: "auto" }}
-          >
-            <path d="M7 17L17 7M17 7H7M17 7v10" />
-          </svg>
-        </a>
+        </div>
 
-        {/* ── Dev tools prompt ── */}
-        <div style={{ marginTop: "28px" }}>
-          <DevToolsPrompt />
+        {/* ── Footer row ── */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 4px" }}>
+          <a
+            href="https://github.com/Citizen-Infra/Claude-Data-Transformer"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              fontFamily: sans,
+              fontSize: "13px",
+              fontWeight: 500,
+              color: C.body,
+              textDecoration: "none",
+              transition: "color 0.15s",
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = C.greenMuted; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = C.body; }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+            </svg>
+            Read the source code
+          </a>
+          <span style={{ fontFamily: sans, fontSize: "12px", color: C.subtle }}>Citizen Infrastructure &middot; Open source</span>
         </div>
       </section>
 
