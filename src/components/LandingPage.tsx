@@ -966,7 +966,21 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
             </svg>
             Read the source code
           </a>
-          <span style={{ fontFamily: sans, fontSize: "12px", color: C.subtle }}>Citizen Infrastructure &middot; Open source</span>
+          <span style={{ fontFamily: sans, fontSize: "12px", color: C.subtle }}>
+            Citizen Infrastructure &middot; Open source &middot;{" "}
+            <a
+              href="#about-the-builders"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById("about-the-builders")?.scrollIntoView({ behavior: "smooth" });
+              }}
+              style={{ color: C.greenMuted, textDecoration: "none", transition: "color 0.15s" }}
+              onMouseEnter={(e) => { e.currentTarget.style.textDecoration = "underline"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.textDecoration = "none"; }}
+            >
+              Learn more
+            </a>
+          </span>
         </div>
       </section>
 
