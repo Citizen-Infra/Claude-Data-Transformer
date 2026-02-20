@@ -498,7 +498,7 @@ export default function Header({ view, hasResults, onLogoClick, onNavigate }: He
             background: COLORS.greenMid,
           }} />
 
-          {/* Compact logo — only visible when scrolled */}
+          {/* Compact logo — only visible when scrolled and menu not forced open */}
           <button
             onClick={onLogoClick}
             className="compact-logo"
@@ -510,11 +510,11 @@ export default function Header({ view, hasResults, onLogoClick, onNavigate }: He
               alignItems: "center",
               padding: 0,
               flexShrink: 0,
-              opacity: scrolled ? 1 : 0,
-              width: scrolled ? "auto" : "0px",
+              opacity: scrolled && !forceShowPrimary ? 1 : 0,
+              width: scrolled && !forceShowPrimary ? "auto" : "0px",
               overflow: "hidden",
               transition: "opacity 0.25s ease, width 0.25s ease",
-              marginRight: scrolled ? "12px" : "0px",
+              marginRight: scrolled && !forceShowPrimary ? "12px" : "0px",
             }}
           >
             <img
@@ -582,7 +582,7 @@ export default function Header({ view, hasResults, onLogoClick, onNavigate }: He
             })}
           </nav>
 
-          {/* Hamburger menu button — only visible when scrolled (toggles primary nav) */}
+          {/* Hamburger menu button — only visible when scrolled and menu not forced open */}
           <button
             onClick={() => {
               setForceShowPrimary((v) => {
@@ -601,11 +601,11 @@ export default function Header({ view, hasResults, onLogoClick, onNavigate }: He
               justifyContent: "center",
               padding: "4px",
               flexShrink: 0,
-              opacity: scrolled ? 1 : 0,
-              width: scrolled ? "28px" : "0px",
+              opacity: scrolled && !forceShowPrimary ? 1 : 0,
+              width: scrolled && !forceShowPrimary ? "28px" : "0px",
               overflow: "hidden",
               transition: "opacity 0.25s ease, width 0.25s ease",
-              marginLeft: scrolled ? "8px" : "0px",
+              marginLeft: scrolled && !forceShowPrimary ? "8px" : "0px",
             }}
           >
             <svg
