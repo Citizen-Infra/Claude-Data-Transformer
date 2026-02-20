@@ -404,6 +404,267 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
             </div>
           ))}
         </div>
+
+        {/* ── Action cards: MCP + Networking Card ── */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: "24px",
+            marginTop: "24px",
+          }}
+        >
+          {/* MCP Card — dark green */}
+          <div
+            style={{
+              background: "#1A2E23",
+              border: "1px solid #243B2E",
+              borderRadius: "16px",
+              padding: "36px 32px 32px",
+              display: "flex",
+              flexDirection: "column" as const,
+              gap: "0",
+              transition: "border-color 0.3s ease, box-shadow 0.3s ease",
+              cursor: "default",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = "#4A7F5E";
+              e.currentTarget.style.boxShadow = "0 8px 32px rgba(26,46,35,0.25)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = "#243B2E";
+              e.currentTarget.style.boxShadow = "none";
+            }}
+          >
+            {/* Icon */}
+            <div
+              style={{
+                width: "48px",
+                height: "48px",
+                borderRadius: "12px",
+                background: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.1)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: "20px",
+                flexShrink: 0,
+              }}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />
+                <circle cx="12" cy="13" r="2" stroke="rgba(255,255,255,0.4)" />
+                <path d="M12 11v-1.5M12 15v1.5M14 13h1.5M10 13H8.5" stroke="rgba(255,255,255,0.4)" />
+              </svg>
+            </div>
+            {/* Badge */}
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                fontSize: "10px",
+                fontWeight: 600,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase" as const,
+                padding: "4px 10px",
+                borderRadius: "100px",
+                background: "rgba(255,255,255,0.1)",
+                color: "rgba(255,255,255,0.7)",
+                border: "1px solid rgba(255,255,255,0.15)",
+                marginBottom: "16px",
+                width: "fit-content",
+              }}
+            >
+              Requires Claude Desktop
+            </span>
+            {/* Title */}
+            <h3
+              style={{
+                fontFamily: "'DM Serif Display', Georgia, serif",
+                fontSize: "24px",
+                fontWeight: 400,
+                lineHeight: 1.2,
+                marginBottom: "12px",
+                color: "#fff",
+              }}
+            >
+              Connect to Claude
+            </h3>
+            {/* Body */}
+            <p
+              style={{
+                fontSize: "15px",
+                lineHeight: 1.6,
+                color: "rgba(255,255,255,0.75)",
+                marginBottom: "8px",
+                flex: 1,
+              }}
+            >
+              Point your schema at Claude through MCP. It stays on your device — Claude reads it directly.
+            </p>
+            {/* Detail */}
+            <p
+              style={{
+                fontSize: "13px",
+                color: "rgba(255,255,255,0.5)",
+                marginBottom: "28px",
+                lineHeight: 1.5,
+              }}
+            >
+              ~5 minute setup
+            </p>
+            {/* CTA */}
+            <a
+              href="#"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                fontFamily: sans,
+                fontSize: "14px",
+                fontWeight: 600,
+                padding: "12px 24px",
+                borderRadius: "100px",
+                border: "none",
+                background: "#fff",
+                color: "#1A2E23",
+                textDecoration: "none",
+                width: "fit-content",
+                transition: "all 0.2s ease",
+              }}
+            >
+              Set up MCP
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 8h10M9 4l4 4-4 4" />
+              </svg>
+            </a>
+          </div>
+
+          {/* Networking Card — white */}
+          <div
+            style={{
+              background: C.surface,
+              border: `1px solid ${C.border}`,
+              borderRadius: "16px",
+              padding: "36px 32px 32px",
+              display: "flex",
+              flexDirection: "column" as const,
+              gap: "0",
+              transition: "border-color 0.3s ease, box-shadow 0.3s ease",
+              cursor: "default",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = "#6B9E7E";
+              e.currentTarget.style.boxShadow = "0 8px 32px rgba(26,46,35,0.08)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = C.border;
+              e.currentTarget.style.boxShadow = "none";
+            }}
+          >
+            {/* Icon */}
+            <div
+              style={{
+                width: "48px",
+                height: "48px",
+                borderRadius: "12px",
+                background: "#F3F7F4",
+                border: "1px solid #E8F0EB",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: "20px",
+                flexShrink: 0,
+              }}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3D6B50" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="3" />
+                <path d="M7 8h6M7 12h10M7 16h4" />
+              </svg>
+            </div>
+            {/* Badge */}
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                fontSize: "10px",
+                fontWeight: 600,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase" as const,
+                padding: "4px 10px",
+                borderRadius: "100px",
+                background: "#FFF8E6",
+                color: "#8B6914",
+                border: "1px solid #F0E0A8",
+                marginBottom: "16px",
+                width: "fit-content",
+              }}
+            >
+              New
+            </span>
+            {/* Title */}
+            <h3
+              style={{
+                fontFamily: "'DM Serif Display', Georgia, serif",
+                fontSize: "24px",
+                fontWeight: 400,
+                lineHeight: 1.2,
+                marginBottom: "12px",
+                color: C.ink,
+              }}
+            >
+              Your Networking Card
+            </h3>
+            {/* Body */}
+            <p
+              style={{
+                fontSize: "15px",
+                lineHeight: 1.6,
+                color: C.body,
+                marginBottom: "8px",
+                flex: 1,
+              }}
+            >
+              A shareable snapshot of your projects, interests, and thinking style — pulled from your history. Bring it to your next meetup instead of small talk.
+            </p>
+            {/* Detail */}
+            <p
+              style={{
+                fontSize: "13px",
+                color: C.warmGrayLight,
+                marginBottom: "28px",
+                lineHeight: 1.5,
+              }}
+            >
+              Generate here or via MCP in Claude
+            </p>
+            {/* CTA */}
+            <a
+              href="#"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                fontFamily: sans,
+                fontSize: "14px",
+                fontWeight: 600,
+                padding: "12px 24px",
+                borderRadius: "100px",
+                border: "none",
+                background: "#1A2E23",
+                color: "#fff",
+                textDecoration: "none",
+                width: "fit-content",
+                transition: "all 0.2s ease",
+              }}
+            >
+              Generate your card
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 8h10M9 4l4 4-4 4" />
+              </svg>
+            </a>
+          </div>
+        </div>
       </section>
 
       {/* ─── Before you upload (export steps) ─── */}
