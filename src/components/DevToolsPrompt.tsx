@@ -76,58 +76,67 @@ export default function DevToolsPrompt() {
 
   return (
     <div style={{ marginTop: "16px" }}>
-      {/* Summary row */}
+      {/* Summary row — dark green bar matching PrivacyMonitor style */}
       <div
         onClick={() => setOpen(!open)}
         style={{
           display: "flex",
           alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
           gap: "8px",
           padding: "12px 18px",
-          background: open ? C.white : "transparent",
-          border: open ? `1px solid ${C.border}` : "1px solid transparent",
-          borderBottom: open ? "none" : undefined,
+          background: C.green,
           borderRadius: open ? "10px 10px 0 0" : "10px",
           cursor: "pointer",
-          transition: "all 0.15s ease",
+          transition: "border-radius 0.15s ease",
         }}
       >
-        {/* Question mark icon */}
-        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
-          <circle cx="8" cy="8" r="7" stroke={C.warmGray} strokeWidth="1.2" />
-          <path
-            d="M6 6C6 4.9 6.9 4 8 4s2 .9 2 2c0 .8-.5 1.4-1.2 1.7-.3.1-.8.4-.8.8V10"
-            stroke={C.warmGray}
-            strokeWidth="1.2"
-            strokeLinecap="round"
-          />
-          <circle cx="8" cy="12" r="0.8" fill={C.warmGray} />
-        </svg>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", flex: 1, minWidth: 0 }}>
+          {/* Shield icon */}
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
+            <path
+              d="M8 1L2 4.5V8c0 3.5 2.5 6.5 6 7.5 3.5-1 6-4 6-7.5V4.5L8 1z"
+              stroke="#7dba96"
+              strokeWidth="1.3"
+              fill="none"
+            />
+            <path
+              d="M5.5 8L7 9.5L10.5 6"
+              stroke="#7dba96"
+              strokeWidth="1.3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
 
-        <span style={{ fontFamily: sans, fontSize: "13px", color: C.textMuted, flex: 1 }}>
-          Want proof?{" "}
-          <span
-            style={{
-              color: C.text,
-              fontWeight: 500,
-              textDecoration: "underline",
-              textUnderlineOffset: "3px",
-              textDecorationColor: C.border,
-            }}
-          >
-            Open your browser's dev tools
-          </span>{" "}
-          and watch the Network tab during upload.
-        </span>
+          <span style={{
+            fontFamily: mono,
+            fontSize: "11.5px",
+            color: "#d4e8dc",
+            fontWeight: 500,
+          }}>
+            Want proof?
+          </span>
+
+          <span style={{
+            fontFamily: mono,
+            fontSize: "11.5px",
+            color: "#9dcbad",
+          }}>
+            Open dev tools and watch the Network tab
+          </span>
+        </div>
 
         <span
           style={{
             fontFamily: mono,
             fontSize: "12px",
-            color: C.warmGray,
+            color: "#7dba96",
             transform: open ? "rotate(180deg)" : "none",
             transition: "transform 0.2s",
             display: "inline-block",
+            flexShrink: 0,
           }}
         >
           ▾
