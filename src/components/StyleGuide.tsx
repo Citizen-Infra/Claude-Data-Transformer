@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useCallback } from "react";
+import logoLight from "../assets/logo-light.svg";
+import logoCompact from "../assets/logo-compact.svg";
 
 const mono = "'DM Mono', 'IBM Plex Mono', monospace";
 const sans = "'DM Sans', 'Helvetica Neue', sans-serif";
@@ -263,6 +265,59 @@ function Swatch({ hex, name, usage }: { hex: string; name: string; usage: string
   );
 }
 
+/* ── Download Header.tsx button ── */
+function DownloadHeaderButton() {
+  const handleDownload = useCallback(async () => {
+    try {
+      // Fetch the raw source of Header.tsx at build time via Vite's ?raw import
+      const mod = await import("./Header.tsx?raw");
+      const source = mod.default;
+      const blob = new Blob([source], { type: "text/typescript" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "Header.tsx";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 100);
+    } catch {
+      // Fallback: open the file path hint
+      alert("Could not download automatically. The Header component is at src/components/Header.tsx in the project.");
+    }
+  }, []);
+
+  return (
+    <button
+      onClick={handleDownload}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "8px",
+        padding: "12px 24px",
+        background: "#2D4A3E",
+        color: "#FDF6EC",
+        border: "none",
+        borderRadius: "8px",
+        fontFamily: "'DM Sans', sans-serif",
+        fontSize: "14px",
+        fontWeight: 600,
+        cursor: "pointer",
+        transition: "opacity 0.15s",
+      }}
+      onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.85"; }}
+      onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+        <polyline points="7 10 12 15 17 10" />
+        <line x1="12" y1="15" x2="12" y2="3" />
+      </svg>
+      Download Header.tsx
+    </button>
+  );
+}
+
 export default function StyleGuide() {
   return (
     <div style={{
@@ -470,23 +525,143 @@ export default function StyleGuide() {
       </Section>
 
       {/* ── NAV STRUCTURE ── */}
-      <Section title="Navigation Structure">
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+      <Section title="Navigation Bar">
+        {/* Live preview */}
+        <div style={{
+          border: "1px solid #E8DCCA",
+          borderRadius: "12px",
+          overflow: "hidden",
+          marginBottom: "20px",
+        }}>
+          {/* Preview label */}
+          <div style={{
+            padding: "8px 16px",
+            background: "#f5f5f0",
+            borderBottom: "1px solid #E8DCCA",
+            fontFamily: mono,
+            fontSize: "10px",
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            color: "#9C9C8A",
+          }}>
+            Live Preview
+          </div>
+
+          {/* ── Primary nav preview ── */}
+          <div style={{
+            background: "#FFFFFF",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "0 28px",
+            height: "56px",
+            borderBottom: "1px solid #E8DCCA",
+          }}>
+            <img src={logoLight} alt="claude.pdt" style={{ height: "28px", width: "auto" }} />
+            <div style={{ display: "flex", alignItems: "center", gap: 0, height: "56px" }}>
+              {["About", "Skills Commons", "Your Skill Suggestions"].map((label) => (
+                <span
+                  key={label}
+                  style={{
+                    fontFamily: sans,
+                    fontSize: "13px",
+                    fontWeight: 500,
+                    color: "#2D4A3E",
+                    padding: "0 20px",
+                    display: "flex",
+                    alignItems: "center",
+                    height: "100%",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {label}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* ── Sub-nav preview ── */}
+          <div style={{
+            background: "#2D4A3E",
+            display: "flex",
+            alignItems: "center",
+            height: "42px",
+            position: "relative",
+            padding: "0 16px",
+          }}>
+            {/* Bottom accent line */}
+            <div style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: "3px",
+              background: "#3a5a4a",
+            }} />
+
+            {/* Compact logo */}
+            <img src={logoCompact} alt="claude.pdt" style={{ height: "22px", width: "auto", marginRight: "12px", flexShrink: 0 }} />
+
+            {/* Section links */}
+            <nav style={{ display: "flex", alignItems: "center", gap: 0, flex: 1, justifyContent: "center" }}>
+              {["How it works", "Upload your data", "Protecting your Privacy", "About the builders"].map((label, i) => (
+                <span
+                  key={label}
+                  style={{
+                    fontFamily: mono,
+                    fontSize: "12px",
+                    fontWeight: i === 0 ? 500 : 400,
+                    color: i === 0 ? "#FDF6EC" : "rgba(253,246,236,0.6)",
+                    padding: "10px 20px",
+                    whiteSpace: "nowrap",
+                    position: "relative",
+                  }}
+                >
+                  {label}
+                  {i === 0 && (
+                    <span style={{
+                      position: "absolute",
+                      bottom: 0,
+                      left: "16px",
+                      right: "16px",
+                      height: "3px",
+                      background: "#8BA898",
+                      borderRadius: "2px 2px 0 0",
+                    }} />
+                  )}
+                </span>
+              ))}
+            </nav>
+
+            {/* Hamburger icon */}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FDF6EC" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7, flexShrink: 0 }}>
+              <line x1="4" y1="6" x2="20" y2="6" />
+              <line x1="4" y1="12" x2="20" y2="12" />
+              <line x1="4" y1="18" x2="20" y2="18" />
+            </svg>
+          </div>
+        </div>
+
+        {/* Specs */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "20px" }}>
           <div style={{ padding: "20px 24px", border: "1px solid #E8DCCA", borderRadius: "10px", background: "#fff" }}>
             <div style={{ fontSize: "13px", fontWeight: 600, color: "#2D4A3E", marginBottom: "8px" }}>Primary Nav (white bar, 56px)</div>
-            <p style={{ fontSize: "12px", color: "#7A7A6C", lineHeight: 1.6 }}>
+            <p style={{ fontSize: "12px", color: "#7A7A6C", lineHeight: 1.6, margin: 0 }}>
               Logo + page tabs (About, Skills Commons, Your Skill Suggestions). Collapses to 0px on scroll past 80px threshold.
-              Hamburger in sub-nav toggles it back. On mobile (≤768px), stays at 56px with hamburger dropdown.
+              Hamburger in sub-nav toggles it back. On mobile (&le;768px), stays at 56px with hamburger dropdown.
             </p>
           </div>
           <div style={{ padding: "20px 24px", border: "1px solid #E8DCCA", borderRadius: "10px", background: "#2D4A3E", color: "#FDF6EC" }}>
-            <div style={{ fontSize: "13px", fontWeight: 600, marginBottom: "8px" }}>Sub Nav (green bar, 44px)</div>
-            <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.7)", lineHeight: 1.6 }}>
+            <div style={{ fontSize: "13px", fontWeight: 600, marginBottom: "8px" }}>Sub Nav (green bar, 42px)</div>
+            <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.7)", lineHeight: 1.6, margin: 0 }}>
               Section scroll links in DM Mono. Compact logo (claude.pdt wordmark) and hamburger menu appear when scrolled.
-              100px scroll lag before auto-collapse of manually opened primary nav. Hidden on mobile.
+              100px scroll lag before auto-collapse of manually opened primary nav. 3px accent line at bottom. Hidden on mobile.
             </p>
           </div>
         </div>
+
+        {/* Download button */}
+        <DownloadHeaderButton />
       </Section>
 
       {/* ── BREAKPOINTS ── */}
