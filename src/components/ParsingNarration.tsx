@@ -416,10 +416,20 @@ export default function ParsingNarration({
     </div>
   );
 
-  /* ── Render View 2: Conversations table ── */
+  /* ── Render View 2: Full-screen conversations table ── */
   const renderTableView = () => (
-    <div key="table" style={{ animation: "viewFadeIn 0.25s ease" }}>
-      <div style={{ padding: "28px 32px 0" }}>
+    <div
+      key="table"
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 1001,
+        background: "#faf9f6",
+        overflowY: "auto",
+        animation: "viewFadeIn 0.25s ease",
+      }}
+    >
+      <div style={{ maxWidth: "800px", width: "100%", margin: "0 auto", padding: "40px 24px" }}>
         {/* Back button */}
         <button
           onClick={handleBack}
@@ -429,36 +439,19 @@ export default function ParsingNarration({
             cursor: "pointer",
             fontFamily: sans,
             fontSize: "13px",
-            color: C.sage,
+            color: "#666",
             padding: "0",
-            marginBottom: "16px",
+            marginBottom: "24px",
             display: "flex",
             alignItems: "center",
             gap: "4px",
           }}
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.sage} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="15 18 9 12 15 6" />
           </svg>
           Back to summary
         </button>
-
-        {/* Title */}
-        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: "20px" }}>
-          <div
-            style={{
-              fontFamily: sans,
-              fontSize: "20px",
-              fontWeight: 600,
-              color: C.cream,
-            }}
-          >
-            Conversations Analyzed
-          </div>
-          <span style={{ fontFamily: mono, fontSize: "11px", color: C.sage }}>
-            {conversations.length} total
-          </span>
-        </div>
 
         {/* Sample badge */}
         {isSample && personaName && (
@@ -468,208 +461,123 @@ export default function ParsingNarration({
               alignItems: "center",
               gap: "4px",
               padding: "3px 10px",
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(253,246,236,0.1)",
+              background: "rgba(0,0,0,0.04)",
+              border: "1px solid #e5e5e0",
               borderRadius: "100px",
               fontFamily: mono,
               fontSize: "10px",
               fontWeight: 500,
-              color: C.sage,
+              color: "#666",
               textTransform: "uppercase",
               letterSpacing: "0.5px",
               marginBottom: "16px",
             }}
           >
-            {personaName} · sample
+            {personaName} &middot; sample
           </span>
         )}
-      </div>
 
-      {/* Table */}
-      <div style={{ padding: "0 32px" }}>
+        {/* Title row */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "16px", padding: "0 4px" }}>
+          <h3 style={{ fontFamily: mono, fontSize: "11px", fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase", color: "#666", margin: 0 }}>
+            Conversations Analyzed
+          </h3>
+          <span style={{ fontFamily: mono, fontSize: "11px", fontWeight: 400, color: "#999" }}>
+            {conversations.length} total
+          </span>
+        </div>
+
+        {/* Table */}
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead>
+            <tr>
+              <th style={{ fontFamily: mono, fontSize: "10px", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "#999", textAlign: "left", padding: "8px 4px 10px", borderBottom: "1px solid #e5e5e0" }}>Title</th>
+              <th style={{ fontFamily: mono, fontSize: "10px", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "#999", textAlign: "center", padding: "8px 4px 10px", borderBottom: "1px solid #e5e5e0", width: "60px" }}>Msgs</th>
+              <th style={{ fontFamily: mono, fontSize: "10px", fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "#999", textAlign: "right", padding: "8px 4px 10px", borderBottom: "1px solid #e5e5e0", width: "100px" }}>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {conversations.map((conv) => (
+              <tr
+                key={conv.id}
+                style={{ borderBottom: "1px solid #f0efeb", transition: "background 0.15s ease" }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#f5f4f0"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
+              >
+                <td style={{ padding: "14px 4px", fontSize: "15px", color: "#1a1a1a", fontWeight: 400, lineHeight: 1.3 }}>
+                  {conv.title}
+                </td>
+                <td style={{ padding: "14px 4px", textAlign: "center", fontFamily: mono, fontSize: "13px", color: "#666" }}>
+                  {conv.message_count}
+                </td>
+                <td style={{ padding: "14px 4px", textAlign: "right", fontFamily: mono, fontSize: "12px", color: "#999", whiteSpace: "nowrap" }}>
+                  {formatRelativeDate(conv.created_at)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {/* Footer — action buttons */}
         <div
           style={{
-            border: "1px solid rgba(253,246,236,0.1)",
-            borderRadius: "10px",
-            overflow: "hidden",
-            marginBottom: "24px",
+            marginTop: "32px",
+            display: "flex",
+            gap: "12px",
+            alignItems: "center",
           }}
         >
-          {/* Column headers */}
-          <div
+          <button
+            onClick={onReset}
             style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 60px 70px",
-              gap: "8px",
-              padding: "10px 16px",
-              borderBottom: "1px solid rgba(253,246,236,0.08)",
-              fontFamily: mono,
-              fontSize: "10px",
+              padding: "12px 16px",
+              background: "none",
+              color: "#666",
+              border: "1px solid #e5e5e0",
+              borderRadius: "10px",
+              fontFamily: sans,
+              fontSize: "13px",
               fontWeight: 500,
-              letterSpacing: "1px",
-              textTransform: "uppercase",
-              color: C.sage,
+              cursor: "pointer",
+              transition: "border-color 0.15s",
+              whiteSpace: "nowrap",
             }}
           >
-            <span>Title</span>
-            <span style={{ textAlign: "center" }}>Msgs</span>
-            <span style={{ textAlign: "right" }}>Date</span>
-          </div>
+            {isSample ? "\u2190 Different persona" : "Remove file"}
+          </button>
 
-          {/* Rows */}
-          <div className={tableExpanded ? "conversation-list" : undefined}>
-            {visibleConvs.map((conv, i) => (
-              <div
-                key={conv.id}
-                className="reveal-up"
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 60px 70px",
-                  gap: "8px",
-                  padding: "10px 16px",
-                  borderBottom:
-                    i < visibleConvs.length - 1
-                      ? "1px solid rgba(253,246,236,0.06)"
-                      : "none",
-                  animationDelay: `${Math.min(i * 30, 600)}ms`,
-                }}
-              >
-                <span
-                  style={{
-                    fontFamily: sans,
-                    fontSize: "13px",
-                    color: C.cream,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {conv.title}
-                </span>
-                <span
-                  style={{
-                    fontFamily: mono,
-                    fontSize: "12px",
-                    color: C.sage,
-                    textAlign: "center",
-                  }}
-                >
-                  {conv.message_count}
-                </span>
-                <span
-                  style={{
-                    fontFamily: mono,
-                    fontSize: "11px",
-                    color: C.sage,
-                    textAlign: "right",
-                  }}
-                >
-                  {formatRelativeDate(conv.created_at)}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          {/* Show all / Show less */}
-          {hasMore && (
-            <button
-              onClick={() => setTableExpanded(!tableExpanded)}
-              style={{
-                width: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "6px",
-                padding: "10px 16px",
-                background: "rgba(255,255,255,0.04)",
-                border: "none",
-                borderTop: "1px solid rgba(253,246,236,0.06)",
-                cursor: "pointer",
-                fontFamily: sans,
-                fontSize: "12px",
-                fontWeight: 500,
-                color: C.sageBright,
-                transition: "background 0.15s",
-              }}
-            >
-              {tableExpanded
-                ? "Show less"
-                : `Show all ${conversations.length} conversations`}
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke={C.sageBright}
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                style={{
-                  transform: tableExpanded ? "rotate(180deg)" : "none",
-                  transition: "transform 0.2s",
-                }}
-              >
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </button>
-          )}
+          <button
+            onClick={handleProceed}
+            style={{
+              flex: 1,
+              padding: "14px 24px",
+              background: `linear-gradient(135deg, ${C.green}, #3d7a56)`,
+              color: "#fff",
+              border: "none",
+              borderRadius: "10px",
+              fontFamily: sans,
+              fontSize: "15px",
+              fontWeight: 700,
+              cursor: "pointer",
+              transition: "opacity 0.15s",
+              letterSpacing: "-0.2px",
+            }}
+          >
+            {isSample
+              ? `See ${personaName}'s suggested skills \u2192`
+              : "See suggested skills \u2192"}
+          </button>
         </div>
-      </div>
-
-      {/* Footer — action buttons */}
-      <div
-        className="preview-actions"
-        style={{
-          padding: "0 32px 32px",
-          display: "flex",
-          gap: "12px",
-          alignItems: "center",
-        }}
-      >
-        <button
-          onClick={onReset}
-          style={{
-            padding: "12px 16px",
-            background: "none",
-            color: C.sage,
-            border: `1px solid rgba(253,246,236,0.12)`,
-            borderRadius: "10px",
-            fontFamily: sans,
-            fontSize: "13px",
-            fontWeight: 500,
-            cursor: "pointer",
-            transition: "border-color 0.15s",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {isSample ? "\u2190 Different persona" : "Remove file"}
-        </button>
-
-        <button
-          onClick={handleProceed}
-          style={{
-            flex: 1,
-            padding: "14px 24px",
-            background: `linear-gradient(135deg, ${C.green}, #3d7a56)`,
-            color: "#fff",
-            border: "none",
-            borderRadius: "10px",
-            fontFamily: sans,
-            fontSize: "15px",
-            fontWeight: 700,
-            cursor: "pointer",
-            transition: "opacity 0.15s",
-            letterSpacing: "-0.2px",
-          }}
-        >
-          {isSample
-            ? `See ${personaName}'s suggested skills \u2192`
-            : "See suggested skills \u2192"}
-        </button>
       </div>
     </div>
   );
 
+  /* ── If table view, render full-screen light page ── */
+  if (modalView === "table") {
+    return renderTableView();
+  }
+
+  /* ── Otherwise, render the dark parsing-steps modal ── */
   return (
     <div
       className="narration-modal-backdrop"
@@ -702,7 +610,7 @@ export default function ParsingNarration({
           position: "relative",
           width: "100%",
           maxWidth: "460px",
-          maxHeight: modalView === "table" ? "600px" : "520px",
+          maxHeight: "520px",
           overflowY: "auto",
           background: C.greenDeep,
           borderRadius: "16px",
@@ -710,7 +618,6 @@ export default function ParsingNarration({
           display: "flex",
           flexDirection: "column",
           animation: "modalSlideUp 0.3s ease",
-          transition: "max-height 0.3s ease",
         }}
       >
         {/* Progress bar */}
@@ -725,8 +632,8 @@ export default function ParsingNarration({
           />
         </div>
 
-        {/* View content */}
-        {modalView === "steps" ? renderStepsView() : renderTableView()}
+        {/* Steps view content */}
+        {renderStepsView()}
       </div>
     </div>
   );
