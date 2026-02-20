@@ -454,29 +454,18 @@ export default function ParsingNarration({
           </span>
         </div>
 
-        {/* Sample badge */}
-        {isSample && personaName && (
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "4px",
-              padding: "3px 10px",
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(253,246,236,0.1)",
-              borderRadius: "100px",
-              fontFamily: mono,
-              fontSize: "10px",
-              fontWeight: 500,
-              color: C.sage,
-              textTransform: "uppercase",
-              letterSpacing: "0.5px",
-              marginBottom: "16px",
-            }}
-          >
-            {personaName} &middot; sample
-          </span>
-        )}
+        {/* Privacy note */}
+        <p
+          style={{
+            fontFamily: sans,
+            fontSize: "12px",
+            color: "rgba(255,255,255,0.4)",
+            lineHeight: 1.5,
+            marginBottom: "16px",
+          }}
+        >
+          This is the only data we processed. Everything ran locally in your browser&mdash;nothing was sent to a server.
+        </p>
 
         {/* Table */}
         <div
