@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 import logoLight from "../assets/logo-light.svg";
 import logoCompact from "../assets/logo-compact.svg";
+import logoBlack from "../assets/logo-black.svg";
 
 const mono = "'DM Mono', 'IBM Plex Mono', monospace";
 const sans = "'DM Sans', 'Helvetica Neue', sans-serif";
@@ -596,13 +597,13 @@ export default function StyleGuide() {
             background: "#2D4A3E",
             display: "flex",
             alignItems: "center",
+            justifyContent: "center",
             height: "42px",
             position: "relative",
             padding: "0 16px",
           }}>
             <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "3px", background: "#3a5a4a" }} />
-            <img src={logoCompact} alt="logo" style={{ height: "22px", width: "auto", marginRight: "12px", flexShrink: 0, opacity: 0.4 }} />
-            <nav style={{ display: "flex", alignItems: "center", gap: 0, flex: 1, justifyContent: "center" }}>
+            <nav style={{ display: "flex", alignItems: "center", gap: 0, justifyContent: "center" }}>
               {["Sub page 1", "Sub page 2", "Sub page 3", "Sub page 4"].map((label, i) => (
                 <span
                   key={label}
@@ -631,11 +632,6 @@ export default function StyleGuide() {
                 </span>
               ))}
             </nav>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FDF6EC" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.4, flexShrink: 0 }}>
-              <line x1="4" y1="6" x2="20" y2="6" />
-              <line x1="4" y1="12" x2="20" y2="12" />
-              <line x1="4" y1="18" x2="20" y2="18" />
-            </svg>
           </div>
         </div>
 
@@ -738,7 +734,7 @@ export default function StyleGuide() {
             borderBottom: "1px solid #E8DCCA",
             maxWidth: "375px",
           }}>
-            <img src={logoLight} alt="logo" style={{ height: "24px", width: "auto" }} />
+            <img src={logoBlack} alt="claude.pdt" style={{ height: "18px", width: "auto" }} />
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2D4A3E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="4" y1="6" x2="20" y2="6" />
               <line x1="4" y1="12" x2="20" y2="12" />
