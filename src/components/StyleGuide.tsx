@@ -526,14 +526,13 @@ export default function StyleGuide() {
 
       {/* ── NAV STRUCTURE ── */}
       <Section title="Navigation Bar">
-        {/* Live preview */}
+        {/* State 1: Default / Top of page */}
         <div style={{
           border: "1px solid #E8DCCA",
           borderRadius: "12px",
           overflow: "hidden",
           marginBottom: "20px",
         }}>
-          {/* Preview label */}
           <div style={{
             padding: "8px 16px",
             background: "#f5f5f0",
@@ -544,10 +543,10 @@ export default function StyleGuide() {
             textTransform: "uppercase",
             color: "#9C9C8A",
           }}>
-            Live Preview
+            State 1 &mdash; Default (top of page)
           </div>
 
-          {/* ── Primary nav preview ── */}
+          {/* Primary nav */}
           <div style={{
             background: "#FFFFFF",
             display: "flex",
@@ -557,30 +556,42 @@ export default function StyleGuide() {
             height: "56px",
             borderBottom: "1px solid #E8DCCA",
           }}>
-            <img src={logoLight} alt="claude.pdt" style={{ height: "28px", width: "auto" }} />
+            <img src={logoLight} alt="logo" style={{ height: "28px", width: "auto" }} />
             <div style={{ display: "flex", alignItems: "center", gap: 0, height: "56px" }}>
-              {["About", "Skills Commons", "Your Skill Suggestions"].map((label) => (
+              {["Main nav 1", "Main nav 2", "Main nav 3"].map((label, i) => (
                 <span
                   key={label}
                   style={{
                     fontFamily: sans,
                     fontSize: "13px",
                     fontWeight: 500,
-                    color: "#2D4A3E",
+                    color: i === 0 ? "#2D4A3E" : "#9C9C8A",
                     padding: "0 20px",
                     display: "flex",
                     alignItems: "center",
                     height: "100%",
                     whiteSpace: "nowrap",
+                    position: "relative",
                   }}
                 >
                   {label}
+                  {i === 0 && (
+                    <span style={{
+                      position: "absolute",
+                      bottom: 0,
+                      left: "16px",
+                      right: "16px",
+                      height: "3px",
+                      background: "#2D4A3E",
+                      borderRadius: "2px 2px 0 0",
+                    }} />
+                  )}
                 </span>
               ))}
             </div>
           </div>
 
-          {/* ── Sub-nav preview ── */}
+          {/* Sub-nav */}
           <div style={{
             background: "#2D4A3E",
             display: "flex",
@@ -589,22 +600,10 @@ export default function StyleGuide() {
             position: "relative",
             padding: "0 16px",
           }}>
-            {/* Bottom accent line */}
-            <div style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: "3px",
-              background: "#3a5a4a",
-            }} />
-
-            {/* Compact logo */}
-            <img src={logoCompact} alt="claude.pdt" style={{ height: "22px", width: "auto", marginRight: "12px", flexShrink: 0 }} />
-
-            {/* Section links */}
+            <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "3px", background: "#3a5a4a" }} />
+            <img src={logoCompact} alt="logo" style={{ height: "22px", width: "auto", marginRight: "12px", flexShrink: 0, opacity: 0.4 }} />
             <nav style={{ display: "flex", alignItems: "center", gap: 0, flex: 1, justifyContent: "center" }}>
-              {["How it works", "Upload your data", "Protecting your Privacy", "About the builders"].map((label, i) => (
+              {["Sub page 1", "Sub page 2", "Sub page 3", "Sub page 4"].map((label, i) => (
                 <span
                   key={label}
                   style={{
@@ -632,9 +631,115 @@ export default function StyleGuide() {
                 </span>
               ))}
             </nav>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FDF6EC" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.4, flexShrink: 0 }}>
+              <line x1="4" y1="6" x2="20" y2="6" />
+              <line x1="4" y1="12" x2="20" y2="12" />
+              <line x1="4" y1="18" x2="20" y2="18" />
+            </svg>
+          </div>
+        </div>
 
-            {/* Hamburger icon */}
+        {/* State 2: Scrolled / Compact */}
+        <div style={{
+          border: "1px solid #E8DCCA",
+          borderRadius: "12px",
+          overflow: "hidden",
+          marginBottom: "20px",
+        }}>
+          <div style={{
+            padding: "8px 16px",
+            background: "#f5f5f0",
+            borderBottom: "1px solid #E8DCCA",
+            fontFamily: mono,
+            fontSize: "10px",
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            color: "#9C9C8A",
+          }}>
+            State 2 &mdash; Scrolled (primary nav collapsed)
+          </div>
+
+          {/* Sub-nav only */}
+          <div style={{
+            background: "#2D4A3E",
+            display: "flex",
+            alignItems: "center",
+            height: "42px",
+            position: "relative",
+            padding: "0 16px",
+          }}>
+            <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "3px", background: "#3a5a4a" }} />
+            <img src={logoCompact} alt="logo" style={{ height: "22px", width: "auto", marginRight: "12px", flexShrink: 0 }} />
+            <nav style={{ display: "flex", alignItems: "center", gap: 0, flex: 1, justifyContent: "center" }}>
+              {["Sub page 1", "Sub page 2", "Sub page 3", "Sub page 4"].map((label, i) => (
+                <span
+                  key={label}
+                  style={{
+                    fontFamily: mono,
+                    fontSize: "12px",
+                    fontWeight: i === 2 ? 500 : 400,
+                    color: i === 2 ? "#FDF6EC" : "rgba(253,246,236,0.6)",
+                    padding: "10px 20px",
+                    whiteSpace: "nowrap",
+                    position: "relative",
+                  }}
+                >
+                  {label}
+                  {i === 2 && (
+                    <span style={{
+                      position: "absolute",
+                      bottom: 0,
+                      left: "16px",
+                      right: "16px",
+                      height: "3px",
+                      background: "#8BA898",
+                      borderRadius: "2px 2px 0 0",
+                    }} />
+                  )}
+                </span>
+              ))}
+            </nav>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FDF6EC" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7, flexShrink: 0 }}>
+              <line x1="4" y1="6" x2="20" y2="6" />
+              <line x1="4" y1="12" x2="20" y2="12" />
+              <line x1="4" y1="18" x2="20" y2="18" />
+            </svg>
+          </div>
+        </div>
+
+        {/* State 3: Mobile */}
+        <div style={{
+          border: "1px solid #E8DCCA",
+          borderRadius: "12px",
+          overflow: "hidden",
+          marginBottom: "20px",
+        }}>
+          <div style={{
+            padding: "8px 16px",
+            background: "#f5f5f0",
+            borderBottom: "1px solid #E8DCCA",
+            fontFamily: mono,
+            fontSize: "10px",
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            color: "#9C9C8A",
+          }}>
+            State 3 &mdash; Mobile (&le; 768px)
+          </div>
+
+          {/* Mobile primary nav */}
+          <div style={{
+            background: "#FFFFFF",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "0 20px",
+            height: "56px",
+            borderBottom: "1px solid #E8DCCA",
+            maxWidth: "375px",
+          }}>
+            <img src={logoLight} alt="logo" style={{ height: "24px", width: "auto" }} />
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2D4A3E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="4" y1="6" x2="20" y2="6" />
               <line x1="4" y1="12" x2="20" y2="12" />
               <line x1="4" y1="18" x2="20" y2="18" />
@@ -647,15 +752,15 @@ export default function StyleGuide() {
           <div style={{ padding: "20px 24px", border: "1px solid #E8DCCA", borderRadius: "10px", background: "#fff" }}>
             <div style={{ fontSize: "13px", fontWeight: 600, color: "#2D4A3E", marginBottom: "8px" }}>Primary Nav (white bar, 56px)</div>
             <p style={{ fontSize: "12px", color: "#7A7A6C", lineHeight: 1.6, margin: 0 }}>
-              Logo + page tabs (About, Skills Commons, Your Skill Suggestions). Collapses to 0px on scroll past 80px threshold.
-              Hamburger in sub-nav toggles it back. On mobile (&le;768px), stays at 56px with hamburger dropdown.
+              Logo + page tabs. Collapses to 0px on scroll past 80px threshold.
+              Hamburger in sub-nav toggles it back. On mobile (&le;768px), stays at 56px with hamburger dropdown. Sub-nav hidden on mobile.
             </p>
           </div>
           <div style={{ padding: "20px 24px", border: "1px solid #E8DCCA", borderRadius: "10px", background: "#2D4A3E", color: "#FDF6EC" }}>
             <div style={{ fontSize: "13px", fontWeight: 600, marginBottom: "8px" }}>Sub Nav (green bar, 42px)</div>
             <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.7)", lineHeight: 1.6, margin: 0 }}>
-              Section scroll links in DM Mono. Compact logo (claude.pdt wordmark) and hamburger menu appear when scrolled.
-              100px scroll lag before auto-collapse of manually opened primary nav. 3px accent line at bottom. Hidden on mobile.
+              Section scroll links in DM Mono. Compact logo and hamburger appear when scrolled.
+              Active section highlighted with underline. 3px accent line at bottom.
             </p>
           </div>
         </div>
