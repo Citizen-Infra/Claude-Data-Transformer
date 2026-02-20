@@ -89,7 +89,7 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
             margin: "0 auto 16px",
           }}
         >
-          Your Claude, decoded.
+          Claude convos, decoded.
         </h1>
         <p
           style={{
