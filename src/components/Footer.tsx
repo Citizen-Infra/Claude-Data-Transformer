@@ -1,4 +1,10 @@
-export default function Footer() {
+import type { AppView } from "../lib/types";
+
+interface FooterProps {
+  onNavigate?: (view: AppView) => void;
+}
+
+export default function Footer({ onNavigate }: FooterProps) {
   return (
     <footer
       className="site-footer"
@@ -44,6 +50,23 @@ export default function Footer() {
             {link.label}
           </a>
         ))}
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            onNavigate?.("style-guide");
+            window.scrollTo(0, 0);
+          }}
+          style={{
+            fontSize: "13px",
+            color: "#888",
+            textDecoration: "none",
+            transition: "color 0.2s",
+            whiteSpace: "nowrap",
+          }}
+        >
+          Style Guide
+        </a>
       </div>
 
       <span

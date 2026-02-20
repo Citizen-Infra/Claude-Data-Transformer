@@ -4,6 +4,7 @@ import Footer from "./components/Footer";
 import LandingPage from "./components/LandingPage";
 import ResultsPage from "./components/ResultsPage";
 import SkillsCommonsPage from "./components/SkillsCommonsPage";
+import StyleGuide from "./components/StyleGuide";
 import type { AppView, AnalysisResults } from "./lib/types";
 
 export default function App() {
@@ -54,7 +55,9 @@ export default function App() {
         />
       )}
 
-      <Footer />
+      {view === "style-guide" && <StyleGuide />}
+
+      <Footer onNavigate={navigateTo} />
     </div>
   );
 }
