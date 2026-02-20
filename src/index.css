@@ -199,6 +199,30 @@ a {
   border-radius: 2px;
 }
 
+/* ── Narration modal scrollbar (dark theme) ── */
+.narration-modal {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(139, 168, 152, 0.4) transparent;
+}
+
+.narration-modal::-webkit-scrollbar {
+  width: 6px;
+}
+
+.narration-modal::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 8px 0;
+}
+
+.narration-modal::-webkit-scrollbar-thumb {
+  background: rgba(139, 168, 152, 0.35);
+  border-radius: 3px;
+}
+
+.narration-modal::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 168, 152, 0.55);
+}
+
 /* ── Header / nav responsive ── */
 .header-logo {
   height: 56px;
