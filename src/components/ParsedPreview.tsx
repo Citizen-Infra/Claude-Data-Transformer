@@ -21,7 +21,7 @@ const C = {
 const mono = "'DM Mono', 'IBM Plex Mono', monospace";
 const sans = "'DM Sans', 'Helvetica Neue', sans-serif";
 
-const VISIBLE_ROWS = 5;
+const VISIBLE_ROWS = 3;
 
 interface ParsedPreviewProps {
   conversations: ParsedConversation[];
@@ -59,7 +59,6 @@ export default function ParsedPreview({
   dataSource,
   personaName,
   personaEmoji,
-  userProfile,
   recommendations,
   onAnalyze,
   onReset,
@@ -70,7 +69,6 @@ export default function ParsedPreview({
   const visibleConvs = expanded ? conversations : conversations.slice(0, VISIBLE_ROWS);
 
   const skillCount = recommendations?.length ?? 0;
-  const gaps = userProfile?.skill_gaps ?? [];
 
   return (
     <div
@@ -147,50 +145,6 @@ export default function ParsedPreview({
       </div>
 
       <div style={{ padding: "24px 20px" }}>
-        {/* ── Gaps we identified ── */}
-        {gaps.length > 0 && (
-          <div style={{ marginBottom: "24px" }}>
-            <div
-              style={{
-                fontFamily: mono,
-                fontSize: "10px",
-                fontWeight: 500,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                color: C.warmGray,
-                marginBottom: "10px",
-              }}
-            >
-              Gaps we identified
-            </div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-                gap: "8px",
-              }}
-            >
-              {gaps.map((gap, i) => (
-                <div
-                  key={i}
-                  style={{
-                    padding: "12px 16px",
-                    background: C.cream,
-                    border: `1px solid ${C.borderLight}`,
-                    borderRadius: "8px",
-                    fontFamily: sans,
-                    fontSize: "13px",
-                    lineHeight: 1.55,
-                    color: C.textMuted,
-                  }}
-                >
-                  {gap}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* ── Conversation list ── */}
         <div
           style={{
@@ -204,7 +158,7 @@ export default function ParsedPreview({
           <div
             style={{
               padding: "10px 16px",
-              background: C.creamDark,
+              background: C.white,
               borderBottom: `1px solid ${C.border}`,
               display: "flex",
               alignItems: "center",
