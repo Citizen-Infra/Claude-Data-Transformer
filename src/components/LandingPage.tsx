@@ -434,7 +434,7 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
             color: C.warmGray,
             marginBottom: "16px",
           }}>
-            How to export your Claude data
+            Step 1: download your Claude data
           </div>
           <div style={{ display: "flex", flexWrap: "wrap" as const, gap: "16px" }}>
             {[
@@ -481,40 +481,21 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
           </div>
         </div>
 
-        {/* Privacy link */}
+        {/* Settings link */}
         <a
-          href="#how-we-keep-it-private"
+          href="https://claude.ai/settings"
+          target="_blank"
+          rel="noopener noreferrer"
           style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "8px",
+            fontFamily: sans,
             fontSize: "14px",
-            fontWeight: 500,
-            color: C.ink,
-            textDecoration: "none",
-            cursor: "pointer",
+            fontWeight: 600,
+            color: C.greenMuted,
+            textDecoration: "underline",
+            textUnderlineOffset: "3px",
           }}
         >
-          <div
-            style={{
-              width: "22px",
-              height: "22px",
-              background: C.green,
-              borderRadius: "50%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexShrink: 0,
-            }}
-          >
-            <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-              <path d="M8 1L2 4v4c0 3.5 2.5 6.5 6 7.5 3.5-1 6-4 6-7.5V4L8 1z" stroke="#FDF6EC" strokeWidth="1.5" />
-              <path d="M5.5 8L7 9.5 10.5 6" stroke="#FDF6EC" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </div>
-          <span style={{ textDecoration: "underline", textUnderlineOffset: "3px" }}>
-            Worried about your privacy? See how we protect your data ↓
-          </span>
+          Open Claude Settings ↗
         </a>
       </section>
 
