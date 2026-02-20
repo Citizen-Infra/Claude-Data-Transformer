@@ -537,75 +537,59 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
         id="upload"
         style={{
           padding: "64px 24px",
-          background: C.cream,
-          borderTop: `1px solid ${C.border}`,
-          borderBottom: `1px solid ${C.border}`,
+          background: "#FDF6EC",
+          borderTop: "1px solid #E8DCCA",
+          borderBottom: "1px solid #E8DCCA",
           scrollMarginTop: "120px",
         }}
       >
         <div style={{ maxWidth: "780px", margin: "0 auto" }}>
-          <div style={{ ...sectionLabel, color: C.warmGray }}>Get started</div>
-          <h2 style={{
-            fontFamily: sans,
-            fontSize: "28px",
-            fontWeight: 600,
-            color: C.text,
-            marginBottom: "8px",
-            letterSpacing: "-0.01em",
-          }}>
-            Upload your data.
-          </h2>
-          <p style={{
-            fontFamily: sans,
-            fontSize: "15px",
-            color: C.textMuted,
-            lineHeight: 1.6,
-            marginBottom: "28px",
-            maxWidth: "540px",
-          }}>
-            Drop your Claude export file below. We'll analyze your conversation
-            patterns and recommend Skills — entirely in your browser.
-          </p>
 
-          {/* ── Phase 1: Upload zone + persona picker ── */}
+          {/* ── Phase 1: Upload zone ── */}
           {phase === "upload" && (
             <div
               style={{
-                border: `2px dashed ${dragOver ? C.greenMuted : C.border}`,
-                borderRadius: "14px",
-                background: C.white,
-                overflow: "hidden",
+                background: "#FFFFFF",
+                border: `1px dashed ${dragOver ? "#2D4A3E" : "#E8DCCA"}`,
+                borderRadius: "12px",
+                padding: "24px 28px",
                 transition: "border-color 0.2s ease",
               }}
             >
-              {/* File label */}
-              <div style={{ padding: "14px 24px 6px" }}>
-                <div style={{
-                  fontFamily: sans,
-                  fontSize: "14px",
-                  fontWeight: 600,
-                  color: C.text,
-                  marginBottom: "2px",
-                }}>
-                  Claude Export File
-                </div>
-                <div style={{ fontFamily: sans, fontSize: "13px", color: C.textMuted }}>
-                  Upload the{" "}
-                  <code style={{
-                    fontFamily: mono,
-                    fontSize: "11.5px",
-                    background: C.creamDark,
-                    padding: "1px 6px",
-                    borderRadius: "3px",
-                    border: `1px solid ${C.borderLight}`,
-                  }}>
-                    conversations.json
-                  </code>{" "}
-                  file from your Claude data export.
-                </div>
+              {/* Eyebrow */}
+              <div style={{
+                fontFamily: mono,
+                fontSize: "10px",
+                letterSpacing: "0.14em",
+                textTransform: "uppercase" as const,
+                color: "#9C9C8A",
+                marginBottom: "14px",
+              }}>
+                Step 2: Upload your data
               </div>
 
-              {/* Drop zone (inner) */}
+              {/* Hint */}
+              <div style={{
+                fontFamily: sans,
+                fontSize: "14px",
+                color: "#7A7A6C",
+                marginBottom: "18px",
+              }}>
+                Drop your{" "}
+                <code style={{
+                  fontFamily: mono,
+                  fontSize: "12px",
+                  background: "#FDF6EC",
+                  border: "1px solid #E8DCCA",
+                  padding: "2px 8px",
+                  borderRadius: "4px",
+                }}>
+                  conversations.json
+                </code>{" "}
+                file from your Claude data export.
+              </div>
+
+              {/* Drop zone */}
               <div
                 onDragOver={(e) => {
                   e.preventDefault();
@@ -620,14 +604,17 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
                 }}
                 onClick={() => fileRef.current?.click()}
                 style={{
-                  margin: "12px 24px 0",
-                  padding: "40px 32px",
-                  textAlign: "center",
-                  cursor: "pointer",
-                  background: dragOver ? C.greenPale : C.cream,
+                  border: "1px dashed #E8DCCA",
                   borderRadius: "10px",
-                  border: `1.5px dashed ${dragOver ? C.greenMuted : C.borderLight}`,
-                  transition: "all 0.2s ease",
+                  background: dragOver ? "#e8f0eb" : "#F5EBDA",
+                  padding: "24px",
+                  textAlign: "center",
+                  display: "flex",
+                  flexDirection: "column" as const,
+                  alignItems: "center",
+                  gap: "10px",
+                  cursor: "pointer",
+                  transition: "background 0.2s ease",
                 }}
               >
                 <input
@@ -639,55 +626,31 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
                   }
                   style={{ display: "none" }}
                 />
-
-                {/* File icon SVG */}
-                <div style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginBottom: "14px",
-                }}>
-                  <svg width="28" height="34" viewBox="0 0 32 38" fill="none">
-                    <path
-                      d="M2 4C2 2.9 2.9 2 4 2H20L30 12V34C30 35.1 29.1 36 28 36H4C2.9 36 2 35.1 2 34V4Z"
-                      stroke={C.warmGray}
-                      strokeWidth="1.5"
-                      fill="none"
-                    />
-                    <path d="M20 2V12H30" stroke={C.warmGray} strokeWidth="1.5" />
-                    <line x1="8" y1="19" x2="24" y2="19" stroke={C.warmGray} strokeWidth="1" />
-                    <line x1="8" y1="24" x2="24" y2="24" stroke={C.warmGray} strokeWidth="1" />
-                    <line x1="8" y1="29" x2="18" y2="29" stroke={C.warmGray} strokeWidth="1" />
-                  </svg>
-                </div>
-
-                <div style={{
-                  fontFamily: sans,
-                  fontSize: "14px",
-                  color: C.textMuted,
-                  marginBottom: "12px",
-                }}>
+                <div style={{ fontFamily: sans, fontSize: "14px", color: "#7A7A6C" }}>
                   Drop your file here, or
                 </div>
-
-                <div style={{
-                  display: "inline-block",
-                  padding: "10px 32px",
-                  background: C.green,
-                  color: C.cream,
-                  borderRadius: "8px",
-                  fontFamily: sans,
-                  fontSize: "13.5px",
-                  fontWeight: 500,
-                }}>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); fileRef.current?.click(); }}
+                  style={{
+                    display: "inline-block",
+                    background: "#2D4A3E",
+                    color: "#FDF6EC",
+                    fontFamily: sans,
+                    fontSize: "14px",
+                    fontWeight: 600,
+                    padding: "10px 28px",
+                    borderRadius: "8px",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
                   Choose file
-                </div>
-
+                </button>
                 <div style={{
-                  marginTop: "12px",
                   fontFamily: mono,
-                  fontSize: "10.5px",
-                  color: C.warmGray,
+                  fontSize: "11px",
+                  color: "#9C9C8A",
                 }}>
                   Accepts conversations.json
                 </div>
@@ -696,7 +659,7 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
               {uploadError && (
                 <div
                   style={{
-                    margin: "8px 24px 0",
+                    marginTop: "12px",
                     padding: "10px 14px",
                     fontSize: "13px",
                     background: "#fef2f2",
@@ -709,31 +672,45 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
                 </div>
               )}
 
-              {/* ── or ── divider */}
-              <div style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "16px",
-                padding: "22px 28px",
-              }}>
-                <div style={{ flex: 1, height: "1px", background: C.borderLight }} />
+              {/* Privacy link */}
+              <a
+                href="#how-we-keep-it-private"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  marginTop: "18px",
+                  textDecoration: "none",
+                  cursor: "pointer",
+                }}
+              >
+                <div
+                  style={{
+                    width: "24px",
+                    height: "24px",
+                    background: "#2D4A3E",
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+                    <path d="M8 1L2 4v4c0 3.5 2.5 6.5 6 7.5 3.5-1 6-4 6-7.5V4L8 1z" stroke="#FDF6EC" strokeWidth="1.5" />
+                    <path d="M5.5 8L7 9.5 10.5 6" stroke="#FDF6EC" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </div>
                 <span style={{
-                  fontFamily: mono,
-                  fontSize: "10.5px",
-                  color: C.warmGray,
-                  textTransform: "uppercase",
-                  letterSpacing: "0.08em",
+                  fontFamily: sans,
+                  fontSize: "14px",
+                  color: "#2D4A3E",
+                  textDecoration: "underline",
+                  textUnderlineOffset: "3px",
                 }}>
-                  or
+                  Worried about your privacy? See how we protect your data ↓
                 </span>
-                <div style={{ flex: 1, height: "1px", background: C.borderLight }} />
-              </div>
-
-              {/* Persona section (always visible, inside the container) */}
-              <PersonaPicker
-                onTryDemo={handleTryDemo}
-                onDownload={handleDownload}
-              />
+              </a>
             </div>
           )}
 
@@ -771,6 +748,24 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
           <PrivacyMonitor phase={phase} dataSource={dataSource} />
         </div>
       </section>
+
+      {/* ─── Persona demos (own section) ─── */}
+      {phase === "upload" && (
+        <section
+          id="try-demo"
+          style={{
+            padding: "48px 24px 64px",
+            maxWidth: "780px",
+            margin: "0 auto",
+            scrollMarginTop: "120px",
+          }}
+        >
+          <PersonaPicker
+            onTryDemo={handleTryDemo}
+            onDownload={handleDownload}
+          />
+        </section>
+      )}
 
       {/* ─── Privacy section ─── */}
       <section
