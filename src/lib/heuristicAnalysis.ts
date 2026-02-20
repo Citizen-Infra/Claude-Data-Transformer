@@ -10,13 +10,13 @@ const DOMAIN_KEYWORDS: Record<string, string[]> = {
     "javascript", "python", "react", "component", "deploy", "git", "commit",
     "refactor", "variable", "import", "export", "npm", "package", "server",
     "database", "sql", "css", "html", "frontend", "backend", "endpoint",
-    "framework", "library", "compile", "build", "test", "lint",
+    "framework", "library", "compile", "build", "lint",
   ],
   "Writing & Content": [
     "write", "essay", "blog", "article", "draft", "edit", "tone", "rewrite",
     "paragraph", "outline", "headline", "copy", "proofread", "grammar",
     "narrative", "story", "content", "newsletter", "tweet", "post", "seo",
-    "audience", "creative writing",
+    "audience", "creative writing", "memoir", "chapter", "book",
   ],
   "Data & Analysis": [
     "data", "csv", "spreadsheet", "chart", "graph", "analyze", "statistics",
@@ -42,6 +42,34 @@ const DOMAIN_KEYWORDS: Record<string, string[]> = {
     "marketing", "campaign", "social media", "instagram", "linkedin",
     "email marketing", "conversion", "funnel", "ads", "branding",
     "engagement", "influencer", "analytics", "a/b test",
+  ],
+  "Politics & Government": [
+    "president", "presidential", "congress", "senator", "governor", "election",
+    "vote", "policy", "legislation", "law", "constitution", "constitutional",
+    "government", "federal", "political", "party", "democrat", "republican",
+    "immunity", "pardon", "impeach", "cabinet", "administration", "executive",
+    "supreme court", "judicial", "ruling", "amendment", "sovereignty",
+  ],
+  "Diplomacy & World Affairs": [
+    "diplomat", "diplomatic", "treaty", "foreign", "international", "nation",
+    "country", "territory", "alliance", "nato", "trade", "sanctions",
+    "negotiation", "negotiate", "summit", "ambassador", "relations",
+    "geopolitical", "border", "sovereignty", "leader", "world leader",
+    "acquisition", "cooperation", "arctic", "bilateral",
+  ],
+  "Science & Health": [
+    "science", "scientific", "climate", "temperature", "warming", "weather",
+    "environment", "medical", "health", "doctor", "diagnosis", "symptom",
+    "treatment", "cognitive", "memory", "brain", "test", "assessment",
+    "research", "evidence", "peer-reviewed", "consensus", "eclipse",
+    "radiation", "biology", "physics", "chemistry", "experiment",
+  ],
+  "Persuasion & Communication": [
+    "persuade", "convince", "argue", "debate", "rhetoric", "message",
+    "talking point", "narrative", "spin", "framing", "perception",
+    "influence", "reputation", "image", "public", "media", "press",
+    "speech", "statement", "announcement", "rank", "rating", "loyalty",
+    "respect", "disrespect", "brand", "personal brand",
   ],
 };
 
