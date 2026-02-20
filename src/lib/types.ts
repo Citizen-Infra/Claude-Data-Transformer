@@ -62,7 +62,7 @@ export interface SkillCatalogEntry {
 }
 
 // App view state
-export type AppView = "landing" | "results" | "commons";
+export type AppView = "landing" | "results" | "commons" | "style-guide";
 
 // AI-generated recommendation
 export interface SkillRecommendation {
