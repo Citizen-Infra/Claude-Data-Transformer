@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useMemo } from "react";
 import { getDateRange } from "../lib/parseClaudeExport";
 import { getPersonaById } from "../data/samplePersonas";
 import { downloadPersonaExport } from "../lib/generatePersonaExport";
@@ -77,6 +77,14 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
   const [phase, setPhase] = useState<UploadPhase>("upload");
   const [dataSource, setDataSource] = useState<DataSource>(null);
   const [selectedPersona, setSelectedPersona] = useState<string | null>(null);
+
+  // Detect OS for keyboard shortcut display
+  const isMac = useMemo(() => {
+    if (typeof navigator === "undefined") return false;
+    const p = ((navigator as unknown as { userAgentData?: { platform?: string } }).userAgentData?.platform || navigator.platform || "").toLowerCase();
+    const ua = navigator.userAgent.toLowerCase();
+    return p.includes("mac") || ua.includes("macintosh");
+  }, []);
 
   // Upload state
   const [dragOver, setDragOver] = useState(false);
@@ -831,7 +839,9 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
               </p>
               <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                 {[
-                  <>Press <kbd style={{ fontFamily: mono, fontSize: "11px", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "4px", padding: "1px 6px", color: "#E4F2EB" }}>F12</kbd> or <kbd style={{ fontFamily: mono, fontSize: "11px", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "4px", padding: "1px 6px", color: "#E4F2EB" }}>{"\u2318\u2325I"}</kbd></>,
+                  isMac
+                    ? <>Press <kbd style={{ fontFamily: mono, fontSize: "11px", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "4px", padding: "1px 6px", color: "#E4F2EB" }}>Cmd</kbd> + <kbd style={{ fontFamily: mono, fontSize: "11px", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "4px", padding: "1px 6px", color: "#E4F2EB" }}>Option</kbd> + <kbd style={{ fontFamily: mono, fontSize: "11px", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "4px", padding: "1px 6px", color: "#E4F2EB" }}>I</kbd></>
+                    : <>Press <kbd style={{ fontFamily: mono, fontSize: "11px", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "4px", padding: "1px 6px", color: "#E4F2EB" }}>F12</kbd> to open developer tools</>,
                   "Click the Network tab",
                   "Upload your file and watch",
                 ].map((step, si) => (
