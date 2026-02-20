@@ -237,7 +237,7 @@ export default function ParsingNarration({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "24px",
+        padding: "16px",
         animation: "fadeIn 0.25s ease",
       }}
     >
@@ -302,14 +302,15 @@ export default function ParsingNarration({
               return (
                 <div
                   key={i}
-                  className="reveal-up"
+                  className="reveal-up narration-step"
                   style={{
                     display: i < currentStep ? "flex" : "none",
                     justifyContent: "space-between",
                     alignItems: "baseline",
-                    gap: "16px",
+                    gap: "8px",
                     padding: "6px 0",
                     animationDelay: `${i * 50}ms`,
+                    flexWrap: "wrap",
                   }}
                 >
                   <span
@@ -318,33 +319,39 @@ export default function ParsingNarration({
                       alignItems: "baseline",
                       gap: "8px",
                       color: C.creamMuted,
+                      minWidth: 0,
                     }}
                   >
-                    {isComplete && !isCurrent ? (
-                      <span style={{ color: C.sageBright }}>✓</span>
-                    ) : (
-                      <span
-                        style={{
-                          display: "inline-block",
-                          width: "6px",
-                          height: "6px",
-                          background: C.sageBright,
-                          borderRadius: "50%",
-                          flexShrink: 0,
-                          position: "relative",
-                          top: "-1px",
-                        }}
-                      />
-                    )}
-                    {step.label}{isComplete && !isCurrent ? "" : "…"}
+                    <span style={{ flexShrink: 0 }}>
+                      {isComplete && !isCurrent ? (
+                        <span style={{ color: C.sageBright }}>✓</span>
+                      ) : (
+                        <span
+                          style={{
+                            display: "inline-block",
+                            width: "6px",
+                            height: "6px",
+                            background: C.sageBright,
+                            borderRadius: "50%",
+                            position: "relative",
+                            top: "-1px",
+                          }}
+                        />
+                      )}
+                    </span>
+                    <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
+                      {step.label}{isComplete && !isCurrent ? "" : "…"}
+                    </span>
                   </span>
                   <span
+                    className="narration-step-detail"
                     style={{
                       fontFamily: mono,
                       fontSize: "12px",
                       color: C.creamDim,
                       textAlign: "right",
                       flexShrink: 0,
+                      whiteSpace: "nowrap",
                     }}
                   >
                     {step.detail}

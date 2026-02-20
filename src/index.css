@@ -214,12 +214,16 @@ a {
 }
 
 /* ── Prevent horizontal overflow on all screens ── */
-html, body {
-  overflow-x: hidden;
+/* Using clip instead of hidden — hidden breaks position:sticky */
+html {
+  overflow-x: clip;
+}
+body {
+  overflow-x: clip;
 }
 
-@media (max-width: 640px) {
-  /* ── Header / Nav ── */
+/* ── Tablet + mobile: switch to hamburger nav ── */
+@media (max-width: 768px) {
   .header-logo {
     height: 44px;
   }
@@ -236,62 +240,16 @@ html, body {
     display: none !important;
   }
 
-  .nav-results-scroll {
-    gap: 0px !important;
-  }
-
-  .nav-results-scroll button {
-    font-size: 12px !important;
-    padding: 8px 10px !important;
-  }
-
-  /* ── Results page: Stats grid 4→2 columns ── */
   .stats-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     padding: 20px !important;
     gap: 16px !important;
   }
 
-  /* ── Results page: Usage signature 2→1 column ── */
-  .usage-grid {
-    grid-template-columns: 1fr !important;
-    gap: 20px !important;
-  }
-
-  /* ── Results page: Install steps 3→1 column ── */
   .install-grid {
     grid-template-columns: 1fr !important;
   }
 
-  /* ── Results page: Make-a-skill section ── */
-  .make-skill-inner {
-    padding: 24px 20px !important;
-  }
-
-  .make-skill-buttons {
-    flex-direction: column !important;
-    align-items: stretch !important;
-  }
-
-  .make-skill-buttons button,
-  .make-skill-buttons a {
-    justify-content: center !important;
-    text-align: center !important;
-    width: 100% !important;
-  }
-
-  /* ── Skill cards: reduce padding ── */
-  .skill-card {
-    padding: 20px 16px !important;
-  }
-
-  /* ── BarChart: reduce label width ── */
-  .bar-chart-row .bar-label {
-    width: 80px !important;
-    font-size: 12px !important;
-  }
-
-  /* ── Persona picker: 2 columns on mobile ── */
   .persona-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 10px !important;
@@ -299,24 +257,6 @@ html, body {
 
   .persona-card {
     padding: 16px 10px 14px !important;
-  }
-
-  /* ── Preview: stats 2-col, info panels stack, buttons stack ── */
-  .preview-stats {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
-
-  .preview-actions {
-    flex-direction: column !important;
-  }
-
-  .preview-actions button {
-    width: 100% !important;
-  }
-
-  /* ── Landing page: project cards 1 column on mobile ── */
-  .projects-grid {
-    grid-template-columns: 1fr !important;
   }
 
   /* ── Footer: stack vertically ── */
@@ -334,14 +274,83 @@ html, body {
   }
 }
 
-/* ── Intermediate breakpoint for tablets ── */
-@media (max-width: 768px) and (min-width: 641px) {
-  .stats-grid {
+/* ── Small screens: further layout collapse ── */
+@media (max-width: 640px) {
+  .nav-results-scroll {
+    gap: 0px !important;
+  }
+
+  .nav-results-scroll button {
+    font-size: 12px !important;
+    padding: 8px 10px !important;
+  }
+
+  .usage-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+
+  .make-skill-inner {
+    padding: 24px 20px !important;
+  }
+
+  .make-skill-buttons {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .make-skill-buttons button,
+  .make-skill-buttons a {
+    justify-content: center !important;
+    text-align: center !important;
+    width: 100% !important;
+  }
+
+  .skill-card {
+    padding: 20px 16px !important;
+  }
+
+  .bar-chart-row .bar-label {
+    width: 80px !important;
+    font-size: 12px !important;
+  }
+
+  .preview-stats {
     grid-template-columns: repeat(2, 1fr) !important;
   }
 
-  .install-grid {
+  .preview-actions {
+    flex-direction: column !important;
+  }
+
+  .preview-actions button {
+    width: 100% !important;
+  }
+
+  .projects-grid {
     grid-template-columns: 1fr !important;
+  }
+
+  /* ── Modal: reduce padding + stack step rows on small screens ── */
+  .narration-modal {
+    max-width: 100% !important;
+    border-radius: 12px !important;
+  }
+
+  .narration-modal > div:last-child {
+    padding: 24px 16px 20px !important;
+  }
+
+  .narration-step {
+    flex-direction: column !important;
+    gap: 2px !important;
+    align-items: flex-start !important;
+  }
+
+  .narration-step-detail {
+    padding-left: 22px !important;
+    text-align: left !important;
+    white-space: normal !important;
   }
 }
 
