@@ -4,11 +4,10 @@ import { getPersonaById } from "../data/samplePersonas";
 import { downloadPersonaExport } from "../lib/generatePersonaExport";
 import ParsingNarration from "./ParsingNarration";
 import type { NarrationResults } from "./ParsingNarration";
-import ParsedPreview from "./ParsedPreview";
 import PersonaPicker from "./PersonaPicker";
 import DevToolsPrompt from "./DevToolsPrompt";
 import SkillBuilderCard from "./SkillBuilderCard";
-import type { ParsedConversation, ClaudeConversation, UserProfile, EnrichedRecommendation, AnalysisResults, AppView } from "../lib/types";
+import type { ClaudeConversation, AnalysisResults, AppView } from "../lib/types";
 
 interface LandingPageProps {
   onDataReady: (results: AnalysisResults) => void;
@@ -69,7 +68,7 @@ const bodyText: React.CSSProperties = {
 };
 
 /* ── Phase types ── */
-type UploadPhase = "upload" | "narrating" | "preview";
+type UploadPhase = "upload" | "narrating";
 type DataSource = "file" | "persona" | null;
 
 /* ── Main LandingPage ── */
@@ -84,21 +83,8 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [hoverPrivacyLink, setHoverPrivacyLink] = useState(false);
 
-  // Raw JSON (stored between narrating and preview)
+  // Raw JSON (passed to narration modal)
   const [rawJson, setRawJson] = useState<ClaudeConversation[] | null>(null);
-
-  // Parsed results (set after narration completes)
-  const [uploadedConvs, setUploadedConvs] = useState<ParsedConversation[] | null>(null);
-  const [uploadStats, setUploadStats] = useState<{
-    conversations: number;
-    messages: number;
-    withArtifacts: number;
-  } | null>(null);
-  const [dateRange, setDateRange] = useState<{ earliest: string; latest: string; years: number } | null>(null);
-
-  // Analysis results (from narration modal)
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [recommendations, setRecommendations] = useState<EnrichedRecommendation[] | null>(null);
 
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -147,35 +133,20 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
     );
   }, []);
 
-  // ── Handle narration completion ──
+  // ── Handle narration completion (proceed straight to results) ──
   const handleNarrationComplete = useCallback(
     (results: NarrationResults) => {
-      setUploadedConvs(results.conversations);
-      setUploadStats(results.stats);
-      setDateRange(getDateRange(results.conversations));
-      setUserProfile(results.userProfile);
-      setRecommendations(results.recommendations);
-      setPhase("preview");
-      // Scroll to center the preview card on screen
-      setTimeout(() => {
-        document.getElementById("parsed-preview")?.scrollIntoView({ behavior: "smooth", block: "center" });
-      }, 150);
-    },
-    []
-  );
-
-  // ── Handle analyze (proceed straight to results) ──
-  const handleAnalyze = useCallback(() => {
-    if (uploadedConvs && userProfile && recommendations && dateRange) {
+      const dr = getDateRange(results.conversations);
       onDataReady({
-        userProfile,
-        recommendations,
-        dateRange,
-        totalConversations: uploadedConvs.length,
-        totalMessages: uploadedConvs.reduce((s, c) => s + c.message_count, 0),
+        userProfile: results.userProfile,
+        recommendations: results.recommendations,
+        dateRange: dr,
+        totalConversations: results.conversations.length,
+        totalMessages: results.conversations.reduce((s, c) => s + c.message_count, 0),
       });
-    }
-  }, [uploadedConvs, userProfile, recommendations, dateRange, onDataReady]);
+    },
+    [onDataReady]
+  );
 
   // ── Reset to upload phase ──
   const handleReset = useCallback(() => {
@@ -183,12 +154,7 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
     setDataSource(null);
     setSelectedPersona(null);
     setRawJson(null);
-    setUploadedConvs(null);
-    setUploadStats(null);
-    setDateRange(null);
     setUploadError(null);
-    setUserProfile(null);
-    setRecommendations(null);
   }, []);
 
   // Persona info for display
@@ -753,24 +719,10 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
               personaName={persona?.name}
               personaEmoji={persona?.emoji}
               onComplete={handleNarrationComplete}
-            />
-          )}
-
-          {/* ── Phase 3: Expanded preview ── */}
-          {phase === "preview" && uploadedConvs && uploadStats && dateRange && (
-            <ParsedPreview
-              conversations={uploadedConvs}
-              stats={uploadStats}
-              dateRange={dateRange}
-              dataSource={dataSource || "file"}
-              personaName={persona?.name}
-              personaEmoji={persona?.emoji}
-              userProfile={userProfile}
-              recommendations={recommendations}
-              onAnalyze={handleAnalyze}
               onReset={handleReset}
             />
           )}
+
 
         </div>
       </section>

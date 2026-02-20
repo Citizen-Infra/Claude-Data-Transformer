@@ -173,6 +173,18 @@ a {
   }
 }
 
+/* ── Modal view transition ── */
+@keyframes viewFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 /* ── Privacy monitor pulse ── */
 @keyframes privacyPulse {
   0%, 100% { opacity: 1; }

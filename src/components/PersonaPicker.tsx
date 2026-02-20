@@ -49,9 +49,6 @@ function PersonaCard({
           : "0 1px 3px rgba(0,0,0,0.03)",
       }}
     >
-      <div style={{ fontSize: "30px", marginBottom: "10px", lineHeight: 1 }}>
-        {persona.emoji}
-      </div>
       <div
         style={{
           fontFamily: sans,
