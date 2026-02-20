@@ -540,8 +540,6 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
         style={{
           padding: "64px 24px",
           background: "#FDF6EC",
-          borderTop: "1px solid #E8DCCA",
-          borderBottom: "1px solid #E8DCCA",
           scrollMarginTop: "120px",
         }}
       >
