@@ -1059,6 +1059,7 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
 
       {/* ─── Skills Commons / Build a Skill ─── */}
       <section
+        id="build-your-own-skill"
         style={{
           padding: "0 24px 72px",
           maxWidth: "800px",
