@@ -15,7 +15,7 @@ const LANDING_NAV = [
   { id: "how-it-works", label: "How it works" },
   { id: "upload", label: "Upload your data" },
   { id: "how-we-keep-it-private", label: "Protecting your Privacy" },
-  { id: "about-the-builders", label: "About the builders" },
+  { id: "build-your-own-skill", label: "Build your own skill" },
 ];
 
 const RESULTS_NAV = [
