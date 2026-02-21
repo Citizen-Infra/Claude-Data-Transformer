@@ -1015,17 +1015,6 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
         </div>
       </section>
 
-      {/* ─── Skills Commons / Build a Skill ─── */}
-      <section
-        style={{
-          padding: "0 24px 72px",
-          maxWidth: "800px",
-          margin: "0 auto",
-        }}
-      >
-        <SkillBuilderCard variant="homepage" onSecondaryClick={() => onNavigate("commons")} />
-      </section>
-
       {/* ─── CTA ─── */}
       <section
         style={{
@@ -1066,6 +1055,17 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
         >
           Get started
         </a>
+      </section>
+
+      {/* ─── Skills Commons / Build a Skill ─── */}
+      <section
+        style={{
+          padding: "0 24px 72px",
+          maxWidth: "800px",
+          margin: "0 auto",
+        }}
+      >
+        <SkillBuilderCard variant="homepage" onSecondaryClick={() => onNavigate("commons")} />
       </section>
 
       {/* ─── Who We Are / Citizen Infra ─── */}
