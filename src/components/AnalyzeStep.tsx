@@ -102,6 +102,7 @@ export default function AnalyzeStep({
                 (s, c) => s + c.message_count,
                 0
               ),
+              conversations,
             }),
           500
         );
