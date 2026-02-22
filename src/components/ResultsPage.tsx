@@ -117,6 +117,50 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
           Claude convos, decoded.
         </h1>
 
+        {/* ── Stats rollup ── */}
+        <div
+          style={{
+            maxWidth: "640px",
+            margin: "0 auto 28px",
+          }}
+        >
+          <div
+            className="stats-grid"
+            style={{
+              background: "#fff",
+              borderRadius: "16px",
+              border: `1px solid ${C.border}`,
+              boxShadow: "0 4px 16px rgba(0,0,0,0.05)",
+              padding: "32px",
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gap: "24px",
+            }}
+          >
+            {[
+              {
+                value: totalConversations.toLocaleString(),
+                label: "Conversations",
+              },
+              { value: totalMessages.toLocaleString(), label: "Messages" },
+              {
+                value:
+                  dateRange.years < 2
+                    ? `${dateRange.years}`
+                    : `${Math.floor(dateRange.years)}`,
+                label:
+                  dateRange.years === 1 ? "Year of history" : "Years of history",
+              },
+              {
+                value: `${dateRange.earliest}`,
+                label: "Active since",
+              },
+            ].map((s, i) => (
+              <StatCard key={i} value={s.value} label={s.label} />
+            ))}
+          </div>
+        </div>
+
         {/* ── Skill gaps cards ── */}
         {(userProfile.skill_gaps?.length ?? 0) > 0 && (
           <div style={{ maxWidth: "640px", margin: "0 auto 28px", textAlign: "left" }}>
@@ -278,51 +322,6 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
             )}
           </div>
         )}
-      </section>
-
-      {/* ─── Stats banner (overlapping hero) ─── */}
-      <section
-        style={{
-          maxWidth: "800px",
-          margin: "-40px auto 0",
-          padding: "0 24px",
-        }}
-      >
-        <div
-          className="stats-grid"
-          style={{
-            background: "#fff",
-            borderRadius: "16px",
-            border: `1px solid ${C.border}`,
-            boxShadow: "0 4px 16px rgba(0,0,0,0.05)",
-            padding: "32px",
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: "24px",
-          }}
-        >
-          {[
-            {
-              value: totalConversations.toLocaleString(),
-              label: "Conversations",
-            },
-            { value: totalMessages.toLocaleString(), label: "Messages" },
-            {
-              value:
-                dateRange.years < 2
-                  ? `${dateRange.years}`
-                  : `${Math.floor(dateRange.years)}`,
-              label:
-                dateRange.years === 1 ? "Year of history" : "Years of history",
-            },
-            {
-              value: `${dateRange.earliest}`,
-              label: "Active since",
-            },
-          ].map((s, i) => (
-            <StatCard key={i} value={s.value} label={s.label} />
-          ))}
-        </div>
       </section>
 
       {/* ─── Usage signature ─── */}

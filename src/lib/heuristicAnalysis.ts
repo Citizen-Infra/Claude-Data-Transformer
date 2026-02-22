@@ -177,19 +177,39 @@ export function buildHeuristicProfile(
     .slice(0, 5)
     .map(([word, count]) => `"${word}" appears in ${count} conversation titles`);
 
-  // --- Skill gaps (domains with lower scores) ---
+  // --- Skill gaps (personal, conversational insights) ---
   const skill_gaps: string[] = [];
-  if (domainRanks.find((d) => d.name === "Data & Analysis" && d.score < 10))
-    skill_gaps.push("Data analysis and visualization could save time on reporting tasks");
+  const topDomainName = topDomains[0]?.name || "";
+  const convCount = conversations.length;
+
+  // Heavy user of one domain — nudge toward complementary skills
+  if (topDomains[0] && topDomains[0].score > domainTotal * 0.4)
+    skill_gaps.push(`You go deep on ${topDomainName.toLowerCase()} — a skill could handle the routine parts so you focus on the interesting stuff`);
+
+  // Lots of debugging but no structured approach
   if (domainRanks.find((d) => d.name === "Software Development" && d.score > 20) &&
       patternRanks.find((p) => p.name === "Code review & debugging" && p.score < 10))
-    skill_gaps.push("Systematic debugging methodology could improve your dev workflow");
+    skill_gaps.push("You write a lot of code but rarely ask Claude to review it — a code review skill could catch bugs before they bite");
+
+  // Heavy document creator
   if (patternRanks.find((p) => p.name === "Document creation" && p.score > 15))
-    skill_gaps.push("Document generation skills could automate repetitive formatting");
-  if (patternRanks.find((p) => p.name === "Automation & scripting" && p.score < 5))
-    skill_gaps.push("Automation tools could help with repetitive tasks");
+    skill_gaps.push("You create a ton of documents — a formatting skill could turn that into one-click polished output");
+
+  // Not using automation much
+  if (patternRanks.find((p) => p.name === "Automation & scripting" && p.score < 5) && convCount > 20)
+    skill_gaps.push("You're doing a lot of manual work that a simple automation skill could handle in seconds");
+
+  // Writing-heavy users
   if (topDomains.some((d) => d.name === "Writing & Content"))
-    skill_gaps.push("Content strategy skills could help structure your writing workflow");
+    skill_gaps.push("You clearly love writing — a style guide skill could keep your voice consistent across projects");
+
+  // Power users who could benefit from chaining
+  if (convCount > 80)
+    skill_gaps.push("With " + convCount + " conversations, you're a power user — multi-step workflow skills could save you hours");
+
+  // Light users who might not know what's possible
+  if (convCount < 15)
+    skill_gaps.push("You're just getting started — skills can unlock capabilities you didn't know Claude had");
 
   // --- Persona summary ---
   const topDomain = primary_domains[0] || "general tasks";
