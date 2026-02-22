@@ -269,20 +269,6 @@ export default function ParsingNarration({
                   animationDelay: `${i * 50}ms`,
                 }}
               >
-                {isComplete && !isCurrent ? (
-                  <span style={{ color: C.sageBright, fontSize: "14px", flexShrink: 0, width: "16px", textAlign: "center" as const }}>{"\u2713"}</span>
-                ) : (
-                  <span
-                    style={{
-                      width: "7px",
-                      height: "7px",
-                      background: C.sageBright,
-                      borderRadius: "50%",
-                      flexShrink: 0,
-                      margin: "0 4.5px",
-                    }}
-                  />
-                )}
                 <span>{step.label}{isComplete && !isCurrent ? "" : "..."}</span>
               </div>
             );
@@ -337,18 +323,6 @@ export default function ParsingNarration({
               gap: "6px",
             }}
           >
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="rgba(255,255,255,0.4)"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-            </svg>
             {dataSource === "persona"
               ? "Sample data loaded locally. No network requests."
               : "All parsing happens in your browser. No network requests."}
@@ -452,10 +426,7 @@ export default function ParsingNarration({
           onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; e.currentTarget.style.color = C.sage; }}
           aria-label="Close"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
+          ✕
         </button>
 
         {/* View content */}
