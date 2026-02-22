@@ -1,7 +1,6 @@
 import { useState } from "react";
 import type { AnalysisResults, AppView } from "../lib/types";
 import StatCard from "./StatCard";
-import BarChart from "./BarChart";
 import TagCloud from "./TagCloud";
 import SkillCard from "./SkillCard";
 import SkillBuilderCard from "./SkillBuilderCard";
@@ -49,6 +48,15 @@ const bodyText: React.CSSProperties = {
   lineHeight: 1.7,
   color: C.body,
 };
+
+const DOMAIN_COLORS = [
+  "#2d5a3f", // deep green
+  "#3d7a56", // mid green
+  "#6DBF73", // bright sage
+  "#88E7BB", // mint
+  "#b8d4c8", // pale sage
+  "#d4b896", // warm tan
+];
 
 const VISIBLE_ROWS = 3;
 
@@ -347,60 +355,105 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
           {userProfile.persona_summary}
         </p>
 
-        <div
-          className="usage-grid"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "48px",
-          }}
-        >
-          <div
-            style={{
-              background: "#fff",
-              border: `1px solid ${C.border}`,
-              borderRadius: "16px",
-              padding: "28px",
-            }}
-          >
-            <div style={{ ...sectionLabel, marginBottom: "20px" }}>
-              Breakdown by domain
-            </div>
-            <BarChart data={breakdown} />
+        {/* ── Stacked color bar ── */}
+        <div style={{ marginBottom: "36px" }}>
+          <div style={{ ...sectionLabel, marginBottom: "14px" }}>
+            Breakdown by domain
           </div>
 
+          {/* Color bar */}
           <div
             style={{
-              background: "#fff",
-              border: `1px solid ${C.border}`,
-              borderRadius: "16px",
-              padding: "28px",
+              display: "flex",
+              height: "28px",
+              borderRadius: "8px",
+              overflow: "hidden",
+              marginBottom: "16px",
             }}
           >
-            <div style={{ ...sectionLabel, marginBottom: "20px" }}>
-              Work patterns
-            </div>
-            <TagCloud tags={userProfile.work_patterns || []} />
+            {breakdown.map((b, i) => (
+              <div
+                key={i}
+                style={{
+                  width: `${b.percentage}%`,
+                  minWidth: "2px",
+                  background: DOMAIN_COLORS[i % DOMAIN_COLORS.length],
+                  transition: "width 0.6s ease",
+                }}
+                title={`${b.category}: ${b.percentage}%`}
+              />
+            ))}
+          </div>
 
-            {(userProfile.artifact_types?.length ?? 0) > 0 && (
-              <>
+          {/* Legend */}
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "16px 24px",
+            }}
+          >
+            {breakdown.map((b, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
                 <div
                   style={{
-                    ...sectionLabel,
-                    marginBottom: "12px",
-                    marginTop: "28px",
+                    width: "10px",
+                    height: "10px",
+                    borderRadius: "3px",
+                    background: DOMAIN_COLORS[i % DOMAIN_COLORS.length],
+                    flexShrink: 0,
+                  }}
+                />
+                <span
+                  style={{
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontSize: "13px",
+                    color: C.body,
                   }}
                 >
-                  Artifact types
-                </div>
-                <TagCloud
-                  tags={userProfile.artifact_types}
-                  variant="artifact"
-                />
-              </>
-            )}
+                  {b.category}
+                </span>
+                <span
+                  style={{
+                    fontFamily: "'JetBrains Mono', monospace",
+                    fontSize: "12px",
+                    color: C.subtle,
+                  }}
+                >
+                  {b.percentage}%
+                </span>
+              </div>
+            ))}
           </div>
         </div>
+
+        {/* ── Work patterns (full width) ── */}
+        <div style={{ marginBottom: "28px" }}>
+          <div style={{ ...sectionLabel, marginBottom: "12px" }}>
+            Work patterns
+          </div>
+          <TagCloud tags={userProfile.work_patterns || []} />
+        </div>
+
+        {/* ── Artifact types (full width) ── */}
+        {(userProfile.artifact_types?.length ?? 0) > 0 && (
+          <div>
+            <div style={{ ...sectionLabel, marginBottom: "12px" }}>
+              Artifact types
+            </div>
+            <TagCloud
+              tags={userProfile.artifact_types}
+              variant="artifact"
+            />
+          </div>
+        )}
       </section>
 
       {/* ─── Recommendations ─── */}
