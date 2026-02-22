@@ -88,6 +88,7 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
   } = results;
 
   const [tableExpanded, setTableExpanded] = useState(false);
+  const [showInfoModal, setShowInfoModal] = useState(false);
   const hasMore = conversations.length > VISIBLE_ROWS;
   const visibleConvs = tableExpanded ? conversations : conversations.slice(0, VISIBLE_ROWS);
 
@@ -304,15 +305,62 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
           )}
         </div>
 
-        {/* ── Conversations table ── */}
+        {/* ── Conversations preview ── */}
         {conversations.length > 0 && (
-          <div style={{ maxWidth: "640px", margin: "0 auto", textAlign: "left" }}>
+          <div
+            style={{
+              maxWidth: "640px",
+              margin: "0 auto",
+              textAlign: "left",
+              background: "#f5f0e8",
+              border: "1px solid #e8dcca",
+              borderRadius: "14px",
+              padding: "20px",
+            }}
+          >
+            {/* Title row with info button */}
             <div
               style={{
-                border: `1px solid ${C.border}`,
-                borderRadius: "12px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: "14px",
+              }}
+            >
+              <div style={{ ...sectionLabel, marginBottom: 0, color: "#8a7a64" }}>
+                Conversations we analyzed
+              </div>
+              <button
+                onClick={() => setShowInfoModal(true)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "24px",
+                  height: "24px",
+                  borderRadius: "50%",
+                  border: "1px solid #d4c4a8",
+                  background: "rgba(255,255,255,0.6)",
+                  cursor: "pointer",
+                  fontFamily: "'DM Serif Display', Georgia, serif",
+                  fontSize: "13px",
+                  fontWeight: 400,
+                  color: "#8a7a64",
+                  lineHeight: 1,
+                  padding: 0,
+                }}
+                title="How we analyzed your data"
+              >
+                i
+              </button>
+            </div>
+
+            <div
+              style={{
+                borderRadius: "10px",
                 overflow: "hidden",
                 background: "#fff",
+                border: "1px solid #e8dcca",
               }}
             >
               {/* Column headers (hidden on mobile) */}
@@ -323,13 +371,13 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
                   gridTemplateColumns: "1fr 52px 64px",
                   gap: "8px",
                   padding: "10px 16px",
-                  borderBottom: `1px solid ${C.border}`,
+                  borderBottom: "1px solid #e8dcca",
                   fontFamily: "'JetBrains Mono', monospace",
                   fontSize: "10px",
                   fontWeight: 500,
                   letterSpacing: "1px",
                   textTransform: "uppercase",
-                  color: C.subtle,
+                  color: "#8a7a64",
                 }}
               >
                 <span>Title</span>
@@ -349,7 +397,7 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
                     padding: "10px 16px",
                     borderBottom:
                       i < visibleConvs.length - 1
-                        ? `1px solid #f0f0f0`
+                        ? "1px solid #f0ebe0"
                         : "none",
                   }}
                 >
@@ -371,7 +419,7 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
                     style={{
                       fontFamily: "'JetBrains Mono', monospace",
                       fontSize: "12px",
-                      color: C.subtle,
+                      color: "#8a7a64",
                       textAlign: "center",
                     }}
                   >
@@ -382,7 +430,7 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
                     style={{
                       fontFamily: "'JetBrains Mono', monospace",
                       fontSize: "11px",
-                      color: C.subtle,
+                      color: "#8a7a64",
                       textAlign: "right",
                       whiteSpace: "nowrap",
                     }}
@@ -410,7 +458,7 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
                   fontFamily: "'DM Sans', sans-serif",
                   fontSize: "13px",
                   fontWeight: 500,
-                  color: C.accent,
+                  color: "#8a7a64",
                 }}
               >
                 {tableExpanded
@@ -421,7 +469,7 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
                   height="14"
                   viewBox="0 0 24 24"
                   fill="none"
-                  stroke="currentColor"
+                  stroke="#8a7a64"
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -770,6 +818,121 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
           Browse the Skills Commons &rarr;
         </button>
       </section>
+
+      {/* ─── Info modal ─── */}
+      {showInfoModal && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 1000,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "16px",
+          }}
+          onClick={() => setShowInfoModal(false)}
+        >
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "rgba(0,0,0,0.35)",
+              backdropFilter: "blur(4px)",
+            }}
+          />
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              position: "relative",
+              width: "100%",
+              maxWidth: "480px",
+              background: "#fff",
+              borderRadius: "16px",
+              boxShadow: "0 24px 48px rgba(0,0,0,0.15)",
+              padding: "32px",
+            }}
+          >
+            <button
+              onClick={() => setShowInfoModal(false)}
+              style={{
+                position: "absolute",
+                top: "12px",
+                right: "12px",
+                width: "32px",
+                height: "32px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: C.cream,
+                border: "none",
+                borderRadius: "8px",
+                cursor: "pointer",
+                color: C.subtle,
+                fontSize: "16px",
+              }}
+            >
+              ✕
+            </button>
+
+            <div style={{ ...sectionLabel, color: C.mid, marginBottom: "12px" }}>
+              How we analyzed your data
+            </div>
+            <h3 style={{ ...headline, fontSize: "22px", marginBottom: "16px" }}>
+              Everything ran locally
+            </h3>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+              {[
+                { step: "Read your file structure", detail: "Parsed the JSON export from Claude to identify conversations." },
+                { step: "Counted messages", detail: `Found ${totalConversations} conversations with ${totalMessages.toLocaleString()} total messages.` },
+                { step: "Read conversation titles", detail: "Scanned titles and content for topic patterns and recurring themes." },
+                { step: "Built a usage profile", detail: "Identified your top domains, work patterns, and artifact types from conversation content." },
+                { step: "Matched against skills catalog", detail: `Compared your profile against ${recommendations.length} skills to find the best matches.` },
+              ].map((item, i) => (
+                <div key={i}>
+                  <div
+                    style={{
+                      fontFamily: "'DM Sans', sans-serif",
+                      fontSize: "14px",
+                      fontWeight: 600,
+                      color: C.ink,
+                      marginBottom: "2px",
+                    }}
+                  >
+                    {item.step}
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "'DM Sans', sans-serif",
+                      fontSize: "13px",
+                      color: C.body,
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    {item.detail}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div
+              style={{
+                marginTop: "20px",
+                padding: "12px 16px",
+                background: C.cream,
+                borderRadius: "10px",
+                fontFamily: "'DM Sans', sans-serif",
+                fontSize: "12px",
+                color: C.subtle,
+                lineHeight: 1.5,
+              }}
+            >
+              No data left your browser. All parsing and matching happened locally using JavaScript — nothing was sent to a server.
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
