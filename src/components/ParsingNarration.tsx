@@ -60,7 +60,7 @@ export default function ParsingNarration({
   rawJson,
   dataSource,
   personaName,
-  personaEmoji,
+  personaEmoji: _personaEmoji,
   onComplete,
   onReset,
 }: ParsingNarrationProps) {
@@ -173,7 +173,7 @@ export default function ParsingNarration({
 
   const title =
     dataSource === "persona" && personaName
-      ? `${personaEmoji || ""} Exploring ${personaName}'s history\u2026`
+      ? `Exploring ${personaName}'s history\u2026`
       : "Parsing your data\u2026";
 
   /* ── Build the match summary sentence ── */

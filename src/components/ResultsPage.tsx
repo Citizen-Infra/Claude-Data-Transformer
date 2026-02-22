@@ -315,8 +315,9 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
                 background: "#fff",
               }}
             >
-              {/* Column headers */}
+              {/* Column headers (hidden on mobile) */}
               <div
+                className="conv-header"
                 style={{
                   display: "grid",
                   gridTemplateColumns: "1fr 52px 64px",
@@ -340,6 +341,7 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
               {visibleConvs.map((conv, i) => (
                 <div
                   key={conv.id}
+                  className="conv-row"
                   style={{
                     display: "grid",
                     gridTemplateColumns: "1fr 52px 64px",
@@ -352,6 +354,7 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
                   }}
                 >
                   <span
+                    className="conv-title"
                     style={{
                       fontFamily: "'DM Sans', sans-serif",
                       fontSize: "14px",
@@ -364,6 +367,7 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
                     {conv.title}
                   </span>
                   <span
+                    className="conv-msgs"
                     style={{
                       fontFamily: "'JetBrains Mono', monospace",
                       fontSize: "12px",
@@ -371,9 +375,10 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
                       textAlign: "center",
                     }}
                   >
-                    {conv.message_count}
+                    {conv.message_count} msgs
                   </span>
                   <span
+                    className="conv-date"
                     style={{
                       fontFamily: "'JetBrains Mono', monospace",
                       fontSize: "11px",
