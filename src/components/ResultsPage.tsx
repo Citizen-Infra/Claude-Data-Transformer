@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { AnalysisResults, AppView } from "../lib/types";
 import StatCard from "./StatCard";
 import BarChart from "./BarChart";
@@ -49,6 +50,25 @@ const bodyText: React.CSSProperties = {
   color: C.body,
 };
 
+const VISIBLE_ROWS = 3;
+
+function formatRelativeDate(dateStr: string): string {
+  try {
+    const d = new Date(dateStr);
+    const now = new Date();
+    const diffDays = Math.floor(
+      (now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24)
+    );
+    if (diffDays < 1) return "Today";
+    if (diffDays < 7) return `${diffDays}d ago`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
+    if (diffDays < 365) return `${Math.floor(diffDays / 30)}mo ago`;
+    return `${Math.floor(diffDays / 365)}y ago`;
+  } catch {
+    return "";
+  }
+}
+
 export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
   const {
     userProfile,
@@ -56,7 +76,12 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
     dateRange,
     totalConversations,
     totalMessages,
+    conversations,
   } = results;
+
+  const [tableExpanded, setTableExpanded] = useState(false);
+  const hasMore = conversations.length > VISIBLE_ROWS;
+  const visibleConvs = tableExpanded ? conversations : conversations.slice(0, VISIBLE_ROWS);
 
   const breakdown =
     userProfile.usage_breakdown ||
@@ -86,43 +111,137 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
             fontSize: "clamp(30px, 5vw, 46px)",
             color: C.ink,
             maxWidth: "600px",
-            margin: "0 auto 16px",
+            margin: "0 auto 28px",
           }}
         >
           Claude convos, decoded.
         </h1>
 
-        {/* ── Your gaps (inline under headline) ── */}
-        {(userProfile.skill_gaps?.length ?? 0) > 0 && (
+        {/* ── Conversations table ── */}
+        {conversations.length > 0 && (
           <div style={{ maxWidth: "640px", margin: "0 auto", textAlign: "left" }}>
-            <div style={{ ...sectionLabel, marginBottom: "12px", marginTop: "8px" }}>
-              Where skills can help
-            </div>
             <div
               style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-                gap: "12px",
+                border: `1px solid ${C.border}`,
+                borderRadius: "12px",
+                overflow: "hidden",
+                background: "#fff",
               }}
             >
-              {userProfile.skill_gaps.map((gap, i) => (
+              {/* Column headers */}
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 52px 64px",
+                  gap: "8px",
+                  padding: "10px 16px",
+                  borderBottom: `1px solid ${C.border}`,
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: "10px",
+                  fontWeight: 500,
+                  letterSpacing: "1px",
+                  textTransform: "uppercase",
+                  color: C.subtle,
+                }}
+              >
+                <span>Title</span>
+                <span style={{ textAlign: "center" }}>Msgs</span>
+                <span style={{ textAlign: "right" }}>Date</span>
+              </div>
+
+              {/* Rows */}
+              {visibleConvs.map((conv, i) => (
                 <div
-                  key={i}
+                  key={conv.id}
                   style={{
-                    padding: "16px 20px",
-                    background: C.cream,
-                    border: `1px solid ${C.border}`,
-                    borderRadius: "12px",
-                    fontSize: "14px",
-                    lineHeight: 1.7,
-                    color: C.body,
-                    fontFamily: "'DM Sans', sans-serif",
+                    display: "grid",
+                    gridTemplateColumns: "1fr 52px 64px",
+                    gap: "8px",
+                    padding: "10px 16px",
+                    borderBottom:
+                      i < visibleConvs.length - 1
+                        ? `1px solid #f0f0f0`
+                        : "none",
                   }}
                 >
-                  {gap}
+                  <span
+                    style={{
+                      fontFamily: "'DM Sans', sans-serif",
+                      fontSize: "14px",
+                      color: C.ink,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {conv.title}
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: "'JetBrains Mono', monospace",
+                      fontSize: "12px",
+                      color: C.subtle,
+                      textAlign: "center",
+                    }}
+                  >
+                    {conv.message_count}
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: "'JetBrains Mono', monospace",
+                      fontSize: "11px",
+                      color: C.subtle,
+                      textAlign: "right",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {formatRelativeDate(conv.created_at)}
+                  </span>
                 </div>
               ))}
             </div>
+
+            {/* Show more / Show less toggle */}
+            {hasMore && (
+              <button
+                onClick={() => setTableExpanded((prev) => !prev)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "4px",
+                  width: "100%",
+                  padding: "12px 0",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  color: C.accent,
+                }}
+              >
+                {tableExpanded
+                  ? "Show less"
+                  : `Show all ${conversations.length} conversations`}
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  style={{
+                    transform: tableExpanded ? "rotate(180deg)" : "none",
+                    transition: "transform 0.2s ease",
+                  }}
+                >
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </button>
+            )}
           </div>
         )}
       </section>

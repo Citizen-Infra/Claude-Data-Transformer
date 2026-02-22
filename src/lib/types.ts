@@ -89,6 +89,7 @@ export interface AnalysisResults {
   dateRange: DateRange;
   totalConversations: number;
   totalMessages: number;
+  conversations: ParsedConversation[];
 }
 
 // Log entry for terminal

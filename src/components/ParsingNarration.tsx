@@ -16,7 +16,6 @@ const C = {
 const mono = "'DM Mono', monospace";
 const sans = "'DM Sans', sans-serif";
 
-const VISIBLE_ROWS = 3;
 
 interface UploadStats {
   conversations: number;
@@ -57,23 +56,6 @@ function countArtifacts(conversations: ParsedConversation[]): number {
   ).length;
 }
 
-function formatRelativeDate(dateStr: string): string {
-  try {
-    const d = new Date(dateStr);
-    const now = new Date();
-    const diffDays = Math.floor(
-      (now.getTime() - d.getTime()) / (1000 * 60 * 60 * 24)
-    );
-    if (diffDays < 1) return "Today";
-    if (diffDays < 7) return `${diffDays}d ago`;
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
-    if (diffDays < 365) return `${Math.floor(diffDays / 30)}mo ago`;
-    return `${Math.floor(diffDays / 365)}y ago`;
-  } catch {
-    return "";
-  }
-}
-
 export default function ParsingNarration({
   rawJson,
   dataSource,
@@ -87,8 +69,6 @@ export default function ParsingNarration({
   const [progress, setProgress] = useState(0);
   const [showTrust, setShowTrust] = useState(false);
   const [done, setDone] = useState(false);
-  const [modalView, setModalView] = useState<"steps" | "table">("steps");
-  const [tableExpanded, setTableExpanded] = useState(false);
   const [matchSummary, setMatchSummary] = useState<{
     total: number;
     high: number;
@@ -180,21 +160,16 @@ export default function ParsingNarration({
     }, (totalSteps + 1) * STEP_DELAY);
   }, [buildSteps, dataSource]);
 
-  const handleViewConversations = () => {
-    setModalView("table");
-  };
-
-  const handleBack = () => {
-    setModalView("steps");
-  };
-
-  const handleProceed = () => {
-    if (resultsRef.current) {
-      onCompleteRef.current(resultsRef.current);
+  /* Auto-advance to results once processing finishes */
+  useEffect(() => {
+    if (done && resultsRef.current) {
+      const timer = setTimeout(() => {
+        onCompleteRef.current(resultsRef.current!);
+      }, 1800);
+      return () => clearTimeout(timer);
     }
-  };
+  }, [done]);
 
-  const isSample = dataSource === "persona";
 
   const title =
     dataSource === "persona" && personaName
@@ -255,12 +230,7 @@ export default function ParsingNarration({
     );
   };
 
-  /* ── Conversations table data ── */
-  const conversations = resultsRef.current?.conversations ?? [];
-  const hasMore = conversations.length > VISIBLE_ROWS;
-  const visibleConvs = tableExpanded ? conversations : conversations.slice(0, VISIBLE_ROWS);
-
-  /* ── Render View 1: Parsing steps ── */
+  /* ── Render: Parsing steps ── */
   const renderStepsView = () => (
     <div key="steps" style={{ animation: "viewFadeIn 0.25s ease" }}>
       {/* Modal body */}
@@ -386,224 +356,21 @@ export default function ParsingNarration({
         )}
       </div>
 
-      {/* Modal footer — View conversations button */}
-      <div style={{ padding: "0 32px 32px" }}>
-        <button
-          onClick={handleViewConversations}
-          disabled={!done}
-          style={{
-            display: "block",
-            width: "100%",
-            padding: "14px 0",
-            background: done ? C.green : "rgba(255,255,255,0.06)",
-            color: done ? C.cream : "rgba(253,246,236,0.3)",
-            border: done
-              ? "1px solid rgba(253,246,236,0.1)"
-              : "1px solid rgba(255,255,255,0.06)",
-            borderRadius: "10px",
-            fontFamily: sans,
-            fontSize: "15px",
-            fontWeight: 600,
-            textAlign: "center" as const,
-            cursor: done ? "pointer" : "default",
-            transition: "all 0.3s ease",
-            opacity: done ? 1 : 0.6,
-          }}
-        >
-          {done ? "View conversations \u2192" : "Processing\u2026"}
-        </button>
-      </div>
-    </div>
-  );
-
-  /* ── Render View 2: Expanded dark modal with conversations table ── */
-  const renderTableView = () => (
-    <div key="table" style={{ animation: "viewFadeIn 0.25s ease", display: "flex", flexDirection: "column", height: "100%" }}>
-      {/* Scrollable content area */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "28px 24px 0" }}>
-        {/* Back button */}
-        <button
-          onClick={handleBack}
-          style={{
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            fontFamily: sans,
-            fontSize: "13px",
-            color: C.sage,
-            padding: "0",
-            marginBottom: "16px",
-            display: "flex",
-            alignItems: "center",
-            gap: "4px",
-          }}
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.sage} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
-          Back to summary
-        </button>
-
-        {/* Title row */}
-        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: "16px" }}>
-          <div style={{ fontFamily: sans, fontSize: "20px", fontWeight: 600, color: C.cream }}>
-            Conversations Analyzed
-          </div>
-          <span style={{ fontFamily: mono, fontSize: "11px", color: C.sage }}>
-            {conversations.length} total
-          </span>
-        </div>
-
-        {/* Privacy note */}
-        <p
-          style={{
-            fontFamily: sans,
-            fontSize: "12px",
-            color: "rgba(255,255,255,0.4)",
-            lineHeight: 1.5,
-            marginBottom: "16px",
-          }}
-        >
-          This is the only data we processed. Everything ran locally in your browser&mdash;nothing was sent to a server.
-        </p>
-
-        {/* Table */}
+      {/* Modal footer — auto-advance indicator */}
+      {done && (
         <div
+          className="reveal-up"
           style={{
-            border: "1px solid rgba(253,246,236,0.1)",
-            borderRadius: "10px",
-            overflow: "hidden",
-          }}
-        >
-          {/* Column headers */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 44px 56px",
-              gap: "6px",
-              padding: "10px 14px",
-              borderBottom: "1px solid rgba(253,246,236,0.08)",
-              fontFamily: mono,
-              fontSize: "10px",
-              fontWeight: 500,
-              letterSpacing: "1px",
-              textTransform: "uppercase",
-              color: C.sage,
-            }}
-          >
-            <span>Title</span>
-            <span style={{ textAlign: "center" }}>Msgs</span>
-            <span style={{ textAlign: "right" }}>Date</span>
-          </div>
-
-          {/* Rows */}
-          {conversations.map((conv, i) => (
-            <div
-              key={conv.id}
-              className="reveal-up"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 44px 56px",
-                gap: "6px",
-                padding: "10px 14px",
-                borderBottom:
-                  i < conversations.length - 1
-                    ? "1px solid rgba(253,246,236,0.06)"
-                    : "none",
-                animationDelay: `${Math.min(i * 30, 600)}ms`,
-              }}
-            >
-              <span
-                style={{
-                  fontFamily: sans,
-                  fontSize: "13px",
-                  color: C.cream,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {conv.title}
-              </span>
-              <span
-                style={{
-                  fontFamily: mono,
-                  fontSize: "12px",
-                  color: C.sage,
-                  textAlign: "center",
-                }}
-              >
-                {conv.message_count}
-              </span>
-              <span
-                style={{
-                  fontFamily: mono,
-                  fontSize: "11px",
-                  color: C.sage,
-                  textAlign: "right",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {formatRelativeDate(conv.created_at)}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Sticky footer — action buttons */}
-      <div
-        style={{
-          flexShrink: 0,
-          padding: "16px 24px 24px",
-          background: C.greenDeep,
-          borderTop: "1px solid rgba(253,246,236,0.08)",
-          display: "flex",
-          gap: "12px",
-          alignItems: "center",
-        }}
-      >
-        <button
-          onClick={onReset}
-          style={{
-            padding: "12px 16px",
-            background: "none",
-            color: C.sage,
-            border: "1px solid rgba(253,246,236,0.12)",
-            borderRadius: "10px",
+            padding: "0 32px 28px",
+            textAlign: "center",
             fontFamily: sans,
             fontSize: "13px",
-            fontWeight: 500,
-            cursor: "pointer",
-            transition: "border-color 0.15s",
-            whiteSpace: "nowrap",
+            color: "rgba(255,255,255,0.4)",
           }}
         >
-          {isSample ? "\u2190 Different persona" : "Remove file"}
-        </button>
-
-        <button
-          onClick={handleProceed}
-          style={{
-            flex: 1,
-            padding: "14px 24px",
-            background: `linear-gradient(135deg, ${C.green}, #3d7a56)`,
-            color: "#fff",
-            border: "none",
-            borderRadius: "10px",
-            fontFamily: sans,
-            fontSize: "15px",
-            fontWeight: 700,
-            cursor: "pointer",
-            transition: "opacity 0.15s",
-            letterSpacing: "-0.2px",
-          }}
-        >
-          {isSample
-            ? `See ${personaName}'s suggested skills \u2192`
-            : "See suggested skills \u2192"}
-        </button>
-      </div>
+          Loading your results…
+        </div>
+      )}
     </div>
   );
 
@@ -617,7 +384,7 @@ export default function ParsingNarration({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: modalView === "table" ? "8px" : "16px",
+        padding: "16px",
         animation: "fadeIn 0.25s ease",
       }}
     >
@@ -632,23 +399,21 @@ export default function ParsingNarration({
         }}
       />
 
-      {/* Modal — grows edge-to-edge for table view */}
+      {/* Modal */}
       <div
         className="narration-modal"
         style={{
           position: "relative",
           width: "100%",
-          maxWidth: modalView === "table" ? "100%" : "460px",
-          height: modalView === "table" ? "100%" : "auto",
-          maxHeight: modalView === "table" ? "100%" : "520px",
-          overflowY: modalView === "table" ? "hidden" : "auto",
+          maxWidth: "460px",
+          maxHeight: "520px",
+          overflowY: "auto",
           background: C.greenDeep,
-          borderRadius: modalView === "table" ? "12px" : "16px",
+          borderRadius: "16px",
           boxShadow: "0 24px 48px rgba(0,0,0,0.3)",
           display: "flex",
           flexDirection: "column",
           animation: "modalSlideUp 0.3s ease",
-          transition: "max-width 0.3s ease, max-height 0.3s ease, border-radius 0.3s ease",
         }}
       >
         {/* Progress bar */}
@@ -694,7 +459,7 @@ export default function ParsingNarration({
         </button>
 
         {/* View content */}
-        {modalView === "steps" ? renderStepsView() : renderTableView()}
+        {renderStepsView()}
       </div>
     </div>
   );

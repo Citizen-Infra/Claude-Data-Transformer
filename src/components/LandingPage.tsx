@@ -151,6 +151,7 @@ export default function LandingPage({ onDataReady, onNavigate }: LandingPageProp
         dateRange: dr,
         totalConversations: results.conversations.length,
         totalMessages: results.conversations.reduce((s, c) => s + c.message_count, 0),
+        conversations: results.conversations,
       });
     },
     [onDataReady]
