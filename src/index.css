@@ -352,18 +352,22 @@ body {
     line-height: 1.4 !important;
   }
 
+  .conv-meta {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+
   .conv-msgs {
     text-align: left !important;
-    display: inline !important;
   }
 
   .conv-date {
     text-align: left !important;
-    display: inline !important;
   }
 
   .conv-date::before {
-    content: " · ";
+    content: "· ";
   }
 }
 

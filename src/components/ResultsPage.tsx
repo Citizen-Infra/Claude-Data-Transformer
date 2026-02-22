@@ -415,27 +415,32 @@ export default function ResultsPage({ results, onNavigate }: ResultsPageProps) {
                     {conv.title}
                   </span>
                   <span
-                    className="conv-msgs"
-                    style={{
-                      fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: "12px",
-                      color: "#8a7a64",
-                      textAlign: "center",
-                    }}
+                    className="conv-meta"
+                    style={{ display: "contents" }}
                   >
-                    {conv.message_count} msgs
-                  </span>
-                  <span
-                    className="conv-date"
-                    style={{
-                      fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: "11px",
-                      color: "#8a7a64",
-                      textAlign: "right",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {formatRelativeDate(conv.created_at)}
+                    <span
+                      className="conv-msgs"
+                      style={{
+                        fontFamily: "'JetBrains Mono', monospace",
+                        fontSize: "12px",
+                        color: "#8a7a64",
+                        textAlign: "center",
+                      }}
+                    >
+                      {conv.message_count} msgs
+                    </span>
+                    <span
+                      className="conv-date"
+                      style={{
+                        fontFamily: "'JetBrains Mono', monospace",
+                        fontSize: "11px",
+                        color: "#8a7a64",
+                        textAlign: "right",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {formatRelativeDate(conv.created_at)}
+                    </span>
                   </span>
                 </div>
               ))}
